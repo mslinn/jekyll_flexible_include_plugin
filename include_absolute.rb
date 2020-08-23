@@ -109,12 +109,14 @@ MSG
         site = context.registers[:site]
 
         file = render_variable(context) || @file
-        # strip leading and trailing quote's
+        # strip leading and trailing quotes
         file = file.gsub!(/\A'|'\Z/, '')
         validate_file_name(file)
-
-        source = File.expand_path(context.registers[:site].config['source']).freeze
-        path = File.join(source, file)
+        path = file
+        unless /^\//.match(file)
+          source = File.expand_path(context.registers[:site].config['source']).freeze
+          path = File.join(source, file)
+        end
         return unless path
 
         partial = Liquid::Template.parse(read_file(path, context))
