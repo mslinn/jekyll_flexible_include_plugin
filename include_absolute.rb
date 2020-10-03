@@ -36,7 +36,7 @@ module Jekyll
       end
 
       def syntax_example
-        "{% #{@tag_name} 'file.ext' param='value' param2='value' %}"
+        "{% #{@tag_name} 'file.ext' optional_param_1='value' optional_param_n='value' %}"
       end
 
       def parse_params(context)
@@ -59,7 +59,7 @@ module Jekyll
         params
       end
 
-      def validate_file_name(file)
+      def validate_file_name(file)  # TODO allow filenames relative to home directory
         if file !~ VALID_FILENAME_CHARS
           raise ArgumentError, <<-MSG
 Invalid syntax for include tag. File contains invalid characters or sequences:
@@ -111,15 +111,34 @@ MSG
         file = render_variable(context) || @file
         # strip leading and trailing quotes
         file = file.gsub!(/\A'|'\Z/, '')
-        validate_file_name(file)
+        #validate_file_name(file)  # TODO uncomment and fix validate_file_name
         path = file
-        unless /^\//.match(file)
-          source = File.expand_path(context.registers[:site].config['source']).freeze
-          path = File.join(source, file)
+        if /^\//.match(file)  # Is the file absolute?
+          #puts "********** render path=#{path}, file=#{file} *************"
+        elsif /~/.match(file)  # Is the file relative to user's home directory?
+          #puts "********** render original file=#{file}, path=#{path} *************"
+          file.slice! "~/"
+          path = File.join(ENV['HOME'], file)
+          #puts "********** render path=#{path}, file=#{file} *************"
+        elsif /\!/.match(file)  # Is the file on the PATH?
+          #puts "********** render original file=#{file}, path=#{path} *************"
+          file.slice! "!"
+          path = File.which(file)
+          #puts "********** render path=#{path}, file=#{file} *************"
+        else  # The file is relative
+          source = File.expand_path(context.registers[:site].config['source']).freeze # website root directory
+          path = File.join(source, file)  # Fully qualified path of include file
+          #puts "********** render file=#{file}, path=#{path}, source=#{source} *************"
         end
         return unless path
 
-        partial = Liquid::Template.parse(read_file(path, context))
+        begin
+          escaped_contents = read_file(path, context).gsub("{", "&#123;").gsub("}", "&#125;")
+          #puts escaped_contents
+          partial = Liquid::Template.parse(escaped_contents)
+        rescue StandardError => e
+          abort "include_absolute.rb: #{e.message}"
+        end
 
         context.stack do
           context["include"] = parse_params(context) if @params
