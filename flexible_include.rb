@@ -62,7 +62,7 @@ module Jekyll
       def validate_file_name(file)  # TODO allow filenames relative to home directory
         if file !~ VALID_FILENAME_CHARS
           raise ArgumentError, <<-MSG
-Invalid syntax for include tag. File contains invalid characters or sequences:
+Invalid syntax for the flexible_ include tag. The included file contains invalid characters or sequences:
 
   #{file}
 
@@ -77,7 +77,7 @@ MSG
       def validate_params
         unless @params =~ FULL_VALID_SYNTAX
           raise ArgumentError, <<-MSG
-Invalid syntax for include tag:
+Invalid syntax for the flexible_include tag:
 
   #{@params}
 
@@ -133,11 +133,11 @@ MSG
         return unless path
 
         begin
-          escaped_contents = read_file(path, context).gsub("{", "&#123;").gsub("}", "&#125;")
+          escaped_contents = read_file(path, context).gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
           #puts escaped_contents
           partial = Liquid::Template.parse(escaped_contents)
         rescue StandardError => e
-          abort "include_absolute.rb: #{e.message}"
+          abort "flexible_include.rb: #{e.message}"
         end
 
         context.stack do
@@ -186,4 +186,4 @@ MSG
   end
 end
 
-Liquid::Template.register_tag("include_absolute", Jekyll::Tags::IncludeAbsoluteTag)
+Liquid::Template.register_tag("flexible_include", Jekyll::Tags::IncludeAbsoluteTag)
