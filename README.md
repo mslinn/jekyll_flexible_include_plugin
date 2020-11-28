@@ -2,13 +2,20 @@
 
 Originally called  `include_absolute`, this plugin's has been renamed to `flexible_include` because it no longer just includes absolute file names.
 
+## Purpose
+
 Jekyll's built-in `include` tag does not support including files outside of the `_includes` folder.
-This plugin supports 4 types of includes:
+This plugin supports 4 types of includes.
+
+### Include Types
 
 1. Absolute filenames (start with `/`).
 2. Filenames relative to the top-level directory of the Jekyll web site (Do not preface with `.` or `/`).
 3. Filenames relative to the user home directory (preface with `~`).
 4. Executable filenames on the `PATH` (preface with `!`).
+
+In addition, filenames that require environment expansion because they contain a <code>$</code> character are
+expanded according to the environment variables defined when <code>jekyll build</code> executes.
 
 ### Syntax:
 ```
@@ -24,17 +31,20 @@ Copy `flexible_include.rb` into `/_plugins` and restart Jekyll.
 
 ### Examples
 
-1. Include files without parameters; all four types of includes are shown.
+1. Include a file without parameters.
    ```
    {% flexible_include '../../folder/outside/jekyll/site/foo.html' %}
    {% flexible_include 'folder/within/jekyll/site/bar.js' %}
    {% flexible_include '/etc/passwd' %}
    {% flexible_include '~/.ssh/config' %}
+   {% flexible_include '!jekyll' %}
+   {% flexible_include '$HOME/.bash_aliases' %}
    ```
 
-2. Include a file and pass parameters to it.
+2. Include the file and pass parameters to it.
    ```
-   {% flexible_include '~/folder/under/home/directory/foo.html' param1='yes' param2='green' %}
+   {% flexible_include '~/folder/foo.html' param1='yes' param2='green' %}
+   {% flexible_include '$HOME/.bash_aliases' x='y' %}
    ```
 
  ## Implementation
