@@ -1,24 +1,64 @@
-# Jekyll `flexible_include` Tag
+# Jekyll `flexible_include` Tag Plugin
 
-A Jekyll's liquid tag plugin to include a file from its path relative to Jekyll's source folder. Why? Because Jekyll's built-in `include` tag does not support including files outside of the `_includes` folder.
+A Jekyll liquid tag plugin that includes the contents of a file, which can be specified in several ways.
 
-Syntax: `{% flexible_include path %}`
+Why? Because Jekyll's built-in `include` tag does not support including files outside of the `_includes` folder.
+
+
+## File Specifications
+This plugin supports 4 types of file specifications:
+
+1. Absolute filenames (start with `/`).
+2. Filenames relative to the top-level directory of the Jekyll web site (Do not preface with `.` or `/`).
+3. Filenames relative to the user home directory (preface with `~`).
+4. Executable filenames on the `PATH` (preface with `!`).
+
+In addtion, filenames that require environment expansion because they contain a <code>$</code> character are
+expanded according to the environment variables defined when <code>jekyll build</code> executes.
+
+
+## Syntax
+```
+{% flexible_include path [ optionalParam1='yes' optionalParam2='green' ] %}
+```
+
+The optional parameters can have any name.
+The included file will have parameters substituted.
+
 
 ## Installation
 
-Copy `flexible_include.rb` into `/_plugins`.
+Copy `flexible_include.rb` into `/_plugins` and restart Jekyll.
+
 
 ## Examples
 
-With this plugin you can include only a file.
-```
-{% flexible_include '../../folder/outside/jekyll/foo.html' %}
-{% flexible_include 'other/folder/bar.js' %}
-```
-Or include the file and pass parameters to it.
-```
-{% flexible_include '../../folder/outside/jekyll/foo.html' param1='yes' param2='green' %}
-```
+1. Include a file without parameters.
+   ```
+   {% flexible_include '../../folder/outside/jekyll/site/foo.html' %}
+   {% flexible_include 'folder/within/jekyll/site/bar.js' %}
+   {% flexible_include '/etc/passwd' %}
+   {% flexible_include '~/.ssh/config' %}
+   {% flexible_include '!jekyll' %}
+   {% flexible_include '$HOME/.bash_aliases' %}
+   ```
+
+2. Include the file and pass parameters to it.
+   ```
+   {% flexible_include '~/folder/foo.html' param1='yes' param2='green' %}
+   {% flexible_include '$HOME/.bash_aliases' x='y' %}
+   ```
+
+
+## Implementation
+
+The top-level directory of the Jekyll web site is known as the "source folder".
+
+### TODO
+
+The `validate_file_name` call is commented out because mslinn did not have time
+to figure out how to modify it so that filenames relative to the home directory would work.
+
 
 ## License
 

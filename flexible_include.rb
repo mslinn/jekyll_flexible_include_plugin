@@ -1,3 +1,12 @@
+# Original work Copyright 2019 Tan Nhu, Maarten Brakkee
+# (https://github.com/tnhu/jekyll-include-absolute-plugin)
+#
+# Enhancements and corrections Copyright 2020 Michael Slinn
+# (https://github.com/mslinn/jekyll-flexible-include-plugin)
+#
+# MIT License
+# https://github.com/tnhu/jekyll-include-absolute-plugin/blob/master/LICENSE)
+
 module Jekyll
   module Tags
     class IncludeAbsoluteTagError < StandardError
@@ -105,12 +114,17 @@ MSG
         end
       end
 
+      def expand_env(str)
+        # Expands environment variable references in str
+        str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
+      end
+
       def render(context)
         site = context.registers[:site]
 
         file = render_variable(context) || @file
-        # strip leading and trailing quotes
-        file = file.gsub!(/\A'|'\Z/, '')
+        file = file.gsub(/\A'|'\Z/, '')  # Strip leading and trailing quotes
+        file = expand_env(file)    # Expand environment variable references
         #validate_file_name(file)  # TODO uncomment and fix validate_file_name
         path = file
         if /^\//.match(file)  # Is the file absolute?
