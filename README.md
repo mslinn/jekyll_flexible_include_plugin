@@ -1,3 +1,6 @@
+![Release](https://img.shields.io/badge/1.0.0-Release-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 # Jekyll `flexible_include` Tag Plugin
 
 Originally called  `include_absolute`, this plugin's has been renamed to `flexible_include` because it no longer just includes absolute file names.
