@@ -1,4 +1,4 @@
-![Release](https://img.shields.io/badge/1.0.0-Release-blue)
+![Release](https://img.shields.io/badge/1.1.0-Release-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 # Jekyll `flexible_include` Tag Plugin
@@ -49,14 +49,20 @@ Copy `flexible_include.rb` into `/_plugins` and restart Jekyll.
    {% flexible_include '~/folder/under/home/directory/foo.html' do_not_escape='true' %}
    ```
 
- ## Implementation
+## Implementation
 
- The top-level directory of the Jekyll web site is known as the "source folder".
+The top-level directory of the Jekyll web site is known as the "source folder".
 
- ### TODO
+### Revision History
 
- The `validate_file_name` call is commented out because mslinn did not have time
- to figure out how to modify it so that filenames relative to the home directory would work.
+ 1.1.0 Added `do_not_escape` optional parameter
+
+ 1.0.0 First official release
+
+### TODO
+
+The `validate_file_name` call is commented out because mslinn did not have time
+to figure out how to modify it so that filenames relative to the home directory would work.
 
 
 ## License
