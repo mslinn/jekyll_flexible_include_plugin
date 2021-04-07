@@ -45,7 +45,7 @@ module Jekyll
       end
 
       def syntax_example
-        "{% #{@tag_name} 'file.ext' optional_param_1='value' optional_param_n='value' %}"
+        "{% #{@tag_name} 'file.ext' do_not_escape='true' %}"
       end
 
       def parse_params(context)
@@ -146,16 +146,24 @@ MSG
         end
         return unless path
 
-        begin
-          escaped_contents = read_file(path, context).gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
-          #puts escaped_contents
-          partial = Liquid::Template.parse(escaped_contents)
-        rescue StandardError => e
-          abort "flexible_include.rb: #{e.message}"
-        end
-
         context.stack do
-          context["include"] = parse_params(context) if @params
+          do_not_escape = false
+          if @params
+            context["include"] = parse_params(context)
+            # puts "context['include']['do_not_escape'] = #{context['include']['do_not_escape']}"
+            do_not_escape = context['include'].fetch('do_not_escape', 'false')
+            # puts "do_not_escape=#{do_not_escape}"
+            # puts "do_not_escape=='false' = #{do_not_escape=='false'}"
+          end
+
+          begin
+            contents = read_file(path, context)
+            escaped_contents = do_not_escape=='false' ? contents.gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;") : contents
+            partial = Liquid::Template.parse(escaped_contents)
+          rescue StandardError => e
+            abort "flexible_include.rb: #{e.message}"
+          end
+
           begin
             partial.render!(context)
           rescue Liquid::Error => e
@@ -201,3 +209,4 @@ MSG
 end
 
 Liquid::Template.register_tag("flexible_include", Jekyll::Tags::IncludeAbsoluteTag)
+

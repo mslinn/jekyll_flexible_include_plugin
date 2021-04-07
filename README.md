@@ -22,11 +22,11 @@ expanded according to the environment variables defined when <code>jekyll build<
 
 ### Syntax:
 ```
-{% flexible_include path [ optionalParam1='yes' optionalParam2='green' ] %}
+{% flexible_include path [ do_not_escape='true' ] %}
 ```
 
-The optional parameters can have any name.
-The included file will have parameters substituted.
+The included file will escape characters <code>&lt;</code>, <code>{</code> and <code>}</code> unless <code>do_not_escape</code>
+is specified with a value other than <code>false</code>.
 
 ### Installation
 
@@ -44,10 +44,9 @@ Copy `flexible_include.rb` into `/_plugins` and restart Jekyll.
    {% flexible_include '$HOME/.bash_aliases' %}
    ```
 
-2. Include the file and pass parameters to it.
+2. Include a JSON file (without escaping characters).
    ```
-   {% flexible_include '~/folder/foo.html' param1='yes' param2='green' %}
-   {% flexible_include '$HOME/.bash_aliases' x='y' %}
+   {% flexible_include '~/folder/under/home/directory/foo.html' do_not_escape='true' %}
    ```
 
  ## Implementation
