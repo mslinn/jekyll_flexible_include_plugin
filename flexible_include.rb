@@ -38,7 +38,9 @@ module Jekyll
           @file = matched["variable"].strip
           @params = matched["params"].strip
         else
-          @file, @params = markup.strip.split(%r!\s+!, 2)
+          # Split by spaces but only if the text following contains an even number of '
+          # Based on https://stackoverflow.com/a/11566264
+          @file, @params = markup.strip.split(%r!\s(?=(?:[^']|'[^']*')*$)!, 2)
         end
         validate_params if @params
         @tag_name = tag_name
