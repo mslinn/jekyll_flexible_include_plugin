@@ -1,4 +1,4 @@
-![Release](https://img.shields.io/badge/1.1.0-Release-blue)
+![Release](https://img.shields.io/badge/1.1.1-Release-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 # Jekyll `flexible_include` Tag Plugin
@@ -54,10 +54,11 @@ Copy `flexible_include.rb` into `/_plugins` and restart Jekyll.
 The top-level directory of the Jekyll web site is known as the "source folder".
 
 ### Revision History
+ 1.1.1 Handle spaces in filenames properly.
 
- 1.1.0 Added `do_not_escape` optional parameter
+ 1.1.0 Added `do_not_escape` optional parameter.
 
- 1.0.0 First official release
+ 1.0.0 First official release.
 
 ### TODO
 
