@@ -51,11 +51,14 @@ The plugin does not need to be mentioned in `Gemfile`.
 GitHub Pages only allows [these plugins](https://pages.github.com/versions/).
 That means `flexible_include` will not work on GitHub Pages.
 Following is a workaround.
-1. Let's assume your git repo that you want to publish as GitHub Pages is called `mysite`.
+1. Let's assume your git repository that you want to publish as GitHub Pages is called `mysite`.
+   This repository cannot be the source of your GitHub Pages because you are using the `flexible_include` plugin.
 2. Make a new git repository to hold the generated website. Let's call this git repository `generated_site`.
 3. Generate `mysite` locally as usual.
 4. Copy the generated HTML in the `mysite/_site/` directory to `generated_site`.
-5. Run `git commit` on `generated_site`. A moment later, your website will now be visible as GitHub Pages, with the included content, just as you saw it locally.
+5. Run `git commit` on `generated_site`.
+6. Tell GitHub that you want the `generated_site` repository to hold your GitHub pages.
+7. A moment later, your website will now be visible as GitHub Pages, with the included content, just as you saw it locally.
 
 
 ## Known Issues
