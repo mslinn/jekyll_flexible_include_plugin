@@ -11,15 +11,10 @@ Gem::Specification.new do |spec|
   spec.summary = "Jekyll plugin supports various ways to include content into the generated site."
   spec.description = <<~END_OF_DESC
     Jekyll's built-in include tag only supports including files within the _includes folder.
-    This plugin supports 4 types of includes:
-
-     - Absolute filenames (recognized by filename paths that start with /).
-
-     - Filenames relative to the top-level directory of the Jekyll web site (relative paths do not start with . or /).
-
-     - Filenames relative to the user home directory (recognized by filename paths starting with ~/).
-
-     - Executable filenames on the PATH (recognized by filename paths that begin with !).
+    This plugin supports 4 types of includes: absolute filenames,
+    filenames relative to the top-level directory of the Jekyll web site,
+    filenames relative to the user home directory,
+    and executable filenames on the PATH.
   END_OF_DESC
   spec.homepage = "https://github.com/mslinn/jekyll_flexible_include_plugin"
   spec.license = "MIT"
