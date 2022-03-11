@@ -1,21 +1,16 @@
-![Release](https://img.shields.io/badge/1.1.1-Release-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+# Jekyll `flexible_include` Plugin
 
-# Jekyll `flexible_include` Tag Plugin
+`Flexible_include` is a Jekyll plugin that includes the contents of a file or the result of a process into a generated page. `Flexible_include` is useful because Jekyll's built-in `include` tag only supports the including of files residing within the `_includes/` subfolder of a Jekyll project, and because `flexible_include` offers additional ways of including content.
 
-Originally called  `include_absolute`, this plugin's has been renamed to `flexible_include` because it no longer just includes absolute file names.
-
-## Purpose
-
-Jekyll's built-in `include` tag does not support including files outside of the `_includes` folder.
-This plugin supports 4 types of includes.
+Originally called  `include_absolute`, this plugin has been renamed to `flexible_include` because it no longer just includes absolute file names. This plugin supports 4 types of includes:
 
 ### Include Types
 
-1. Absolute filenames (start with `/`).
-2. Filenames relative to the top-level directory of the Jekyll web site (Do not preface with `.` or `/`).
-3. Filenames relative to the user home directory (preface with `~`).
-4. Executable filenames on the `PATH` (preface with `!`).
+1. Absolute filenames (recognized by filename paths that start with `/`).
+2. Filenames relative to the top-level directory of the Jekyll web site (relative paths **do not** start with `.` or `/`).
+3. Filenames relative to the user home directory (recognized by filename paths starting with `~/`).
+4. Executable filenames on the `PATH` (recognized by filename paths that begin with `!`).
+
 
 In addition, filenames that require environment expansion because they contain a <code>$</code> character are
 expanded according to the environment variables defined when <code>jekyll build</code> executes.
@@ -27,14 +22,17 @@ expanded according to the environment variables defined when <code>jekyll build<
 
 The included file will escape characters <code>&lt;</code>, <code>{</code> and <code>}</code> unless <code>do_not_escape</code>
 is specified with a value other than <code>false</code>.
+Note that the [square brackets] merely indicate an optional parameter and are not intended to be literally written.
 
-### Installation
 
-Copy `flexible_include.rb` into `/_plugins` and restart Jekyll.
+## Installation
 
-### Examples
+Copy `flexible_include.rb` into `/_plugins`.
+The plugin does not need to be mentioned in `Gemfile`.
 
-1. Include a file without parameters.
+## Examples
+
+1. Include files without parameters; all four types of includes are shown.
    ```
    {% flexible_include '../../folder/outside/jekyll/site/foo.html' %}
    {% flexible_include 'folder/within/jekyll/site/bar.js' %}
@@ -49,22 +47,31 @@ Copy `flexible_include.rb` into `/_plugins` and restart Jekyll.
    {% flexible_include '~/folder/under/home/directory/foo.html' do_not_escape='true' %}
    ```
 
-## Implementation
+## GitHub Pages
+GitHub Pages only allows [these plugins](https://pages.github.com/versions/).
+That means `flexible_include` will not work on GitHub Pages.
+Following is a workaround.
+1. Let's assume your git repository that you want to publish as GitHub Pages is called `mysite`.
+   This repository cannot be the source of your GitHub Pages because you are using the `flexible_include` plugin.
+2. Make a new git repository to hold the generated website. Let's call this git repository `generated_site`.
+3. Generate `mysite` locally as usual.
+4. Copy the generated HTML in the `mysite/_site/` directory to `generated_site`.
+5. Run `git commit` on `generated_site`.
+6. Tell GitHub that you want the `generated_site` repository to hold your GitHub pages.
+7. A moment later, your website will now be visible as GitHub Pages, with the included content, just as you saw it locally.
 
-The top-level directory of the Jekyll web site is known as the "source folder".
 
-### Revision History
- 1.1.1 Handle spaces in filenames properly.
+## Known Issues
+If the plugin does not work:
+1. Ensure `_config.yml` doesn't have `safe: true`. That prevents all plugins from working.
 
- 1.1.0 Added `do_not_escape` optional parameter.
 
- 1.0.0 First official release.
+## Contributing
 
-### TODO
-
-The `validate_file_name` call is commented out because mslinn did not have time
-to figure out how to modify it so that filenames relative to the home directory would work.
-
+1. Fork the project
+2. Create a descriptively named feature branch
+3. Add your feature
+4. Submit a pull request
 
 ## License
 
