@@ -1,7 +1,5 @@
-# HEAD
-
 ## 2.0.0 / 2022-03-11
-  * Made into a Ruby gem and published on RubyGems.org
+  * Made into a Ruby gem and published on RubyGems.org as [jekyll_flexible_include]().
   * `bin/attach` script added for debugging
   * Rubocop standards added
   * Proper versioning and CHANGELOG.md added

@@ -27,8 +27,12 @@ Note that the [square brackets] merely indicate an optional parameter and are no
 
 ## Installation
 
-Copy `flexible_include.rb` into `/_plugins`.
-The plugin does not need to be mentioned in `Gemfile`.
+Add the following to `Gemfile`, inside the `jekyll_plugins` group:
+```
+group :jekyll_plugins do
+  gem 'jekyll_flexible_include', '~> 2.0.0'
+end
+```
 
 ## Examples
 

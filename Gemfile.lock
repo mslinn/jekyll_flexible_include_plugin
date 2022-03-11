@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jekyll_flexible_include_plugin (2.0.0)
+    jekyll_flexible_include (2.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -58,7 +58,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler
-  jekyll_flexible_include_plugin!
+  jekyll_flexible_include!
   pry
   rake (~> 13.0)
   rspec

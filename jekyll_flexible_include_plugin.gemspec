@@ -3,7 +3,7 @@
 require_relative "lib/flexible_include/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "jekyll_flexible_include_plugin"
+  spec.name = "jekyll_flexible_include"
   spec.version = JekyllFlexibleIncludePlugin::VERSION
   spec.authors = ["Mike Slinn"]
   spec.email = ["mslinn@mslinn.com"]

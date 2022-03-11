@@ -16,5 +16,5 @@ fi
 eval "$( grep VERSION lib/flexible_include/version.rb | sed 's/ *//g' )"
 
 bundle exec rake build && \
-gem install "pkg/jekyll_flexible_include_plugin-$VERSION.gem" &&
+gem install "pkg/jekyll_flexible_include-$VERSION.gem" &&
 (cd "$1" || exit 1; _bin/debug)
