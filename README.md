@@ -68,6 +68,7 @@ Following is a workaround.
 ## Known Issues
 If the plugin does not work:
 1. Ensure `_config.yml` doesn't have `safe: true`. That prevents all plugins from working.
+2. If you have version older than v2.x.x, delete the file `_plugins/flexible_include.rb` or you will have version conflicts.
 
 
 ## Contributing
