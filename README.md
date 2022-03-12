@@ -1,4 +1,6 @@
-# Jekyll `flexible_include` Plugin
+Jekyll `flexible_include` Plugin
+[![Gem Version](https://badge.fury.io/rb/jekyll_flexible_include.svg)](https://badge.fury.io/rb/jekyll_flexible_include)
+===========
 
 `Flexible_include` is a Jekyll plugin that includes the contents of a file or the result of a process into a generated page. `Flexible_include` is useful because Jekyll's built-in `include` tag only supports the including of files residing within the `_includes/` subfolder of a Jekyll project, and because `flexible_include` offers additional ways of including content.
 
