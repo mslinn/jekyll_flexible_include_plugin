@@ -1,8 +1,14 @@
+## 2.0.2 / 2022-03-11
+  * This version should actually work, crossing fingers
+
+## 2.0.1 / 2022-03-11
+  * Struggling with poorly documented gem naming conventions, this release is broken, do not use
 ## 2.0.0 / 2022-03-11
   * Made into a Ruby gem and published on RubyGems.org as [jekyll_flexible_include](https://rubygems.org/gems/jekyll_flexible_include).
   * `bin/attach` script added for debugging
   * Rubocop standards added
   * Proper versioning and CHANGELOG.md added
+  * This release is broken, do not use
 
 ## 1.1.1 / 2021-05-01
   * Handles spaces in filenames properly.

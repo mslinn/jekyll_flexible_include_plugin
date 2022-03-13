@@ -63,22 +63,6 @@ module Jekyll
         params
       end
 
-      def validate_file_name(file)
-        # TODO allow filenames relative to home directory
-        if file.match VALID_FILENAME_CHARS
-          raise ArgumentError, <<~MSG
-            Invalid syntax for the flexible_ include tag. The included file contains invalid characters or sequences:
-
-              #{file}
-
-            Valid syntax:
-
-              #{syntax_example}
-
-          MSG
-        end
-      end
-
       def validate_params
         unless @params.match FULL_VALID_SYNTAX
           raise ArgumentError, <<~MSG
@@ -92,6 +76,11 @@ module Jekyll
 
           MSG
         end
+      end
+
+      # See https://gist.github.com/steakknife/4606598
+      def expand_env_vars(str)
+        str.gsub(/\$([a-zA-Z_]+[a-zA-Z0-9_]*)|\$\{(.+)\}/) { ENV[Regexp.last_match(1) || egexp.last_match(2)] }
       end
 
       # Grab file read opts in the context
@@ -112,25 +101,26 @@ module Jekyll
 
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         file = render_variable(context) || @file
-        # strip leading and trailing quotes
-        file = file.gsub!(/\A'|'\Z/, '')
-        # validate_file_name(file)  # TODO uncomment and fix validate_file_name
+        # strip leading and trailing quotes, and expand environment variables
+        file = expand_env_vars(file.gsub(/\A'|'\Z/, ''))
         path = file
-        if /^\//.match(file)  # Is the file absolute?
+        case file
+        when %r{\A/} # Is the file absolute?
           # puts "********** render path=#{path}, file=#{file} *************"
-        elsif /~/.match(file)  # Is the file relative to user's home directory?
+        when /\A~/ # Is the file relative to user's home directory?
           # puts "********** render original file=#{file}, path=#{path} *************"
           file.slice! "~/"
           path = File.join(ENV['HOME'], file)
           # puts "********** render path=#{path}, file=#{file} *************"
-        elsif /\!/.match(file)  # Is the file on the PATH?
+        when /\A!/ # Is the file on the PATH?
           # puts "********** render original file=#{file}, path=#{path} *************"
           file.slice! "!"
           path = File.which(file)
+          Jekyll.logger.error "Flexible_include error: #{file} was not found on the PATH, output was not included" unless path
           # puts "********** render path=#{path}, file=#{file} *************"
-        else  # The file is relative
-          source = File.expand_path(context.registers[:site].config['source']).freeze # website root directory
-          path = File.join(source, file)  # Fully qualified path of include file
+        else # The file is relative
+          source = File.expand_path(context.registers[:site].config['source']) # website root directory
+          path = File.join(source, file) # Fully qualified path of include file
           # puts "********** render file=#{file}, path=#{path}, source=#{source} *************"
         end
         return unless path
