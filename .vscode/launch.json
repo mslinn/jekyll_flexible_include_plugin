@@ -1,0 +1,75 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "cwd": "${workspaceRoot}",
+      "name": "Attach rdebug-ide",
+      "request": "attach",
+      "remoteHost": "localhost",
+      "remotePort": "1234",
+      "remoteWorkspaceRoot": "/",
+      "restart": true,
+      "showDebuggerOutput": true,
+      "type": "Ruby",
+    },
+    {
+      "cwd": "${workspaceRoot}",
+      "debuggerPort": "1234",
+      "name": "Debug Jekyll",
+      "program": "/usr/local/bin/jekyll",
+                   "args": [
+                     "serve",
+                     "--livereload_port", "35721",
+                     "--force_polling",
+                     "--host", "0.0.0.0",
+                     "--port", "4001",
+                     "--future",
+                     "--incremental",
+                     "--livereload",
+                     "--drafts",
+                     "--unpublished"
+                   ],
+      "request": "launch",
+      "restart": true,
+      "showDebuggerOutput": true,
+      "stopOnEntry": true,
+      "type": "Ruby",
+    },
+    {
+      "name": "Debug Local Ruby",
+      "type": "Ruby",
+      "request": "launch",
+      "program": "${workspaceRoot}/main.rb"
+    },
+    {
+      "args": [
+        "-I",
+        "${workspaceRoot}",
+        "${file}"
+      ],
+      "cwd": "${workspaceRoot}",
+      "name": "RSpec - active spec file only",
+      "program": "/home/mslinn/.gems/bin/rspec",
+      "showDebuggerOutput": false,
+      "request": "launch",
+      "type": "Ruby",
+      "useBundler": true,
+    },
+    {
+      "args": [
+        "-I",
+        "${workspaceRoot}"
+      ],
+      "cwd": "${workspaceRoot}",
+      "name": "RSpec - all",
+      "program": "/home/mslinn/.gems/bin/rspec",
+      "request": "launch",
+      "showDebuggerOutput": false,
+      "type": "Ruby",
+      "useBundler": true,
+    }
+  ]
+}

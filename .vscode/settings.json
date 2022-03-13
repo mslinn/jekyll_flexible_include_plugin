@@ -1,0 +1,4 @@
+{
+  "ruby.rubocop.configFilePath": ".rubocop.yml",
+  "ruby.rubocop.useBundler": true
+}

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require_relative "lib/flexible_include/version"
+require_relative "lib/jekyll_flexible_include/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "jekyll_flexible_include"
+  spec.name = 'jekyll_flexible_include'
   spec.version = JekyllFlexibleIncludePlugin::VERSION
-  spec.authors = ["Mike Slinn"]
-  spec.email = ["mslinn@mslinn.com"]
+  spec.authors = ['Mike Slinn']
+  spec.email = 'mslinn@mslinn.com'
 
-  spec.summary = "Jekyll plugin supports various ways to include content into the generated site."
+  spec.summary = "This Jekyll plugin supports various ways to include content into the generated site."
   spec.description = <<~END_OF_DESC
     Jekyll's built-in include tag only supports including files within the _includes folder.
     This plugin supports 4 types of includes: absolute filenames,
@@ -37,10 +37,18 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.post_install_message = "Thanks for installing jekyll_flexible_include!"
+
+  spec.add_runtime_dependency 'jekyll', '>= 3.5.0'
+
   spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'debase'
+  spec.add_development_dependency 'jekyll'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'rubocop-jekyll'
+  spec.add_development_dependency 'rubocop-rake'
+  spec.add_development_dependency 'ruby-debug-ide'
 end

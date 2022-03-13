@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "flexible_include/version"
+require_relative "jekyll_flexible_include/version"
 
 module Jekyll
   module Tags

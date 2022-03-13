@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in jekyll_flexible_include_plugin.gemspec
+# Specify your gem's dependencies in jekyll_flexible_include.gemspec
 gemspec
 
 gem "rake", "~> 13.0"
