@@ -4,7 +4,12 @@ Jekyll `flexible_include` Plugin
 
 `Flexible_include` is a Jekyll plugin that includes the contents of a file or the result of a process into a generated page. `Flexible_include` is useful because Jekyll's built-in `include` tag only supports the including of files residing within the `_includes/` subfolder of a Jekyll project, and because `flexible_include` offers additional ways of including content.
 
-Originally called  `include_absolute`, this plugin has been renamed to `flexible_include` because it no longer just includes absolute file names. This plugin supports 4 types of includes:
+Originally called  `include_absolute`, this plugin has been renamed to `flexible_include` because it no longer just includes absolute file names. 
+
+This plugin is available as a [Ruby gem](https://rubygems.org/gems/jekyll_flexible_include).
+More information is available on my website about [my Jekyll plugins](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html).
+
+This plugin supports 4 types of includes:
 
 ### Include Types
 
