@@ -27,6 +27,10 @@ is specified with a value other than <code>false</code>.
 Note that the [square brackets] merely indicate an optional parameter and are not intended to be literally written.
 
 
+### Additional Information
+More information is available on my web site about [my Jekyll plugins](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html).
+
+
 ## Installation
 
 Add the following to `Gemfile`, inside the `jekyll_plugins` group:
