@@ -82,6 +82,31 @@ If the plugin does not work:
 2. If you have version older than v2.x.x, delete the file `_plugins/flexible_include.rb` or you will have version conflicts.
 
 
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+Install development dependencies like this:
+```
+$ BUNDLE_WITH="development" bundle install
+```
+
+To install this gem onto your local machine, run:
+```shell
+$ bundle exec rake install
+```
+
+To release a new version, 
+  1. Update the version number in `version.rb`.
+  2. Commit all changes to git; if you don't the next step might fail with an unexplainable error message.
+  3. Run the following:
+     ```shell
+     $ bundle exec rake release
+     ```
+     The above creates a git tag for the version, commits the created tag, 
+     and pushes the new `.gem` file to [RubyGems.org](https://rubygems.org).
+
+
 ## Contributing
 
 1. Fork the project
