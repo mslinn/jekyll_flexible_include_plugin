@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 
 require_relative "lib/flexible_include/version"
 
@@ -36,6 +35,14 @@ Gem::Specification.new do |spec|
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
+
+  spec.post_install_message = <<~END_MESSAGE
+
+    Thanks for installing jekyll_flexible_include!
+
+  END_MESSAGE
+
+  spec.add_dependency 'jekyll', '>= 3.5.0'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry'
