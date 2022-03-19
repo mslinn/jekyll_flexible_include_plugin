@@ -188,7 +188,7 @@ module Jekyll
       end
     end
   end
-  info { "Loaded flexible_include plugin." }
+  info { "Loaded jekyll_flexible_include plugin." }
 end
 
 Liquid::Template.register_tag("flexible_include", Jekyll::Tags::FlexibleInclude)
