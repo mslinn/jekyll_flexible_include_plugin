@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "jekyll_plugin_logger"
 require_relative "flexible_include/version"
 
 module Jekyll
@@ -117,27 +118,27 @@ module Jekyll
         # validate_file_name(file)  # TODO uncomment and fix validate_file_name
         path = file
         if /^\//.match(file)  # Is the file absolute?
-          # puts "********** render path=#{path}, file=#{file} *************"
+          debug { "********** render path=#{path}, file=#{file} *************" }
         elsif /~/.match(file)  # Is the file relative to user's home directory?
-          # puts "********** render original file=#{file}, path=#{path} *************"
+          debug { "********** render original file=#{file}, path=#{path} *************" }
           file.slice! "~/"
           path = File.join(ENV['HOME'], file)
-          # puts "********** render path=#{path}, file=#{file} *************"
+          debug { "********** render path=#{path}, file=#{file} *************" }
         elsif /\!/.match(file)  # Is the file on the PATH?
-          # puts "********** render original file=#{file}, path=#{path} *************"
+          debug { "********** render original file=#{file}, path=#{path} *************" }
           file.slice! "!"
           path = File.which(file)
-          # puts "********** render path=#{path}, file=#{file} *************"
+          debug { "********** render path=#{path}, file=#{file} *************" }
         else  # The file is relative
           source = File.expand_path(context.registers[:site].config['source']).freeze # website root directory
           path = File.join(source, file)  # Fully qualified path of include file
-          # puts "********** render file=#{file}, path=#{path}, source=#{source} *************"
+          debug { "********** render file=#{file}, path=#{path}, source=#{source} *************" }
         end
         return unless path
 
         begin
           escaped_contents = read_file(path, context).gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
-          # puts escaped_contents
+          debug { escaped_contents }
           partial = Liquid::Template.parse(escaped_contents)
         rescue StandardError => e
           abort "flexible_include.rb: #{e.message}"
@@ -187,6 +188,7 @@ module Jekyll
       end
     end
   end
+  info { "Loaded flexible_include plugin." }
 end
 
 Liquid::Template.register_tag("flexible_include", Jekyll::Tags::FlexibleInclude)
