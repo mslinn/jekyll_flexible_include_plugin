@@ -3,6 +3,10 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
-bundle install
+if [[ -z "$( which bundle )" ]]; then gem install bundler; fi
+BUNDLE_WITH="development" bundle install
 
-# Do any other automated setup that you need to do here
+# See https://www.honeybadger.io/blog/rbenv-rubygems-bundler-path/
+# See https://linuxtut.com/visual-studio-code-i-get-a-syntax-error-when-debugging-when-using-rbenv-6ee58/
+bundle binstubs rspec-core --path exe
+bundle binstubs rubocop --path exe
