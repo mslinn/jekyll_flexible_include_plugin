@@ -4,7 +4,12 @@ Jekyll `flexible_include` Plugin
 
 `Flexible_include` is a Jekyll plugin that includes the contents of a file or the result of a process into a generated page. `Flexible_include` is useful because Jekyll's built-in `include` tag only supports the including of files residing within the `_includes/` subfolder of a Jekyll project, and because `flexible_include` offers additional ways of including content.
 
-Originally called  `include_absolute`, this plugin has been renamed to `flexible_include` because it no longer just includes absolute file names. This plugin supports 4 types of includes:
+Originally called  `include_absolute`, this plugin has been renamed to `flexible_include` because it no longer just includes absolute file names. 
+
+This plugin is available as a [Ruby gem](https://rubygems.org/gems/jekyll_flexible_include).
+More information is available on my website about [my Jekyll plugins](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html).
+
+This plugin supports 4 types of includes:
 
 ### Include Types
 
@@ -25,6 +30,10 @@ expanded according to the environment variables defined when <code>jekyll build<
 The included file will escape characters <code>&lt;</code>, <code>{</code> and <code>}</code> unless <code>do_not_escape</code>
 is specified with a value other than <code>false</code>.
 Note that the [square brackets] merely indicate an optional parameter and are not intended to be literally written.
+
+
+### Additional Information
+More information is available on my web site about [my Jekyll plugins](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html).
 
 
 ## Installation
@@ -71,6 +80,31 @@ Following is a workaround.
 If the plugin does not work:
 1. Ensure `_config.yml` doesn't have `safe: true`. That prevents all plugins from working.
 2. If you have version older than v2.x.x, delete the file `_plugins/flexible_include.rb` or you will have version conflicts.
+
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+Install development dependencies like this:
+```
+$ BUNDLE_WITH="development" bundle install
+```
+
+To install this gem onto your local machine, run:
+```shell
+$ bundle exec rake install
+```
+
+To release a new version, 
+  1. Update the version number in `version.rb`.
+  2. Commit all changes to git; if you don't the next step might fail with an unexplainable error message.
+  3. Run the following:
+     ```shell
+     $ bundle exec rake release
+     ```
+     The above creates a git tag for the version, commits the created tag, 
+     and pushes the new `.gem` file to [RubyGems.org](https://rubygems.org).
 
 
 ## Contributing
