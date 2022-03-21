@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
+require "jekyll"
 require "jekyll_plugin_logger"
 require_relative "flexible_include/version"
+
+module JekyllFlexibleIncludeName
+  PLUGIN_NAME = "flexible_include"
+end
 
 module Jekyll
   module Tags
@@ -17,15 +22,15 @@ module Jekyll
     class FlexibleInclude < Liquid::Tag
       VALID_SYNTAX = %r!
         ([\w-]+)\s*=\s*
-        (?:"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)'|([\w\.-]+))
-      !x
+        (?:"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)'|([\w.-]+))
+      !x.freeze
       VARIABLE_SYNTAX = %r!
-        (?<variable>[^{]*(\{\{\s*[\w\-\.]+\s*(\|.*)?\}\}[^\s{}]*)+)
+        (?<variable>[^{]*(\{\{\s*[\w\-.]+\s*(\|.*)?\}\}[^\s{}]*)+)
         (?<params>.*)
-      !mx
+      !mx.freeze
 
-      FULL_VALID_SYNTAX = %r!\A\s*(?:#{VALID_SYNTAX}(?=\s|\z)\s*)*\z!
-      VALID_FILENAME_CHARS = %r!^[\w/\.-]+$!
+      FULL_VALID_SYNTAX = %r!\A\s*(?:#{VALID_SYNTAX}(?=\s|\z)\s*)*\z!.freeze
+      VALID_FILENAME_CHARS = %r!^[\w/\.-]+$!.freeze
 
       def initialize(tag_name, markup, tokens)
         super
@@ -118,27 +123,27 @@ module Jekyll
         # validate_file_name(file)  # TODO uncomment and fix validate_file_name
         path = file
         if /^\//.match(file)  # Is the file absolute?
-          debug { "********** render path=#{path}, file=#{file} *************" }
+          Jekyll.debug { "render path=#{path}, file=#{file}" }
         elsif /~/.match(file)  # Is the file relative to user's home directory?
-          debug { "********** render original file=#{file}, path=#{path} *************" }
+          Jekyll.debug { "render original file=#{file}, path=#{path}" }
           file.slice! "~/"
           path = File.join(ENV['HOME'], file)
-          debug { "********** render path=#{path}, file=#{file} *************" }
+          Jekyll.debug { "render path=#{path}, file=#{file}" }
         elsif /\!/.match(file)  # Is the file on the PATH?
-          debug { "********** render original file=#{file}, path=#{path} *************" }
+          Jekyll.debug { "render original file=#{file}, path=#{path}" }
           file.slice! "!"
           path = File.which(file)
-          debug { "********** render path=#{path}, file=#{file} *************" }
+          Jekyll.debug { "render path=#{path}, file=#{file}" }
         else  # The file is relative
           source = File.expand_path(context.registers[:site].config['source']).freeze # website root directory
           path = File.join(source, file)  # Fully qualified path of include file
-          debug { "********** render file=#{file}, path=#{path}, source=#{source} *************" }
+          Jekyll.debug { "render file=#{file}, path=#{path}, source=#{source}" }
         end
         return unless path
 
         begin
           escaped_contents = read_file(path, context).gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
-          debug { escaped_contents }
+          Jekyll.debug { escaped_contents }
           partial = Liquid::Template.parse(escaped_contents)
         rescue StandardError => e
           abort "flexible_include.rb: #{e.message}"
@@ -188,7 +193,7 @@ module Jekyll
       end
     end
   end
-  info { "Loaded jekyll_flexible_include plugin." }
+  info { "Loaded #{JekyllFlexibleIncludeName::PLUGIN_NAME} v#{JekyllFlexibleIncludePlugin::VERSION} plugin." }
 end
 
-Liquid::Template.register_tag("flexible_include", Jekyll::Tags::FlexibleInclude)
+Liquid::Template.register_tag(JekyllFlexibleIncludeName::PLUGIN_NAME, Jekyll::Tags::FlexibleInclude)

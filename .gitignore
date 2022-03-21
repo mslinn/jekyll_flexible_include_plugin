@@ -23,9 +23,6 @@
 /pkg/
 /spec/reports/
 /tmp/
-<<<<<<< HEAD
-=======
->>>>>>> 1e70f091212bf0f91e89c2cf822ed413f1448e6d
 Notepad++/
 RUNNING_PID
 __MACOSX
@@ -37,4 +34,4 @@ node_modules/
 out/
 package/
 ~*
-*.gemspec
+Gemfile.lock
