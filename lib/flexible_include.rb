@@ -2,6 +2,7 @@
 
 require "jekyll"
 require "jekyll_plugin_logger"
+require "liquid"
 require_relative "flexible_include/version"
 
 module JekyllFlexibleIncludeName
@@ -193,7 +194,7 @@ module Jekyll
       end
     end
   end
-  info { "Loaded #{JekyllFlexibleIncludeName::PLUGIN_NAME} v#{JekyllFlexibleIncludePlugin::VERSION} plugin." }
 end
 
+PluginMetaLogger.instance.info { "Loaded #{JekyllFlexibleIncludeName::PLUGIN_NAME} v#{JekyllFlexibleIncludePlugin::VERSION} plugin." }
 Liquid::Template.register_tag(JekyllFlexibleIncludeName::PLUGIN_NAME, Jekyll::Tags::FlexibleInclude)
