@@ -89,6 +89,7 @@ module Jekyll
         end
       end
 
+      # @param context [Liquid::Context]
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         markup = @markup
         @logger.debug { "flexible_include #{markup}" }
@@ -118,11 +119,12 @@ module Jekyll
         end
         return unless path
 
-        context.stack do
+        contents = read_file(path)
+        escaped_contents = escape_html?(context) ? escape_html(contents) : contents
+        context.stack do # Temporarily push a new local scope onto the variable stack
           begin
-            contents = read_file(path)
-            escaped_contents = escape_html?(context) ? escape_html(contents) : contents
             partial = Liquid::Template.parse(escaped_contents)
+            puts "partial=#{partial}"
           rescue StandardError => e
             puts "flexible_include.rb error: #{e.message}".red
             # puts "#{e.template_name}:#{e.line_number} #{e.markup_context}".red
