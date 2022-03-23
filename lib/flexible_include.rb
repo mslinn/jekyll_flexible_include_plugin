@@ -115,7 +115,8 @@ module Jekyll
           contents = run(markup)
         else  # The file is relative or it was passed as a parameter to an include and was not noticed before, e.g. @file='{{include.file}}'
           @logger.debug { "Catchall start @file=#{@file}, markup=#{markup}, path=#{path}" }
-          markup = render_variable(context)
+          file = render_variable(context)
+          markup = file if file
           markup = expand_env(markup)
           markup = sanitize_parameter(markup)
           if /\A\//.match(markup) # Absolute path
