@@ -15,9 +15,8 @@ module Jekyll
       attr_accessor :path
 
       def initialize(msg, path)
-        super(msg)
+        super
         @path = path
-        @logger = PluginLogger.new
       end
     end
 
@@ -36,6 +35,7 @@ module Jekyll
 
       def initialize(tag_name, markup, tokens)
         super
+        @logger = PluginLogger.new
         matched = markup.strip.match(VARIABLE_SYNTAX)
         if matched
           @file = matched["variable"].strip
@@ -43,12 +43,7 @@ module Jekyll
         else
           @file, @params = markup.strip.split(%r!\s+!, 2)
         end
-        validate_params if @params
         @tag_name = tag_name
-      end
-
-      def syntax_example
-        "{% #{@tag_name} 'file.ext' optional_param_1='value' optional_param_n='value' %}"
       end
 
       def parse_params(context)
@@ -71,35 +66,8 @@ module Jekyll
         params
       end
 
-      def validate_file_name(file)
-        # TODO allow filenames relative to home directory
-        if file.match VALID_FILENAME_CHARS
-          raise ArgumentError, <<~MSG
-            Invalid syntax for the flexible_ include tag. The included file contains invalid characters or sequences:
-
-              #{file}
-
-            Valid syntax:
-
-              #{syntax_example}
-
-          MSG
-        end
-      end
-
-      def validate_params
-        unless @params.match FULL_VALID_SYNTAX
-          raise ArgumentError, <<~MSG
-            Invalid syntax for the flexible_include tag:
-
-              #{@params}
-
-            Valid syntax:
-
-              #{syntax_example}
-
-          MSG
-        end
+      def expand_env(str)
+        str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
       end
 
       # Grab file read opts in the context
@@ -120,9 +88,8 @@ module Jekyll
 
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         file = render_variable(context) || @file
-        # strip leading and trailing quotes
-        file = file.gsub!(/\A'|'\Z/, '')
-        # validate_file_name(file)  # TODO uncomment and fix validate_file_name
+        file = file.gsub!(/\A'|'\Z/, '') # strip leading and trailing quotes
+        file = expand_env(file)
         path = file
         if /^\//.match(file)  # Is the file absolute?
           @logger.debug { "render path=#{path}, file=#{file}" }
