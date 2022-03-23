@@ -99,7 +99,7 @@ module Jekyll
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         markup = @markup
         @logger.debug { "markup='#{markup}'" }
-        sanitize_parameter(markup)
+        sanitize_parameter!(markup)
         markup = expand_env(markup)
         path = markup
         if /\A\//.match(markup)  # Is the file absolute?
