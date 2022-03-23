@@ -13,10 +13,15 @@ if [ ! -f "$1/_bin/debug" ]; then
   exit 1
 fi
 
-NAME=flexible_include
+NAME=jekyll_flexible_include
 
 # eval "$( grep VERSION lib/$NAME/version.rb | sed 's/ *//g' )"
 
-gem uninstall "$NAME" &&
-bundle exec rake install:local && \
-(cd "$1" || exit 1; _bin/debug)
+gem uninstall "$NAME" -aIx --user-install --force
+git add -A && git commit -m - && git push origin "$(git rev-parse --abbrev-ref HEAD)"
+
+set -e
+
+bundle exec rake install:local
+cd "$1" > /dev/null || exit 1
+_bin/debug
