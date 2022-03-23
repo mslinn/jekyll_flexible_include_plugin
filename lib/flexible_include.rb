@@ -93,7 +93,7 @@ module Jekyll
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         markup = @markup
         @logger.debug { "flexible_include #{markup}" }
-        markup = markup.gsub!(/\A'|'\Z/, '') || file # strip leading and trailing quotes if present
+        markup = markup.strip.gsub!(/\A'|'\Z/, '').strip # strip leading and trailing quotes if present
         markup = expand_env(markup)
         path = markup
         if /^\//.match(markup)  # Is the file absolute?
