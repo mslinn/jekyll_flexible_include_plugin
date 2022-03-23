@@ -114,7 +114,7 @@ module Jekyll
           @logger.debug { "Execute markup=#{markup}" }
           contents = run(markup)
         else  # The file is relative or it was passed as a parameter to an include and was not noticed before, e.g. @file='{{include.file}}'
-          @logger.debug { "Relative start @file=#{@file}, markup=#{markup}, path=#{path}" }
+          @logger.debug { "Catchall start @file=#{@file}, markup=#{markup}, path=#{path}" }
           site = context.registers[:site]
           source = File.expand_path(site.config['source']) # website root directory
           markup = render_variable(context)
@@ -127,9 +127,9 @@ module Jekyll
             markup.slice! "~/"
             path = File.join(ENV['HOME'], markup)
           else
-            path = File.join(source, markup)  # Fully qualified path of include file from relative path
+            path = File.join(source, markup) unless /\A\//.match(markup) # Fully qualified path of include file from relative path
           end
-          @logger.debug { "Relative end markup=#{markup}, path=#{path}, source=#{source}" }
+          @logger.debug { "Catchall end markup=#{markup}, path=#{path}, source=#{source}" }
         end
 
         begin
