@@ -179,7 +179,6 @@ module Jekyll
         false
       end
 
-      # This method allows to modify the file content by inheriting from the class.
       def read_file(file)
         File.read(file)
       end
