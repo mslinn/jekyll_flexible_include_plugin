@@ -44,7 +44,7 @@ module Jekyll
           @file, @params = markup.strip.split(%r!\s+!, 2)
         end
         @markup = markup
-        @logger.info("initialize: @markup=#{@markup}")
+        @logger.debug("initialize: @markup=#{@markup}")
         @parse_context = parse_context
       end
 
