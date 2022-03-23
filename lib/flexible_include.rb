@@ -119,7 +119,7 @@ module Jekyll
         return unless path
 
         begin
-          escaped_contents = escape_html(read_file(path, context))
+          escaped_contents = escape_html(read_file(path))
           @logger.debug { escaped_contents }
           partial = Liquid::Template.parse(escaped_contents)
         rescue StandardError => e
@@ -180,8 +180,8 @@ module Jekyll
       end
 
       # This method allows to modify the file content by inheriting from the class.
-      def read_file(file, context)
-        File.read(file, **file_read_opts(context))
+      def read_file(file)
+        File.read(file)
       end
 
       private
