@@ -118,13 +118,15 @@ module Jekyll
           markup = render_variable(context)
           markup = expand_env(markup)
           markup = sanitize_parameter(markup)
-          if /\A\!/.match(markup)
+          if /\A\//.match(markup) # Absolute path
+            path = markup
+          elsif /\A\!/.match(markup)
             markup.slice! "!"
             contents = run(markup)
           elsif /\A~/.match(markup)  # Relative path to user's home directory?
             markup.slice! "~/"
             path = File.join(ENV['HOME'], markup)
-          elsif ! /\A\//.match(markup) # Relative path
+          else # Relative path
             site = context.registers[:site]
             source = File.expand_path(site.config['source']) # website root directory
             path = File.join(source, markup) # Fully qualified path of include file from relative path
