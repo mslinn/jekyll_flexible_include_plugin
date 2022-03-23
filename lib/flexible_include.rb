@@ -17,6 +17,7 @@ module Jekyll
       def initialize(msg, path)
         super(msg)
         @path = path
+        @logger = PluginLogger.new
       end
     end
 
@@ -124,27 +125,27 @@ module Jekyll
         # validate_file_name(file)  # TODO uncomment and fix validate_file_name
         path = file
         if /^\//.match(file)  # Is the file absolute?
-          Jekyll.debug { "render path=#{path}, file=#{file}" }
+          @logger.debug { "render path=#{path}, file=#{file}" }
         elsif /~/.match(file)  # Is the file relative to user's home directory?
-          Jekyll.debug { "render original file=#{file}, path=#{path}" }
+          @logger.debug { "render original file=#{file}, path=#{path}" }
           file.slice! "~/"
           path = File.join(ENV['HOME'], file)
-          Jekyll.debug { "render path=#{path}, file=#{file}" }
+          @logger.debug { "render path=#{path}, file=#{file}" }
         elsif /\!/.match(file)  # Is the file on the PATH?
-          Jekyll.debug { "render original file=#{file}, path=#{path}" }
+          @logger.debug { "render original file=#{file}, path=#{path}" }
           file.slice! "!"
           path = File.which(file)
-          Jekyll.debug { "render path=#{path}, file=#{file}" }
+          @logger.debug { "render path=#{path}, file=#{file}" }
         else  # The file is relative
           source = File.expand_path(context.registers[:site].config['source']).freeze # website root directory
           path = File.join(source, file)  # Fully qualified path of include file
-          Jekyll.debug { "render file=#{file}, path=#{path}, source=#{source}" }
+          @logger.debug { "render file=#{file}, path=#{path}, source=#{source}" }
         end
         return unless path
 
         begin
           escaped_contents = read_file(path, context).gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
-          Jekyll.debug { escaped_contents }
+          @logger.debug { escaped_contents }
           partial = Liquid::Template.parse(escaped_contents)
         rescue StandardError => e
           abort "flexible_include.rb: #{e.message}"
