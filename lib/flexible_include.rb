@@ -36,6 +36,7 @@ module Jekyll
       def initialize(tag_name, markup, parse_context)
         super
         @logger = PluginLogger.new
+        @logger.level = :debug
         matched = markup.strip.match(VARIABLE_SYNTAX)
         if matched
           @file = matched["variable"].strip
@@ -118,9 +119,9 @@ module Jekyll
 
         begin
           contents = read_file(path) unless contents
+          @logger.debug { "path=#{path}" }
         rescue StandardError => e
           puts "flexible_include.rb error: #{e.message}".red
-          # puts "#{e.template_name}:#{e.line_number} #{e.markup_context}".red
           $stderr.reopen(IO::NULL)
           $stdout.reopen(IO::NULL)
           exit
@@ -131,7 +132,6 @@ module Jekyll
             partial = Liquid::Template.parse(escaped_contents) # Type Liquid::Template
           rescue StandardError => e
             puts "flexible_include.rb error: #{e.message}".red
-            # puts "#{e.template_name}:#{e.line_number} #{e.markup_context}".red
             $stderr.reopen(IO::NULL)
             $stdout.reopen(IO::NULL)
             exit
