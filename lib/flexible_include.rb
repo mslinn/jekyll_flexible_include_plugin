@@ -125,8 +125,8 @@ module Jekyll
             partial = Liquid::Template.parse(escaped_contents)
           rescue StandardError => e
             puts "flexible_include.rb error: #{e.message}".red
-            # $stderr.reopen(IO::NULL)
-            # $stdout.reopen(IO::NULL)
+            $stderr.reopen(IO::NULL)
+            $stdout.reopen(IO::NULL)
             exit
           end
 
