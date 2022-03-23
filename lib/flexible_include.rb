@@ -118,7 +118,7 @@ module Jekyll
         end
         return unless path
 
-        puts "context.stack is a #{context.stack.class.name}".red
+        puts "context.stack is a #{context.stack{}.class.name}".red
         context.stack do
           begin
             contents = read_file(path)
