@@ -124,7 +124,10 @@ module Jekyll
             escaped_contents = escape_html?(context) ? escape_html(contents) : contents
             partial = Liquid::Template.parse(escaped_contents)
           rescue StandardError => e
-            abort "flexible_include.rb: #{e.message}"
+            puts "flexible_include.rb: #{e.message}"
+            $stderr.reopen(IO::NULL)
+            $stdout.reopen(IO::NULL)
+            exit
           end
 
           begin
