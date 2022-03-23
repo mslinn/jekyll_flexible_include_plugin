@@ -127,7 +127,7 @@ module Jekyll
             markup.slice! "~/"
             path = File.join(ENV['HOME'], markup)
           else
-            path = File.join(source, file)  # Fully qualified path of include file from relative path
+            path = File.join(source, markup)  # Fully qualified path of include file from relative path
           end
           @logger.debug { "Relative end file=#{file}, path=#{path}, source=#{source}" }
         end
