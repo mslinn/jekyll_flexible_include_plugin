@@ -128,7 +128,7 @@ module Jekyll
 
         context.stack do
           begin
-            contents = read_file(path, context)
+            contents = read_file(path)
             escaped_contents = escape_html?(context) ? escape_html(contents) : contents
             partial = Liquid::Template.parse(escaped_contents)
           rescue StandardError => e
