@@ -99,20 +99,22 @@ module Jekyll
           file.slice! "~/"
           path = File.join(ENV['HOME'], file)
           @logger.debug { "render path=#{path}, file=#{file}" }
-        elsif /\!/.match(file)  # Is the file on the PATH?
-          @logger.debug { "render original file=#{file}, path=#{path}" }
+        elsif /\!/.match(file)  # execute command and return response
           file.slice! "!"
-          path = File.which(file)
-          @logger.debug { "render path=#{path}, file=#{file}" }
+          @logger.debug { "render command=#{file}" }
+          contents = run(file)
+          escaped_contents = escape_html?(context) ? escape_html(contents) : contents
+          return escaped_contents
         else  # The file is relative
-          source = File.expand_path(context.registers[:site].config['source']).freeze # website root directory
+          site = context.registers[:site]
+          source = File.expand_path(site.config['source']) # website root directory
           path = File.join(source, file)  # Fully qualified path of include file
           @logger.debug { "render file=#{file}, path=#{path}, source=#{source}" }
         end
         return unless path
 
         begin
-          escaped_contents = read_file(path, context).gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
+          escaped_contents = escape_html(read_file(path, context))
           @logger.debug { escaped_contents }
           partial = Liquid::Template.parse(escaped_contents)
         rescue StandardError => e
@@ -120,7 +122,14 @@ module Jekyll
         end
 
         context.stack do
-          context["include"] = parse_params(context) if @params
+          begin
+            contents = read_file(path, context)
+            escaped_contents = escape_html?(context) ? escape_html(contents) : contents
+            partial = Liquid::Template.parse(escaped_contents)
+          rescue StandardError => e
+            abort "flexible_include.rb: #{e.message}"
+          end
+
           begin
             partial.render!(context)
           rescue Liquid::Error => e
@@ -129,6 +138,26 @@ module Jekyll
             raise e
           end
         end
+      end
+
+      def escape_html?(context)
+        do_not_escape = false
+        if @params
+          context["include"] = parse_params(context)
+          @logger.debug { "context['include']['do_not_escape'] = #{context['include']['do_not_escape']}" }
+          do_not_escape = context['include'].fetch('do_not_escape', 'false')
+          @logger.debug { "do_not_escape=#{do_not_escape}" }
+          @logger.debug { "do_not_escape=='false' = #{do_not_escape=='false'}" }
+        end
+        do_not_escape
+      end
+
+      def escape_html(string)
+        string.gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
+      end
+
+      def run(cmd)
+        %x[ #{cmd} ].chomp
       end
 
       def valid_include_file?(path, dir, safe)
