@@ -90,36 +90,40 @@ module Jekyll
         end
       end
 
+       # strip leading and trailing quotes if present
+      def sanitize_parameter(parameter)
+        parameter.strip.gsub!(/\A'|'\Z/, '').strip
+      end
+
       # @param context [Liquid::Context]
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         markup = @markup
-        @logger.debug { "flexible_include #{markup}" }
-        markup = markup.strip.gsub!(/\A'|'\Z/, '').strip # strip leading and trailing quotes if present
+        @logger.debug { "markup='#{markup}'" }
+        markup = sanitize_parameter(markup)
         markup = expand_env(markup)
         path = markup
         if /\A\//.match(markup)  # Is the file absolute?
-          @logger.debug { "render path=#{path}, markup=#{markup}" }
+          @logger.debug { "Absolute path=#{path}, markup=#{markup}" }
         elsif /\A~/.match(markup)  # Is the file relative to user's home directory?
-          @logger.debug { "render original markup=#{markup}, path=#{path}" }
+          @logger.debug { "Relative start markup=#{markup}, path=#{path}" }
           markup.slice! "~/"
           path = File.join(ENV['HOME'], markup)
-          @logger.debug { "render path=#{path}, markup=#{markup}" }
+          @logger.debug { "Relative end markup=#{markup}, path=#{path}" }
         elsif /\A\!/.match(markup)  # execute command and return response
           markup.slice! "!"
-          @logger.debug { "render command=#{markup}" }
+          @logger.debug { "Execute markup=#{markup}" }
           contents = run(markup)
         else  # The file is relative
           site = context.registers[:site]
           source = File.expand_path(site.config['source']) # website root directory
           file = render_variable(context) || @file
-          file = file.gsub(/\A'|'\Z/, '')  # Strip leading and trailing quotes
+          file = sanitize_parameter(file)
           path = File.join(source, file)  # Fully qualified path of include file
-          @logger.debug { "render markup=#{markup}, path=#{path}, source=#{source}" }
+          @logger.debug { "Relative markup=#{markup}, path=#{path}, source=#{source}" }
         end
 
         begin
           contents = read_file(path) unless contents
-          @logger.debug { "path=#{path}" }
         rescue StandardError => e
           puts "flexible_include.rb error: #{e.message}".red
           $stderr.reopen(IO::NULL)
