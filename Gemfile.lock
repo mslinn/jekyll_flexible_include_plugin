@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jekyll_flexible_include (2.0.1)
+    jekyll_flexible_include (2.0.3)
       jekyll (>= 3.5.0)
       jekyll_plugin_logger
 
@@ -12,7 +12,7 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.2)
     colorator (1.1.0)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     debase (0.2.4.1)
       debase-ruby_core_source (>= 0.10.2)
     debase-ruby_core_source (0.10.14)
@@ -131,4 +131,4 @@ DEPENDENCIES
   ruby-debug-ide
 
 BUNDLED WITH
-   2.3.8
+   2.3.7

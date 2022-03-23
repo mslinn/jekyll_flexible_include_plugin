@@ -197,4 +197,4 @@ module Jekyll
 end
 
 PluginMetaLogger.instance.info { "Loaded #{JekyllFlexibleIncludeName::PLUGIN_NAME} v#{JekyllFlexibleIncludePlugin::VERSION} plugin." }
-Liquid::Template.register_tag(JekyllFlexibleIncludeName::PLUGIN_NAME, Jekyll::Tags::FlexibleInclude)
+Liquid::Template.register_tag('flexible_include', Jekyll::Tags::FlexibleInclude)
