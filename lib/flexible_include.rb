@@ -96,9 +96,9 @@ module Jekyll
         markup = markup.strip.gsub!(/\A'|'\Z/, '').strip # strip leading and trailing quotes if present
         markup = expand_env(markup)
         path = markup
-        if /^\//.match(markup)  # Is the file absolute?
+        if /\A\//.match(markup)  # Is the file absolute?
           @logger.debug { "render path=#{path}, markup=#{markup}" }
-        elsif /~/.match(markup)  # Is the file relative to user's home directory?
+        elsif /\A~/.match(markup)  # Is the file relative to user's home directory?
           @logger.debug { "render original markup=#{markup}, path=#{path}" }
           markup.slice! "~/"
           path = File.join(ENV['HOME'], markup)
@@ -107,8 +107,6 @@ module Jekyll
           markup.slice! "!"
           @logger.debug { "render command=#{markup}" }
           contents = run(markup)
-          escaped_contents = escape_html?(context) ? escape_html(contents) : contents
-          return escaped_contents
         else  # The file is relative
           site = context.registers[:site]
           source = File.expand_path(site.config['source']) # website root directory
@@ -117,10 +115,9 @@ module Jekyll
           path = File.join(source, file)  # Fully qualified path of include file
           @logger.debug { "render markup=#{markup}, path=#{path}, source=#{source}" }
         end
-        return unless path
 
         begin
-          contents = read_file(path)
+          contents = read_file(path) unless contents
         rescue StandardError => e
           puts "flexible_include.rb error: #{e.message}".red
           # puts "#{e.template_name}:#{e.line_number} #{e.markup_context}".red
