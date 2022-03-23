@@ -79,7 +79,7 @@ module Jekyll
         context.registers[:site].file_read_opts
       end
 
-      # Render the variable if required
+      # @return setvalue of 'file' variable if defined
       def render_variable(context)
         if @file.match VARIABLE_SYNTAX
           partial = context.registers[:site]
@@ -104,22 +104,32 @@ module Jekyll
         path = markup
         if /\A\//.match(markup)  # Is the file absolute?
           @logger.debug { "Absolute path=#{path}, markup=#{markup}" }
-        elsif /\A~/.match(markup)  # Is the file relative to user's home directory?
+        elsif /\A~/.match(markup)  # Relative path to user's home directory?
           @logger.debug { "Relative start markup=#{markup}, path=#{path}" }
           markup.slice! "~/"
           path = File.join(ENV['HOME'], markup)
           @logger.debug { "Relative end markup=#{markup}, path=#{path}" }
-        elsif /\A\!/.match(markup)  # execute command and return response
+        elsif /\A\!/.match(markup)  # Run command and return response
           markup.slice! "!"
           @logger.debug { "Execute markup=#{markup}" }
           contents = run(markup)
-        else  # The file is relative
+        else  # The file is relative or it was passed as a parameter to an include and was not noticed before
+          @logger.debug { "Relative start @file=#{@file}, markup=#{markup}, path=#{path}" }
           site = context.registers[:site]
           source = File.expand_path(site.config['source']) # website root directory
-          file = render_variable(context) || @file
-          file = sanitize_parameter(file)
-          path = File.join(source, file)  # Fully qualified path of include file
-          @logger.debug { "Relative markup=#{markup}, path=#{path}, source=#{source}" }
+          markup = render_variable(context)
+          markup = expand_env(markup)
+          markup = sanitize_parameter(markup)
+          if /\A\!/.match(markup)
+            markup.slice! "!"
+            contents = run(markup)
+          elsif /\A~/.match(markup)  # Relative path to user's home directory?
+            markup.slice! "~/"
+            path = File.join(ENV['HOME'], markup)
+          else
+            path = File.join(source, file)  # Fully qualified path of include file from relative path
+          end
+          @logger.debug { "Relative end file=#{file}, path=#{path}, source=#{source}" }
         end
 
         begin
