@@ -103,7 +103,7 @@ module Jekyll
           markup.slice! "~/"
           path = File.join(ENV['HOME'], markup)
           @logger.debug { "render path=#{path}, markup=#{markup}" }
-        elsif /\!/.match(markup)  # execute command and return response
+        elsif /\A\!/.match(markup)  # execute command and return response
           markup.slice! "!"
           @logger.debug { "render command=#{markup}" }
           contents = run(markup)
