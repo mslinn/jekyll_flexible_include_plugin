@@ -119,12 +119,19 @@ module Jekyll
         end
         return unless path
 
-        contents = read_file(path)
+        begin
+          contents = read_file(path)
+        rescue StandardError => e
+          puts "flexible_include.rb error: #{e.message}".red
+          # puts "#{e.template_name}:#{e.line_number} #{e.markup_context}".red
+          $stderr.reopen(IO::NULL)
+          $stdout.reopen(IO::NULL)
+          exit
+        end
         escaped_contents = escape_html?(context) ? escape_html(contents) : contents
         context.stack do # Temporarily push a new local scope onto the variable stack
           begin
-            partial = Liquid::Template.parse(escaped_contents)
-            puts "partial=#{partial}"
+            partial = Liquid::Template.parse(escaped_contents) # Type Liquid::Template
           rescue StandardError => e
             puts "flexible_include.rb error: #{e.message}".red
             # puts "#{e.template_name}:#{e.line_number} #{e.markup_context}".red
