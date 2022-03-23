@@ -118,14 +118,6 @@ module Jekyll
         end
         return unless path
 
-        begin
-          escaped_contents = escape_html(read_file(path))
-          @logger.debug { escaped_contents }
-          partial = Liquid::Template.parse(escaped_contents)
-        rescue StandardError => e
-          abort "flexible_include.rb: #{e.message}"
-        end
-
         context.stack do
           begin
             contents = read_file(path)
