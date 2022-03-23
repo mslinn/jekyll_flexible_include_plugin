@@ -36,7 +36,6 @@ module Jekyll
       def initialize(tag_name, markup, parse_context)
         super
         @logger = PluginLogger.new
-        @logger.level = :debug
         matched = markup.strip.match(VARIABLE_SYNTAX)
         if matched
           @file = matched["variable"].strip
@@ -44,55 +43,9 @@ module Jekyll
         else
           @file, @params = markup.strip.split(%r!\s+!, 2)
         end
-        @tag_name = tag_name
         @markup = markup
-        @logger.info("@markup=#{@markup}")
+        @logger.info("initialize: @markup=#{@markup}")
         @parse_context = parse_context
-      end
-
-      def parse_params(context)
-        params = {}
-        markup = @params
-
-        while (match = VALID_SYNTAX.match(markup))
-          markup = markup[match.end(0)..-1]
-
-          value = if match[2]
-                    match[2].gsub(%r!\\"!, '"')
-                  elsif match[3]
-                    match[3].gsub(%r!\\'!, "'")
-                  elsif match[4]
-                    context[match[4]]
-                  end
-
-          params[match[1]] = value
-        end
-        params
-      end
-
-      def expand_env(str)
-        str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
-      end
-
-      # Grab file read opts in the context
-      def file_read_opts(context)
-        context.registers[:site].file_read_opts
-      end
-
-      # @return setvalue of 'file' variable if defined
-      def render_variable(context)
-        if @file.match VARIABLE_SYNTAX
-          partial = context.registers[:site]
-            .liquid_renderer
-            .file("(variable)")
-            .parse(@file)
-          partial.render!(context)
-        end
-      end
-
-       # strip leading and trailing quotes if present
-      def sanitize_parameter(parameter)
-        parameter.strip.gsub(/\A'|'\Z/, '').strip if parameter
       end
 
       # @param context [Liquid::Context]
@@ -123,6 +76,7 @@ module Jekyll
             path = markup
           elsif /\A\!/.match(markup)
             markup.slice! "!"
+            @logger.debug { "Execute markup=#{markup}" }
             contents = run(markup)
           elsif /\A~/.match(markup)  # Relative path to user's home directory?
             markup.slice! "~/"
@@ -134,7 +88,67 @@ module Jekyll
           end
           @logger.debug { "Catchall end markup=#{markup}, path=#{path}" }
         end
+        render_completion(context, path, contents)
+      end
 
+      private
+
+      def escape_html?(context)
+        do_not_escape = false
+        if @params
+          context["include"] = parse_params(context)
+          @logger.debug { "context['include']['do_not_escape'] = #{context['include']['do_not_escape']}" }
+          do_not_escape = context['include'].fetch('do_not_escape', 'false')
+          @logger.debug { "do_not_escape=#{do_not_escape}" }
+          @logger.debug { "do_not_escape=='false' = #{do_not_escape=='false'}" }
+        end
+        do_not_escape
+      end
+
+      def escape_html(string)
+        string.gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
+      end
+
+      def expand_env(str)
+        str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
+      end
+
+      # Grab file read opts in the context
+      def file_read_opts(context)
+        context.registers[:site].file_read_opts
+      end
+
+      def parse_params(context)
+        params = {}
+        markup = @params
+
+        while (match = VALID_SYNTAX.match(markup))
+          markup = markup[match.end(0)..-1]
+
+          value = if match[2]
+                    match[2].gsub(%r!\\"!, '"')
+                  elsif match[3]
+                    match[3].gsub(%r!\\'!, "'")
+                  elsif match[4]
+                    context[match[4]]
+                  end
+
+          params[match[1]] = value
+        end
+        params
+      end
+
+      def read_file(file)
+        File.read(file)
+      end
+
+      def realpath_prefixed_with?(path, dir)
+        File.exist?(path) && File.realpath(path).start_with?(dir)
+      rescue StandardError
+        false
+      end
+
+      def render_completion(context, path, contents)
         begin
           contents = read_file(path) unless contents
         rescue StandardError => e
@@ -164,24 +178,24 @@ module Jekyll
         end
       end
 
-      def escape_html?(context)
-        do_not_escape = false
-        if @params
-          context["include"] = parse_params(context)
-          @logger.debug { "context['include']['do_not_escape'] = #{context['include']['do_not_escape']}" }
-          do_not_escape = context['include'].fetch('do_not_escape', 'false')
-          @logger.debug { "do_not_escape=#{do_not_escape}" }
-          @logger.debug { "do_not_escape=='false' = #{do_not_escape=='false'}" }
+      # @return setvalue of 'file' variable if defined
+      def render_variable(context)
+        if @file.match VARIABLE_SYNTAX
+          partial = context.registers[:site]
+            .liquid_renderer
+            .file("(variable)")
+            .parse(@file)
+          partial.render!(context)
         end
-        do_not_escape
-      end
-
-      def escape_html(string)
-        string.gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
       end
 
       def run(cmd)
         %x[ #{cmd} ].chomp
+      end
+
+      # strip leading and trailing quotes if present
+      def sanitize_parameter(parameter)
+        parameter.strip.gsub(/\A'|'\Z/, '').strip if parameter
       end
 
       def valid_include_file?(path, dir, safe)
@@ -191,18 +205,6 @@ module Jekyll
       def outside_site_source?(path, dir, safe)
         safe && !realpath_prefixed_with?(path, dir)
       end
-
-      def realpath_prefixed_with?(path, dir)
-        File.exist?(path) && File.realpath(path).start_with?(dir)
-      rescue StandardError
-        false
-      end
-
-      def read_file(file)
-        File.read(file)
-      end
-
-      private
 
       def could_not_locate_message(file, includes_dirs, safe)
         message = "Could not locate the included file '#{file}' in any of "\
