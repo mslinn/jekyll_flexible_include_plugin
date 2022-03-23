@@ -33,7 +33,7 @@ module Jekyll
       FULL_VALID_SYNTAX = %r!\A\s*(?:#{VALID_SYNTAX}(?=\s|\z)\s*)*\z!.freeze
       VALID_FILENAME_CHARS = %r!^[\w/\.-]+$!.freeze
 
-      def initialize(tag_name, markup, tokens)
+      def initialize(tag_name, markup, parse_context)
         super
         @logger = PluginLogger.new
         matched = markup.strip.match(VARIABLE_SYNTAX)
@@ -44,6 +44,9 @@ module Jekyll
           @file, @params = markup.strip.split(%r!\s+!, 2)
         end
         @tag_name = tag_name
+        @markup = markup
+        @logger.info("@markup=#{@markup}")
+        @parse_context = parse_context
       end
 
       def parse_params(context)
@@ -87,29 +90,29 @@ module Jekyll
       end
 
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-        file = render_variable(context) || @file
-        puts { "flexible_include #{file}" }
-        file = file.gsub!(/\A'|'\Z/, '') || file # strip leading and trailing quotes if present
-        file = expand_env(file)
-        path = file
-        if /^\//.match(file)  # Is the file absolute?
-          @logger.debug { "render path=#{path}, file=#{file}" }
-        elsif /~/.match(file)  # Is the file relative to user's home directory?
-          @logger.debug { "render original file=#{file}, path=#{path}" }
-          file.slice! "~/"
-          path = File.join(ENV['HOME'], file)
-          @logger.debug { "render path=#{path}, file=#{file}" }
-        elsif /\!/.match(file)  # execute command and return response
-          file.slice! "!"
-          @logger.debug { "render command=#{file}" }
-          contents = run(file)
+        markup = @markup
+        @logger.debug { "flexible_include #{markup}" }
+        markup = markup.gsub!(/\A'|'\Z/, '') || file # strip leading and trailing quotes if present
+        markup = expand_env(markup)
+        path = markup
+        if /^\//.match(markup)  # Is the file absolute?
+          @logger.debug { "render path=#{path}, markup=#{markup}" }
+        elsif /~/.match(markup)  # Is the file relative to user's home directory?
+          @logger.debug { "render original markup=#{markup}, path=#{path}" }
+          markup.slice! "~/"
+          path = File.join(ENV['HOME'], markup)
+          @logger.debug { "render path=#{path}, markup=#{markup}" }
+        elsif /\!/.match(markup)  # execute command and return response
+          markup.slice! "!"
+          @logger.debug { "render command=#{markup}" }
+          contents = run(markup)
           escaped_contents = escape_html?(context) ? escape_html(contents) : contents
           return escaped_contents
         else  # The file is relative
           site = context.registers[:site]
           source = File.expand_path(site.config['source']) # website root directory
-          path = File.join(source, file)  # Fully qualified path of include file
-          @logger.debug { "render file=#{file}, path=#{path}, source=#{source}" }
+          path = File.join(source, markup)  # Fully qualified path of include file
+          @logger.debug { "render markup=#{markup}, path=#{path}, source=#{source}" }
         end
         return unless path
 
