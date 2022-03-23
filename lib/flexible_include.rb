@@ -111,7 +111,9 @@ module Jekyll
         else  # The file is relative
           site = context.registers[:site]
           source = File.expand_path(site.config['source']) # website root directory
-          path = File.join(source, markup)  # Fully qualified path of include file
+          file = render_variable(context) || @file
+          file = file.gsub(/\A'|'\Z/, '')  # Strip leading and trailing quotes
+          path = File.join(source, file)  # Fully qualified path of include file
           @logger.debug { "render markup=#{markup}, path=#{path}, source=#{source}" }
         end
         return unless path
