@@ -88,7 +88,7 @@ module Jekyll
 
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         file = render_variable(context) || @file
-        @logger.debug { "flexible_include #{file}" }
+        puts { "flexible_include #{file}" }
         file = file.gsub!(/\A'|'\Z/, '') || file # strip leading and trailing quotes if present
         file = expand_env(file)
         path = file
