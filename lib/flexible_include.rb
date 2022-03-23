@@ -91,15 +91,15 @@ module Jekyll
       end
 
        # strip leading and trailing quotes if present
-      def sanitize_parameter(parameter)
-        parameter.strip.gsub!(/\A'|'\Z/, '').strip
+      def sanitize_parameter!(parameter)
+        parameter.strip!.gsub!(/\A'|'\Z/, '').strip! if parameter
       end
 
       # @param context [Liquid::Context]
       def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         markup = @markup
         @logger.debug { "markup='#{markup}'" }
-        markup = sanitize_parameter(markup)
+        sanitize_parameter(markup)
         markup = expand_env(markup)
         path = markup
         if /\A\//.match(markup)  # Is the file absolute?
@@ -117,7 +117,7 @@ module Jekyll
           @logger.debug { "Catchall start @file=#{@file}, markup=#{markup}, path=#{path}" }
           markup = render_variable(context)
           markup = expand_env(markup)
-          markup = sanitize_parameter(markup)
+          sanitize_parameter!(markup)
           if /\A\//.match(markup) # Absolute path
             path = markup
           elsif /\A\!/.match(markup)
