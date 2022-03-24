@@ -45,6 +45,12 @@ group :jekyll_plugins do
 end
 ```
 
+Also add it to `_config.yml`:
+```yaml
+plugins:
+  - flexible_include
+```
+
 And then execute:
 
     $ bundle install
