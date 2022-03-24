@@ -15,7 +15,6 @@ Gem::Specification.new do |spec|
     and executable filenames on the PATH.
   END_OF_DESC
   spec.email = ["mslinn@mslinn.com"]
-  spec.executables = GemSpecHelper.spec_executables(files)
   spec.files = Dir[".rubocop.yml", "LICENSE.*", "Rakefile", "{lib,spec}/**/*", "*.gemspec", "*.md"]
   spec.homepage = "https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html#flexibleInclude"
   spec.license = "MIT"
