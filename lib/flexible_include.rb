@@ -35,7 +35,7 @@ module Jekyll
 
       def initialize(tag_name, markup, parse_context)
         super
-        @logger = PluginLogger.new
+        @logger = PluginLogger.new(self)
         matched = markup.strip.match(VARIABLE_SYNTAX)
         if matched
           @file = matched["variable"].strip
