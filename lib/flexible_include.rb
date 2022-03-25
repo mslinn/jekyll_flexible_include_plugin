@@ -32,7 +32,7 @@ class FlexibleInclude < Liquid::Tag
 
   def initialize(tag_name, markup, parse_context)
     super
-    @logger = PluginMetaLogger.new_logger(self)
+    @logger = PluginMetaLogger.instance.new_logger(self)
     matched = markup.strip.match(VARIABLE_SYNTAX)
     if matched
       @file = matched["variable"].strip
