@@ -35,3 +35,4 @@ out/
 package/
 ~*
 Gemfile.lock
+spec/status_persistence.txt
