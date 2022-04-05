@@ -1,3 +1,6 @@
+## 2.0.4 / 2022-04-05
+  * Updated to `jekyll_plugin_logger` v2.0.2
+
 ## 2.0.0 / 2022-03-11
   * Made into a Ruby gem and published on RubyGems.org as [jekyll_flexible_include](https://rubygems.org/gems/jekyll_flexible_include).
   * `bin/attach` script added for debugging

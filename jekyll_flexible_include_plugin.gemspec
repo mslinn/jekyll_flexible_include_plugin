@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.6.0"
   spec.summary = "Jekyll plugin supports various ways to include content into the generated site."
   spec.test_files = spec.files.grep(%r!^(test|spec|features)/!)
-  spec.version = JekyllFlexibleIncludePlugin::VERSION
+  spec.version = JekyllFlexibleIncludePluginVersion::VERSION
 
   spec.add_dependency "jekyll", ">= 3.5.0"
   spec.add_dependency "jekyll_plugin_logger", '~> 2.0.0'

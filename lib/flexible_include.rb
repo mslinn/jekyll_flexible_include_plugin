@@ -32,7 +32,7 @@ class FlexibleInclude < Liquid::Tag
 
   def initialize(tag_name, markup, parse_context)
     super
-    @logger = PluginMetaLogger.instance.new_logger(self)
+    @logger = PluginMetaLogger.instance.new_logger(self, PluginMetaLogger.instance.config)
     matched = markup.strip.match(VARIABLE_SYNTAX)
     if matched
       @file = matched["variable"].strip
@@ -214,5 +214,5 @@ class FlexibleInclude < Liquid::Tag
   end
 end
 
-PluginMetaLogger.instance.info { "Loaded #{JekyllFlexibleIncludeName::PLUGIN_NAME} v#{JekyllFlexibleIncludePlugin::VERSION} plugin." }
+PluginMetaLogger.instance.info { "Loaded #{JekyllFlexibleIncludeName::PLUGIN_NAME} v#{JekyllFlexibleIncludePluginVersion::VERSION} plugin." }
 Liquid::Template.register_tag('flexible_include', FlexibleInclude)

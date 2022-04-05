@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module JekyllFlexibleIncludePlugin
-  VERSION = "2.0.3"
+module JekyllFlexibleIncludePluginVersion
+  VERSION = "2.0.4"
 end
