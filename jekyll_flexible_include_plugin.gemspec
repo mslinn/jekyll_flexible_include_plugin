@@ -38,7 +38,7 @@ Gem::Specification.new do |spec|
   spec.version = JekyllFlexibleIncludePluginVersion::VERSION
 
   spec.add_dependency "jekyll", ">= 3.5.0"
-  spec.add_dependency "jekyll_plugin_logger", '~> 2.0.0'
+  spec.add_dependency "jekyll_plugin_logger", '~> 2.1.0'
 
   spec.add_development_dependency "debase"
   # spec.add_development_dependency "rubocop-jekyll"
