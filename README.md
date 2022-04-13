@@ -24,6 +24,7 @@ expanded according to the environment variables defined when <code>jekyll build<
 
 ### Syntax:
 ```
+{% flexible_include path [ do_not_escape ] %}
 {% flexible_include path [ do_not_escape=true ] %}
 {% flexible_include 'path' [ do_not_escape='true' ] %}
 {% flexible_include "path" [ do_not_escape="true" ] %}
@@ -64,7 +65,7 @@ Or install it yourself as:
 
 ## Examples
 
-1. Include files without parameters; all four types of includes are shown.
+1. Include files, escaping any HTML markup so it appears as written; all four types of includes are shown.
    ```
    {% flexible_include '../../folder/outside/jekyll/site/foo.html' %}
    {% flexible_include 'folder/within/jekyll/site/bar.js' %}
@@ -76,7 +77,7 @@ Or install it yourself as:
 
 2. Include a JSON file (without escaping characters).
    ```
-   {% flexible_include '~/folder/under/home/directory/foo.html' do_not_escape='true' %}
+   {% flexible_include '~/folder/under/home/directory/foo.html' do_not_escape %}
    ```
 
 ## Additional Information
@@ -127,14 +128,14 @@ $ gem info jekyll_flexible_include
 
 *** LOCAL GEMS ***
 
-jekyll_flexible_include (1.0.0)
-    Author: Mike Slinn
-    Homepage:
-    https://github.com/mslinn/jekyll_flexible_include
+jekyll_flexible_include (2.0.4)
+    Authors: Mike Slinn, Tan Nhu, Maarten Brakkee
+    Homepage: https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html#flexibleInclude
     License: MIT
-    Installed at: /home/mslinn/.gems
+    Installed at (2.0.4): /home/mslinn/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0
 
-    Generates Jekyll logger with colored output.
+    Jekyll plugin supports various ways to include content into the
+    generated site.
 ```
 
 

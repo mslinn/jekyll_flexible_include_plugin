@@ -5,7 +5,7 @@ require_relative "lib/flexible_include/version"
 Gem::Specification.new do |spec|
   github = "https://github.com/mslinn/jekyll_flexible_include_plugin"
 
-  spec.authors = ["Mike Slinn"]
+  spec.authors = ["Mike Slinn", "Tan Nhu", "Maarten Brakkee"]
   spec.bindir = "exe"
   spec.description = <<~END_OF_DESC
     Jekyll's built-in include tag only supports including files within the _includes folder.
