@@ -12,7 +12,7 @@ end
 class FlexibleInclude < Liquid::Tag
   # @param tag_name [String] the name of the tag, which we already know.
   # @param markup [String] the arguments from the tag, as a single string.
-  # @param _parse_context [Liquid::ParseContext] hash that stores Liquid options.
+  # @param parse_context [Liquid::ParseContext] hash that stores Liquid options.
   #        By default it has two keys: :locale and :line_numbers, the first is a Liquid::I18n object, and the second,
   #        a boolean parameter that determines if error messages should display the line number the error occurred.
   #        This argument is used mostly to display localized error messages on Liquid built-in Tags and Filters.
@@ -25,12 +25,12 @@ class FlexibleInclude < Liquid::Tag
     @logger.debug { "@params='#{@params}'" }
   end
 
-  # @param context [Liquid::Context]
+  # @param liquid_context [Liquid::Context]
   def render(liquid_context) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     @liquid_context = liquid_context
     @page = liquid_context.registers[:page]
 
-    # markup = remove_enclosing_quotes(markup)
+    # markup = remove_quotes(markup)
     @params = @params.map { |k, _v| lookup_variable(k) }
     if @params.include? "do_not_escape"
       @do_not_escape = true
@@ -46,10 +46,10 @@ class FlexibleInclude < Liquid::Tag
     when /\A\// # Absolute path
       @logger.debug { "Absolute path=#{path}, filename=#{filename}" }
     when /\A~/ # Relative path to user's home directory
-      @logger.debug { "Relative start filename=#{filename}, path=#{path}" }
+      @logger.debug { "User home start filename=#{filename}, path=#{path}" }
       filename.slice! "~/"
       path = File.join(ENV['HOME'], filename)
-      @logger.debug { "Relative end filename=#{filename}, path=#{path}" }
+      @logger.debug { "User home end filename=#{filename}, path=#{path}" }
     when /\A!/ # Run command and return response
       filename = remove_quotes(@argv.first)
       filename.slice! "!"
@@ -59,7 +59,7 @@ class FlexibleInclude < Liquid::Tag
       site = @liquid_context.registers[:site]
       source = File.expand_path(site.config['source']) # website root directory
       path = File.join(source, filename) # Fully qualified path of include file from relative path
-      @logger.debug { "Catchall end filename=#{filename}, path=#{path}" }
+      @logger.debug { "Relative end filename=#{filename}, path=#{path}" }
     end
     render_completion(path, contents)
   end
@@ -70,7 +70,7 @@ class FlexibleInclude < Liquid::Tag
     @liquid_context[name] || @page[name] || name
   end
 
-  # Expend environment variable references
+  # Expand environment variable references
   def expand_env(str)
     str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
   end
@@ -98,7 +98,7 @@ class FlexibleInclude < Liquid::Tag
 
   # strip leading and trailing quotes if present
   def remove_quotes(string)
-    string.strip.gsub(/\A'|'\Z/, '').strip if string
+    string.strip.gsub(/\A'|\A"|'\Z|"\Z/, '').strip if string
   end
 
   def render_completion(path, contents)
