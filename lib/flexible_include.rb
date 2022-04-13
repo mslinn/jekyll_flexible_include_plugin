@@ -83,7 +83,7 @@ class FlexibleInclude < Liquid::Tag
   def render_completion(path, contents)
     contents ||= read_file(path)
     contents2 = @do_not_escape ? contents : JekyllTagHelper.escape_html(contents)
-    @pre ? wrap_in_pre(contents2) : contents2
+    @pre ? wrap_in_pre(path, contents2) : contents2
   end
 
   def run(cmd)
@@ -94,15 +94,16 @@ class FlexibleInclude < Liquid::Tag
   PREFIX = "<button class='copyBtn' data-clipboard-target="
   SUFFIX = "title='Copy to clipboard'><img src='/assets/images/clippy.svg' alt='Copy to clipboard' style='width: 13px'></button>"
 
-  def wrap_in_pre(content)
+  def wrap_in_pre(path, content)
+    basename = File.basename(path)
     label_or_href = if @download
-                      label2 = "/#{@label}"
+                      label = @label_specified ? @label : basename
                       <<~END_HREF
-                        <a href='data:text/plain;charset=UTF-8,#{label2}' download='#{File.basename(label2)}'
-                          title='Click on the file name to download the file'>#{File.basename(@label)}</a>
+                        <a href='data:text/plain;charset=UTF-8,#{basename}' download='#{basename}'
+                          title='Click on the file name to download the file'>#{label}</a>
                       END_HREF
                     else
-                      @label_specified ? @label : File.basename(@label)
+                      @label_specified ? @label : basename
                     end
     pre_id = "id#{SecureRandom.hex 6}"
     copy_button = @copy_button ? "#{PREFIX}'##{pre_id}'#{SUFFIX}" : ""
