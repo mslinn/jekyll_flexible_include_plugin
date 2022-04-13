@@ -33,8 +33,8 @@ class FlexibleInclude < Liquid::Tag
     @download = @helper.parameter_specified? "download"
     @label = @helper.parameter_specified? "label"
     @label_specified = @label
-    @copy_button = @helper.parameter_specified? "copy_button"
-    @pre = @copy_button || @download || @label || @helper.parameter_specified?("pre") # Download or label implies pre
+    @copy_button = @helper.parameter_specified? "copyButton"
+    @pre = @copy_button || @download || @label_specified || @helper.parameter_specified?("pre") # Download or label implies pre
     filename = @helper.params.first # Do this after all options have been checked for
     @label ||= filename
 
