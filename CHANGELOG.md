@@ -1,5 +1,10 @@
 ## 2.0.5 / 2022-04-11
   * Now using <code>Shellwords</code> and <code>KeyValueParser</code> instead of a homegrown parser.
+  * Refactored helper methods to jekyll_tag_helper.rb
+  * Looks up values for liquid variable references from several scopes.
+  * Suppresses stack dump when an error occurs.
+  * Deleted a lot of old cruft.
+  * Added pre, label and copy_button optional parameters
 
 ## 2.0.4 / 2022-04-05
   * Updated to `jekyll_plugin_logger` v2.1.0

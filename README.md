@@ -22,17 +22,27 @@ This plugin supports 4 types of includes:
 In addition, filenames that require environment expansion because they contain a <code>$</code> character are
 expanded according to the environment variables defined when <code>jekyll build</code> executes.
 
-### Syntax:
+### Syntax
+The following are equivalent:
 ```
-{% flexible_include path [ do_not_escape ] %}
-{% flexible_include path [ do_not_escape=true ] %}
-{% flexible_include 'path' [ do_not_escape='true' ] %}
-{% flexible_include "path" [ do_not_escape="true" ] %}
+{% flexible_include path [ OPTIONS ] %}
+{% flexible_include 'path' [ OPTIONS ] %}
+{% flexible_include "path" [ OPTIONS ] %}
 ```
 
-The included file will escape characters <code>&lt;</code>, <code>{</code> and <code>}</code> unless <code>do_not_escape</code>
-is specified with a value other than <code>false</code>.
-Note that the [square brackets] merely indicate an optional parameter and are not intended to be literally written.
+By default, the included file will escape characters <code>&lt;</code>, <code>{</code> and <code>}</code>
+unless <code>do_not_escape</code> is specified.
+Note that the [square brackets] merely indicate optional parameters and are not intended to be written literally.
+
+### Options
+  * `do_not_escape` includes the content without HTML escaping it.
+  * `pre` causes the included file to be wrapped inside a &lt;pre>&lt;/pre> tag, no label is generated.
+
+The following options imply `pre`:
+  * `download` uses the name of the file as a label, and displays it above the &lt;pre>&lt;/pre> tag. Clicking the label causes the file to be downloaded.
+  * `copy_button` draws an icon at the top right of the &lt;pre>&lt;/pre> tag that causes the included contents to be copied to the clipboard.
+  * `label` specifies that an automatically generated label be placed above the contents. There is no need to specify this option if `download` or `copy_button` options are provided.
+  * `label="blah blah"` specifies a label for the contents; this value overrides the default label. The value can be enclosed in single or double quotes.
 
 
 ### Additional Information

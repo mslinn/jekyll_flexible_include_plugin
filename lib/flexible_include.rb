@@ -2,8 +2,9 @@
 
 require "jekyll"
 require "jekyll_plugin_logger"
-require "shellwords"
+require "securerandom"
 require_relative "flexible_include/version"
+require_relative "jekyll_tag_helper"
 
 module JekyllFlexibleIncludeName
   PLUGIN_NAME = "flexible_include"
@@ -22,27 +23,27 @@ class FlexibleInclude < Liquid::Tag
   def initialize(tag_name, markup, _parse_context)
     super
     @logger = PluginMetaLogger.instance.new_logger(self, PluginMetaLogger.instance.config)
-    @argv = Shellwords.split(markup)
-    @keys_values = KeyValueParser.new.parse(@argv) # Returns Hash[Symbol, String|Boolean]
-    @logger.debug { "@params='#{@params}'" }
+    @helper = JekyllTagHelper.new(tag_name, markup, @logger)
   end
 
   # @param liquid_context [Liquid::Context]
-  def render(liquid_context) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    @liquid_context = liquid_context
-    @page = liquid_context.registers[:page]
+  def render(liquid_context) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+    @helper.liquid_context = liquid_context
+    @do_not_escape = @helper.parameter_specified? "do_not_escape"
+    @download = @helper.parameter_specified? "download"
+    @label = @helper.parameter_specified? "label"
+    @label_specified = @label
+    @copy_button = @helper.parameter_specified? "copy_button"
+    @pre = @copy_button || @download || @label || @helper.parameter_specified?("pre") # Download or label implies pre
+    filename = @helper.params.first # Do this after all options have been checked for
+    @label ||= filename
 
-    @params = @keys_values.map { |k, _v| lookup_variable(k) }
-    if @params.include? "do_not_escape"
-      @do_not_escape = true
-      @params.delete("do_not_escape")
-      @argv.delete("do_not_escape")
-    end
+    # If a label was specified, use it, otherwise concatenate any dangling parameters and use that as the label
+    @label ||= @helper.params[1..].join(" ")
 
-    filename = @params.first
     @logger.debug("filename=#{filename}")
 
-    path = expand_env(filename)
+    path = JekyllTagHelper.expand_env(filename)
     case path
     when /\A\// # Absolute path
       @logger.debug { "Absolute path=#{path}, filename=#{filename}" }
@@ -52,59 +53,22 @@ class FlexibleInclude < Liquid::Tag
       path = File.join(ENV['HOME'], filename)
       @logger.debug { "User home end filename=#{filename}, path=#{path}" }
     when /\A!/ # Run command and return response
-      filename = remove_quotes(@argv.first)
+      filename = JekyllTagHelper.remove_quotes(@helper.argv.first)
       filename.slice! "!"
-      @logger.debug { "Execute filename=#{filename}" }
       contents = run(filename)
     else # Relative path
-      site = @liquid_context.registers[:site]
+      site = liquid_context.registers[:site]
       source = File.expand_path(site.config['source']) # website root directory
       path = File.join(source, filename) # Fully qualified path of include file from relative path
+      @relative = true
       @logger.debug { "Relative end filename=#{filename}, path=#{path}" }
     end
     render_completion(path, contents)
+    # rescue StandardError => e
+    #   raise FlexibleIncludeError, e.message.red, [] # Suppress stack trace
   end
 
   private
-
-  PREDEFINED_SCOPE_KEYS = [:include, :page].freeze
-
-  # Finds variables defined in an invoking include, or maybe somewhere else
-  # @return variable value or nil
-  def dereference_include_variable(name)
-    @liquid_context.scopes.each do |scope|
-      next if PREDEFINED_SCOPE_KEYS.include? scope.keys.first
-
-      value = scope[name]
-      return value if value
-    end
-    nil
-  end
-
-  # @return value of variable, or the empty string
-  def dereference_variable(name)
-    @liquid_context[name] || # Finds variables named like 'include.my_variable', found in @liquid_context.scopes.first
-      @page[name] || # Finds variables named like 'page.my_variable'
-      dereference_include_variable(name) ||
-      ""
-    # (raise FlexibleIncludeError, "No variable called '#{name}' was found;", []) # Suppress stack trace
-  end
-
-  # Expand environment variable references
-  def expand_env(str)
-    str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
-  end
-
-  def escape_html(string)
-    string.gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
-  end
-
-  def lookup_variable(symbol)
-    string = symbol.to_s
-    return string unless string.start_with?("{{") && string.end_with?("}}")
-
-    dereference_variable(string.delete_prefix("{{").delete_suffix("}}"))
-  end
 
   def read_file(file)
     File.read(file)
@@ -116,25 +80,36 @@ class FlexibleInclude < Liquid::Tag
     false
   end
 
-  # strip leading and trailing quotes if present
-  def remove_quotes(string)
-    string.strip.gsub(/\A'|\A"|'\Z|"\Z/, '').strip if string
-  end
-
   def render_completion(path, contents)
-    begin
-      contents ||= read_file(path)
-    rescue StandardError => e
-      puts "flexible_include.rb error: #{e.message}".red
-      $stderr.reopen(IO::NULL)
-      $stdout.reopen(IO::NULL)
-      exit
-    end
-    @do_not_escape ? contents : escape_html(contents)
+    contents ||= read_file(path)
+    contents2 = @do_not_escape ? contents : JekyllTagHelper.escape_html(contents)
+    @pre ? wrap_in_pre(contents2) : contents2
   end
 
   def run(cmd)
+    @logger.debug { "Executing filename=#{cmd}" }
     %x[#{cmd}].chomp
+  end
+
+  PREFIX = "<button class='copyBtn' data-clipboard-target="
+  SUFFIX = "title='Copy to clipboard'><img src='/assets/images/clippy.svg' alt='Copy to clipboard' style='width: 13px'></button>"
+
+  def wrap_in_pre(content)
+    label_or_href = if @download
+                      label2 = "/#{@label}"
+                      <<~END_HREF
+                        <a href='data:text/plain;charset=UTF-8,#{label2}' download='#{File.basename(label2)}'
+                          title='Click on the file name to download the file'>#{File.basename(@label)}</a>
+                      END_HREF
+                    else
+                      @label_specified ? @label : File.basename(@label)
+                    end
+    pre_id = "id#{SecureRandom.hex 6}"
+    copy_button = @copy_button ? "#{PREFIX}'##{pre_id}'#{SUFFIX}" : ""
+    <<~END_PRE
+      <div class="codeLabel">#{label_or_href}</div>
+      <pre data-lt-active="false" class="maxOneScreenHigh copyContainer" id="#{pre_id}">#{copy_button}#{content}</pre>
+    END_PRE
   end
 end
 
