@@ -101,7 +101,7 @@ class FlexibleInclude < Liquid::Tag
     string.strip.gsub(/\A'|'\Z/, '').strip if string
   end
 
-  def render_completion(path, contents) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_completion(path, contents)
     begin
       contents ||= read_file(path)
     rescue StandardError => e
