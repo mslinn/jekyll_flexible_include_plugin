@@ -61,7 +61,7 @@ class FlexibleInclude < Liquid::Tag
       path = File.join(source, filename) # Fully qualified path of include file from relative path
       @logger.debug { "Catchall end filename=#{filename}, path=#{path}" }
     end
-    render_completion(@liquid_context, path, contents)
+    render_completion(path, contents)
   end
 
   private
@@ -101,7 +101,7 @@ class FlexibleInclude < Liquid::Tag
     string.strip.gsub(/\A'|'\Z/, '').strip if string
   end
 
-  def render_completion(context, path, contents) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def render_completion(path, contents) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     begin
       contents ||= read_file(path)
     rescue StandardError => e
@@ -110,25 +110,7 @@ class FlexibleInclude < Liquid::Tag
       $stdout.reopen(IO::NULL)
       exit
     end
-    escaped_contents = @do_not_escape ? contents : escape_html(contents)
-    context.stack do # Temporarily push a new local scope onto the variable stack
-      begin
-        partial = Liquid::Template.parse(escaped_contents) # Type Liquid::Template
-      rescue StandardError => e
-        puts "flexible_include.rb error: #{e.message}".red
-        $stderr.reopen(IO::NULL)
-        $stdout.reopen(IO::NULL)
-        exit
-      end
-
-      begin
-        partial.render!(context)
-      rescue Liquid::Error => e
-        e.template_name = path
-        e.markup_context = "included " if e.markup_context.nil?
-        raise e
-      end
-    end
+    @do_not_escape ? contents : escape_html(contents)
   end
 
   def run(cmd)
