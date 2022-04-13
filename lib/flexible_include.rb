@@ -10,6 +10,8 @@ module JekyllFlexibleIncludeName
 end
 
 class FlexibleInclude < Liquid::Tag
+  FlexibleIncludeError = Class.new(Liquid::Error)
+
   # @param tag_name [String] the name of the tag, which we already know.
   # @param markup [String] the arguments from the tag, as a single string.
   # @param _parse_context [Liquid::ParseContext] hash that stores Liquid options.
@@ -17,11 +19,11 @@ class FlexibleInclude < Liquid::Tag
   #        a boolean parameter that determines if error messages should display the line number the error occurred.
   #        This argument is used mostly to display localized error messages on Liquid built-in Tags and Filters.
   #        See https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers#create-your-own-tags
-  def initialize(tag_name, markup, parse_context)
+  def initialize(tag_name, markup, _parse_context)
     super
     @logger = PluginMetaLogger.instance.new_logger(self, PluginMetaLogger.instance.config)
     @argv = Shellwords.split(markup)
-    @params = KeyValueParser.new.parse(@argv) # Returns Hash[Symbol, String|Boolean]
+    @keys_values = KeyValueParser.new.parse(@argv) # Returns Hash[Symbol, String|Boolean]
     @logger.debug { "@params='#{@params}'" }
   end
 
@@ -31,7 +33,7 @@ class FlexibleInclude < Liquid::Tag
     @page = liquid_context.registers[:page]
 
     # markup = remove_enclosing_quotes(markup)
-    @params = @params.map { |k, _v| lookup_variable(k) }
+    @params = @keys_values.map { |k, _v| lookup_variable(k) }
     if @params.include? "do_not_escape"
       @do_not_escape = true
       @params.delete("do_not_escape")
@@ -66,8 +68,27 @@ class FlexibleInclude < Liquid::Tag
 
   private
 
+  PREDEFINED_SCOPE_KEYS = [:include, :page].freeze
+
+  # Finds variables defined in an invoking include, or maybe somewhere else
+  # @return variable value or nil
+  def dereference_include_variable(name)
+    @liquid_context.scopes.each do |scope|
+      next if PREDEFINED_SCOPE_KEYS.include? scope.keys.first
+
+      value = scope[name]
+      return value if value
+    end
+    nil
+  end
+
+  # @return value of variable, or the empty string
   def dereference_variable(name)
-    @liquid_context[name] || @page[name] || name
+    @liquid_context[name] || # Finds variables named like 'include.my_variable', found in @liquid_context.scopes.first
+      @page[name] || # Finds variables named like 'page.my_variable'
+      dereference_include_variable(name) ||
+      ""
+    # (raise FlexibleIncludeError, "No variable called '#{name}' was found;", []) # Suppress stack trace
   end
 
   # Expend environment variable references
