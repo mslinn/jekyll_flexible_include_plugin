@@ -1,3 +1,6 @@
+## 2.0.5 / 2022-04-11
+  * Now using <code>Shellwords</code> and <code>KeyValueParser</code> instead of a homegrown parser.
+
 ## 2.0.4 / 2022-04-05
   * Updated to `jekyll_plugin_logger` v2.1.0
 

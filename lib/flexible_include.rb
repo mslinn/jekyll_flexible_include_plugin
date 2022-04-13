@@ -2,137 +2,88 @@
 
 require "jekyll"
 require "jekyll_plugin_logger"
+require "shellwords"
 require_relative "flexible_include/version"
 
 module JekyllFlexibleIncludeName
   PLUGIN_NAME = "flexible_include"
 end
 
-class FlexibleIncludeError < StandardError
-  attr_accessor :path
-
-  def initialize(msg, path)
-    super
-    @path = path
-  end
-end
-
 class FlexibleInclude < Liquid::Tag
-  VALID_SYNTAX = %r!
-    ([\w-]+)\s*=\s*
-    (?:"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)'|([\w.-]+))
-  !x.freeze
-  VARIABLE_SYNTAX = %r!
-    (?<variable>[^{]*(\{\{\s*[\w\-.]+\s*(\|.*)?\}\}[^\s{}]*)+)
-    (?<params>.*)
-  !mx.freeze
-
-  FULL_VALID_SYNTAX = %r!\A\s*(?:#{VALID_SYNTAX}(?=\s|\z)\s*)*\z!.freeze
-  VALID_FILENAME_CHARS = %r!^[\w/\.-]+$!.freeze
-
+  # @param tag_name [String] the name of the tag, which we already know.
+  # @param markup [String] the arguments from the tag, as a single string.
+  # @param _parse_context [Liquid::ParseContext] hash that stores Liquid options.
+  #        By default it has two keys: :locale and :line_numbers, the first is a Liquid::I18n object, and the second,
+  #        a boolean parameter that determines if error messages should display the line number the error occurred.
+  #        This argument is used mostly to display localized error messages on Liquid built-in Tags and Filters.
+  #        See https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers#create-your-own-tags
   def initialize(tag_name, markup, parse_context)
     super
     @logger = PluginMetaLogger.instance.new_logger(self, PluginMetaLogger.instance.config)
-    matched = markup.strip.match(VARIABLE_SYNTAX)
-    if matched
-      @file = matched["variable"].strip
-      @params = matched["params"].strip
-    else
-      @file, @params = markup.strip.split(%r!\s+!, 2)
-    end
-    @markup = markup
-    @logger.debug("initialize: @markup=#{@markup}")
-    @parse_context = parse_context
+    @argv = Shellwords.split(markup)
+    @params = KeyValueParser.new.parse(@argv) # Returns Hash[Symbol, String|Boolean]
+    @logger.debug { "@params='#{@params}'" }
   end
 
   # @param context [Liquid::Context]
-  def render(context) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-    markup = @markup
-    @logger.debug { "markup='#{markup}'" }
-    markup = sanitize_parameter(markup)
-    markup = expand_env(markup)
-    path = markup
-    if /\A\//.match(markup)  # Is the file absolute?
-      @logger.debug { "Absolute path=#{path}, markup=#{markup}" }
-    elsif /\A~/.match(markup)  # Relative path to user's home directory?
-      @logger.debug { "Relative start markup=#{markup}, path=#{path}" }
-      markup.slice! "~/"
-      path = File.join(ENV['HOME'], markup)
-      @logger.debug { "Relative end markup=#{markup}, path=#{path}" }
-    elsif /\A\!/.match(markup)  # Run command and return response
-      markup.slice! "!"
-      @logger.debug { "Execute markup=#{markup}" }
-      contents = run(markup)
-    else  # The file is relative or it was passed as a parameter to an include and was not noticed before, e.g. @file='{{include.file}}'
-      @logger.debug { "Catchall start @file=#{@file}, markup=#{markup}, path=#{path}" }
-      file = render_variable(context)
-      markup = file if file
-      markup = expand_env(markup)
-      markup = sanitize_parameter(markup)
-      if /\A\//.match(markup) # Absolute path
-        path = markup
-      elsif /\A\!/.match(markup)
-        markup.slice! "!"
-        @logger.debug { "Execute markup=#{markup}" }
-        contents = run(markup)
-      elsif /\A~/.match(markup)  # Relative path to user's home directory?
-        markup.slice! "~/"
-        path = File.join(ENV['HOME'], markup)
-      else # Relative path
-        site = context.registers[:site]
-        source = File.expand_path(site.config['source']) # website root directory
-        path = File.join(source, markup) # Fully qualified path of include file from relative path
-      end
-      @logger.debug { "Catchall end markup=#{markup}, path=#{path}" }
+  def render(liquid_context) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    @liquid_context = liquid_context
+    @page = liquid_context.registers[:page]
+
+    # markup = remove_enclosing_quotes(markup)
+    @params = @params.map { |k, _v| lookup_variable(k) }
+    if @params.include? "do_not_escape"
+      @do_not_escape = true
+      @params.delete("do_not_escape")
+      @argv.delete("do_not_escape")
     end
-    render_completion(context, path, contents)
+
+    filename = @params.first
+    @logger.debug("filename=#{filename}")
+
+    path = expand_env(filename)
+    case path
+    when /\A\// # Absolute path
+      @logger.debug { "Absolute path=#{path}, filename=#{filename}" }
+    when /\A~/ # Relative path to user's home directory
+      @logger.debug { "Relative start filename=#{filename}, path=#{path}" }
+      filename.slice! "~/"
+      path = File.join(ENV['HOME'], filename)
+      @logger.debug { "Relative end filename=#{filename}, path=#{path}" }
+    when /\A!/ # Run command and return response
+      filename = remove_quotes(@argv.first)
+      filename.slice! "!"
+      @logger.debug { "Execute filename=#{filename}" }
+      contents = run(filename)
+    else # Relative path
+      site = @liquid_context.registers[:site]
+      source = File.expand_path(site.config['source']) # website root directory
+      path = File.join(source, filename) # Fully qualified path of include file from relative path
+      @logger.debug { "Catchall end filename=#{filename}, path=#{path}" }
+    end
+    render_completion(@liquid_context, path, contents)
   end
 
   private
 
-  def escape_html?(context)
-    do_not_escape = false
-    if @params
-      context["include"] = parse_params(context)
-      @logger.debug { "context['include']['do_not_escape'] = #{context['include']['do_not_escape']}" }
-      do_not_escape = context['include'].fetch('do_not_escape', 'false')
-      @logger.debug { "do_not_escape=#{do_not_escape}" }
-      @logger.debug { "do_not_escape=='false' = #{do_not_escape=='false'}" }
-    end
-    do_not_escape
+  def dereference_variable(name)
+    @liquid_context[name] || @page[name] || name
+  end
+
+  # Expend environment variable references
+  def expand_env(str)
+    str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
   end
 
   def escape_html(string)
     string.gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
   end
 
-  def expand_env(str)
-    str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[$1] }
-  end
+  def lookup_variable(symbol)
+    string = symbol.to_s
+    return string unless string.start_with?("{{") && string.end_with?("}}")
 
-  # Grab file read opts in the context
-  def file_read_opts(context)
-    context.registers[:site].file_read_opts
-  end
-
-  def parse_params(context)
-    params = {}
-    markup = @params
-
-    while (match = VALID_SYNTAX.match(markup))
-      markup = markup[match.end(0)..-1]
-
-      value = if match[2]
-                match[2].gsub(%r!\\"!, '"')
-              elsif match[3]
-                match[3].gsub(%r!\\'!, "'")
-              elsif match[4]
-                context[match[4]]
-              end
-
-      params[match[1]] = value
-    end
-    params
+    dereference_variable(string.delete_prefix("{{").delete_suffix("}}"))
   end
 
   def read_file(file)
@@ -145,16 +96,21 @@ class FlexibleInclude < Liquid::Tag
     false
   end
 
-  def render_completion(context, path, contents)
+  # strip leading and trailing quotes if present
+  def remove_quotes(string)
+    string.strip.gsub(/\A'|'\Z/, '').strip if string
+  end
+
+  def render_completion(context, path, contents) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     begin
-      contents = read_file(path) unless contents
+      contents ||= read_file(path)
     rescue StandardError => e
       puts "flexible_include.rb error: #{e.message}".red
       $stderr.reopen(IO::NULL)
       $stdout.reopen(IO::NULL)
       exit
     end
-    escaped_contents = escape_html?(context) ? escape_html(contents) : contents
+    escaped_contents = @do_not_escape ? contents : escape_html(contents)
     context.stack do # Temporarily push a new local scope onto the variable stack
       begin
         partial = Liquid::Template.parse(escaped_contents) # Type Liquid::Template
@@ -175,42 +131,8 @@ class FlexibleInclude < Liquid::Tag
     end
   end
 
-  # @return setvalue of 'file' variable if defined
-  def render_variable(context)
-    if @file.match VARIABLE_SYNTAX
-      partial = context.registers[:site]
-        .liquid_renderer
-        .file("(variable)")
-        .parse(@file)
-      partial.render!(context)
-    end
-  end
-
   def run(cmd)
-    %x[ #{cmd} ].chomp
-  end
-
-  # strip leading and trailing quotes if present
-  def sanitize_parameter(parameter)
-    parameter.strip.gsub(/\A'|'\Z/, '').strip if parameter
-  end
-
-  def valid_include_file?(path, dir, safe)
-    !outside_site_source?(path, dir, safe) && File.file?(path)
-  end
-
-  def outside_site_source?(path, dir, safe)
-    safe && !realpath_prefixed_with?(path, dir)
-  end
-
-  def could_not_locate_message(file, includes_dirs, safe)
-    message = "Could not locate the included file '#{file}' in any of "\
-              "#{includes_dirs}. Ensure it exists in one of those directories and"
-    message + if safe
-                " is not a symlink as those are not allowed in safe mode."
-              else
-                ", if it is a symlink, does not point outside your site source."
-              end
+    %x[#{cmd}].chomp
   end
 end
 

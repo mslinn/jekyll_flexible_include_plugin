@@ -9,6 +9,9 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 2.6
 
+# Gemspec/RequireMFA:
+  # Enabled: false
+
 Layout/LineLength:
   Max: 150
 
@@ -16,6 +19,9 @@ Layout/MultilineMethodCallIndentation:
   Enabled: false
 
 Metrics/BlockLength:
+  Enabled: false
+
+Style/CommandLiteral:
   Enabled: false
 
 Style/PercentLiteralDelimiters:
@@ -28,7 +34,4 @@ Style/StringLiterals:
   Enabled: false
 
 Style/StringLiteralsInInterpolation:
-  Enabled: false
-
-Gemspec/RequireMFA:
   Enabled: false

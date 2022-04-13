@@ -24,7 +24,9 @@ expanded according to the environment variables defined when <code>jekyll build<
 
 ### Syntax:
 ```
-{% flexible_include path [ do_not_escape='true' ] %}
+{% flexible_include path [ do_not_escape=true ] %}
+{% flexible_include 'path' [ do_not_escape='true' ] %}
+{% flexible_include "path" [ do_not_escape="true" ] %}
 ```
 
 The included file will escape characters <code>&lt;</code>, <code>{</code> and <code>}</code> unless <code>do_not_escape</code>
