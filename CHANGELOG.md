@@ -1,3 +1,6 @@
+## 2.0.6 / 2022-04-11
+  * Niggling little bug thing. Gone.
+
 ## 2.0.5 / 2022-04-11
   * Now using <code>Shellwords</code> and <code>KeyValueParser</code> instead of a homegrown parser.
   * Refactored helper methods to jekyll_tag_helper.rb

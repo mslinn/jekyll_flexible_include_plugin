@@ -56,10 +56,11 @@ class JekyllTagHelper
 
   # @return value of variable, or the empty string
   def dereference_variable(name)
-    @liquid_context[name] || # Finds variables named like 'include.my_variable', found in @liquid_context.scopes.first
-      @page[name] || # Finds variables named like 'page.my_variable'
-      dereference_include_variable(name) ||
-      ""
+    value = @liquid_context[name] # Finds variables named like 'include.my_variable', found in @liquid_context.scopes.first
+    value ||= @page[name] if @page # Finds variables named like 'page.my_variable'
+    value ||= dereference_include_variable(name)
+    value ||= ""
+    value
   end
 
   # Sets @params by replacing any Liquid variable names with their values
