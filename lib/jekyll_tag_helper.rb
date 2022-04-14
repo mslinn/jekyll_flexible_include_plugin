@@ -9,7 +9,7 @@ class JekyllTagHelper
     string.gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
   end
 
-  # Expand environment variable references
+  # Expand a environment variable reference
   def self.expand_env(str)
     str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[Regexp.last_match(1)] }
   end

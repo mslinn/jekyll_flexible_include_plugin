@@ -48,6 +48,34 @@ The following options imply `pre`:
   * `label` specifies that an automatically generated label be placed above the contents. There is no need to specify this option if `download` or `copy_button` options are provided.
   * `label="blah blah"` specifies a label for the contents; this value overrides the default label. The value can be enclosed in single or double quotes.
 
+### Restricting Directory Access
+By default, `flexible_include` can read from all directories according to the permissions of the user account that launched the `jekyll` process.
+For security-conscience environments, the accessible paths can be restricted.
+
+Defining an environment variable called `FLEXIBLE_INCLUDE_PATHS` prior to launching Jekyll will restrict the paths that `flexible_include` will be able to read from.
+This environment variable consists of a colon-delimited set of
+[file and directory glob patterns](https://docs.ruby-lang.org/en/2.7.0/Dir.html#method-c-glob).
+For example, the following restricts access to only the files within:
+ 1. The `~/my_dir` directory tree of the account of the user that launched Jekyll.
+ 2. The directory tree rooted at `/var/files`.
+ 3. The directory tree rooted at the expanded value of the `$work` environment variable.
+```shell
+export FLEXIBLE_INCLUDE_PATHS='~/my_dir/**/{*,.*}:/var/files/**/{*,.*}:$work/**/{*,.*}'
+```
+Note that the above matches dot (hidden) files as well as regular files.
+To just match visible files:
+```shell
+export FLEXIBLE_INCLUDE_PATHS='~/my_dir/**/*:/var/files/**/*:$work/**/*'
+```
+
+
+### Restricting Arbitrary Processes
+By default, `flexible_include` can execute any command. You can disable that by setting the environment variable `DISABLE_FLEXIBLE_INCLUDE` to any non-empty value.
+```shell
+export DISABLE_FLEXIBLE_INCLUDE=true
+```
+
+If a potential command execution is intercepted, a big red message will appear on the generated web page that says `Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.`, and a red error message will be logged on the console that says something like: `ERROR FlexibleInclude: _posts/2020/2020-10-03-jekyll-plugins.html - Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.`
 
 
 ## Installation

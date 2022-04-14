@@ -24,6 +24,13 @@ class FlexibleInclude < Liquid::Tag
     super
     @logger = PluginMetaLogger.instance.new_logger(self, PluginMetaLogger.instance.config)
     @helper = JekyllTagHelper.new(tag_name, markup, @logger)
+
+    @execution_denied = ENV['DISABLE_FLEXIBLE_INCLUDE']
+
+    # If FLEXIBLE_INCLUDE_PATHS='~/lib/**/*:*/**/*'
+    # Then @read_paths will be set to ["~/lib/**/*", "*/**/*"]
+    @read_paths = ENV['FLEXIBLE_INCLUDE_PATHS']
+    @read_paths = @read_paths.split(":").map { |x| JekyllTagHelper.expand_env x } if @read_paths
   end
 
   # @param liquid_context [Liquid::Context]
@@ -48,13 +55,16 @@ class FlexibleInclude < Liquid::Tag
     path = JekyllTagHelper.expand_env(filename)
     case path
     when /\A\// # Absolute path
+      return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless access_allowed(path)
       @logger.debug { "Absolute path=#{path}, filename=#{filename}" }
     when /\A~/ # Relative path to user's home directory
+      return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless access_allowed(path)
       @logger.debug { "User home start filename=#{filename}, path=#{path}" }
       filename.slice! "~/"
       path = File.join(ENV['HOME'], filename)
       @logger.debug { "User home end filename=#{filename}, path=#{path}" }
     when /\A!/ # Run command and return response
+      return denied("Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.") if @execution_denied
       filename = JekyllTagHelper.remove_quotes(@helper.argv.first) if @helper.argv.first
       filename.slice! "!"
       contents = run(filename)
@@ -71,6 +81,16 @@ class FlexibleInclude < Liquid::Tag
   end
 
   private
+
+  def access_allowed(path)
+    return true unless @read_paths
+    Dir.glob(@read_paths).find { |x| x == path }
+  end
+
+  def denied(msg)
+    @logger.error("#{@helper.page.path} - #{msg}")
+    "<p style='color: white; background-color: red; padding: 2pt 1em 2pt 1em;'>#{msg}</p>"
+  end
 
   def read_file(file)
     File.read(file)

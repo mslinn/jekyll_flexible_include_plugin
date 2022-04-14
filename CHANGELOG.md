@@ -1,3 +1,6 @@
+## 2.0.8 / 2022-04-14
+  * Added the ability to restrict arbitrary command execution, and specify the allowable directories to read from.
+
 ## 2.0.7 / 2022-04-14
   * Added `file=` option, so the included file or process is better defined. This option is not required; the file/process can be specified without it as before.
   * Documented `data-lt-active="false"`.
