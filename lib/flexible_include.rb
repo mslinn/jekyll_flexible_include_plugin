@@ -27,7 +27,7 @@ class FlexibleInclude < Liquid::Tag
   end
 
   # @param liquid_context [Liquid::Context]
-  def render(liquid_context) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+  def render(liquid_context) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/CyclomaticComplexity
     @helper.liquid_context = liquid_context
     @do_not_escape = @helper.parameter_specified? "do_not_escape"
     @download = @helper.parameter_specified? "download"
@@ -35,7 +35,8 @@ class FlexibleInclude < Liquid::Tag
     @label_specified = @label
     @copy_button = @helper.parameter_specified? "copyButton"
     @pre = @copy_button || @download || @label_specified || @helper.parameter_specified?("pre") # Download or label implies pre
-    filename = @helper.params.first # Do this after all options have been checked for
+    filename = @helper.parameter_specified? "file"
+    filename ||= @helper.params.first # Do this after all options have been checked for
     @label ||= filename
 
     # If a label was specified, use it, otherwise concatenate any dangling parameters and use that as the label

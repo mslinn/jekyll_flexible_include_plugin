@@ -22,6 +22,7 @@ This plugin supports 4 types of includes:
 In addition, filenames that require environment expansion because they contain a <code>$</code> character are
 expanded according to the environment variables defined when <code>jekyll build</code> executes.
 
+
 ### Syntax
 The following are equivalent:
 ```
@@ -36,7 +37,7 @@ Note that the [square brackets] merely indicate optional parameters and are not 
 
 ### Options
   * `do_not_escape` includes the content without HTML escaping it.
-  * `pre` causes the included file to be wrapped inside a &lt;pre>&lt;/pre> tag, no label is generated.
+  * `pre` causes the included file to be wrapped inside a &lt;pre>&lt;/pre> tag, no label is generated. The &lt;pre>&lt;/pre> tag has an `data-lt-active="false"` attribute, so [LanguageTool](https://forum.languagetool.org/t/avoid-spell-check-on-certain-html-inputs-manually/3944) does not check the spelling or grammar of the contents.
 
 The following options imply `pre`:
   * `download` uses the name of the file as a label, and displays it above the &lt;pre>&lt;/pre> tag. Clicking the label causes the file to be downloaded.
@@ -44,9 +45,6 @@ The following options imply `pre`:
   * `label` specifies that an automatically generated label be placed above the contents. There is no need to specify this option if `download` or `copy_button` options are provided.
   * `label="blah blah"` specifies a label for the contents; this value overrides the default label. The value can be enclosed in single or double quotes.
 
-
-### Additional Information
-More information is available on my web site about [my Jekyll plugins](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html).
 
 
 ## Installation
