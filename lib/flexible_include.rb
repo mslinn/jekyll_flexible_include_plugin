@@ -31,10 +31,11 @@ class FlexibleInclude < Liquid::Tag
     @helper.liquid_context = liquid_context
     @do_not_escape = @helper.parameter_specified? "do_not_escape"
     @download = @helper.parameter_specified? "download"
+    @dark = " dark" if @helper.parameter_specified?("dark")
     @label = @helper.parameter_specified? "label"
     @label_specified = @label
     @copy_button = @helper.parameter_specified? "copyButton"
-    @pre = @copy_button || @download || @label_specified || @helper.parameter_specified?("pre") # Download or label implies pre
+    @pre = @copy_button || @dark || @download || @label_specified || @helper.parameter_specified?("pre") # Download or label implies pre
     filename = @helper.parameter_specified? "file"
     filename ||= @helper.params.first # Do this after all options have been checked for
     @label ||= filename
@@ -108,9 +109,10 @@ class FlexibleInclude < Liquid::Tag
                     end
     pre_id = "id#{SecureRandom.hex 6}"
     copy_button = @copy_button ? "#{PREFIX}'##{pre_id}'#{SUFFIX}" : ""
+    dark_label = " darkLabel" if @dark
     <<~END_PRE
-      <div class="codeLabel">#{label_or_href}</div>
-      <pre data-lt-active="false" class="maxOneScreenHigh copyContainer" id="#{pre_id}">#{copy_button}#{content}</pre>
+      <div class="codeLabel#{dark_label}">#{label_or_href}</div>
+      <pre data-lt-active="false" class="maxOneScreenHigh copyContainer#{@dark}" id="#{pre_id}">#{copy_button}#{content}</pre>
     END_PRE
   end
 end

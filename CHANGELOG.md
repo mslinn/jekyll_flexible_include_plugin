@@ -1,6 +1,7 @@
 ## 2.0.7 / 2022-04-14
   * Added `file=` option, so the included file or process is better defined. This option is not required; the file/process can be specified without it as before.
   * Documented `data-lt-active="false"`.
+  * Added `dark` option, and [provided CSS](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html#pre_css).
 
 ## 2.0.6 / 2022-04-11
   * Niggling little bug thing. Gone.

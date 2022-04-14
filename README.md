@@ -40,6 +40,9 @@ Note that the [square brackets] merely indicate optional parameters and are not 
   * `pre` causes the included file to be wrapped inside a &lt;pre>&lt;/pre> tag, no label is generated. The &lt;pre>&lt;/pre> tag has an `data-lt-active="false"` attribute, so [LanguageTool](https://forum.languagetool.org/t/avoid-spell-check-on-certain-html-inputs-manually/3944) does not check the spelling or grammar of the contents.
 
 The following options imply `pre`:
+  * `dark` applies the `dark` class to the generated &lt;pre>&lt;/pre> tag.
+    You can define the `dark` and `darkLabel` classes as desired.
+    [This CSS is a good starting point.](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html#pre_css)
   * `download` uses the name of the file as a label, and displays it above the &lt;pre>&lt;/pre> tag. Clicking the label causes the file to be downloaded.
   * `copy_button` draws an icon at the top right of the &lt;pre>&lt;/pre> tag that causes the included contents to be copied to the clipboard.
   * `label` specifies that an automatically generated label be placed above the contents. There is no need to specify this option if `download` or `copy_button` options are provided.
