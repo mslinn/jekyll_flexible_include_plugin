@@ -54,7 +54,7 @@ class FlexibleInclude < Liquid::Tag
       path = File.join(ENV['HOME'], filename)
       @logger.debug { "User home end filename=#{filename}, path=#{path}" }
     when /\A!/ # Run command and return response
-      filename = JekyllTagHelper.remove_quotes(@helper.argv.first)
+      filename = JekyllTagHelper.remove_quotes(@helper.argv.first) if @helper.argv.first
       filename.slice! "!"
       contents = run(filename)
     else # Relative path
