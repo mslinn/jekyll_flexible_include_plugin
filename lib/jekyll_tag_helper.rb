@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "shellwords"
+require 'key_value_parser'
 
 class JekyllTagHelper
   attr_reader :argv, :liquid_context, :logger, :params, :tag_name

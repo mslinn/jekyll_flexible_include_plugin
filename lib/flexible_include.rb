@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "benchmark"
 require "jekyll"
 require "jekyll_plugin_logger"
 require "securerandom"
@@ -13,6 +14,35 @@ end
 class FlexibleInclude < Liquid::Tag
   FlexibleIncludeError = Class.new(Liquid::Error)
 
+  @read_regexes = nil
+
+  def self.normalize_path(path)
+    JekyllTagHelper.expand_env(path)
+                   .gsub("~", Dir.home)
+  end
+
+  # If FLEXIBLE_INCLUDE_PATHS='~/lib/.*:.*:$WORK/.*'
+  # Then @read_regexes will be set to regexes of ["/home/my_user_id/lib/.*", "/pwd/.*", "/work/envar/path/.*"]
+  def self.security_check
+    @execution_denied = ENV['DISABLE_FLEXIBLE_INCLUDE']
+
+    unless @read_regexes
+      read_paths = normalize_path(ENV['FLEXIBLE_INCLUDE_PATHS'])
+      if read_paths
+        @read_regexes = read_paths.split(":").map do |path|
+          abs_path = path.start_with?('/') ? path : (Pathname.new(Dir.pwd) + path).to_s
+          Regexp.new(abs_path)
+        end
+      end
+    end
+  end
+
+  def self.access_allowed(path)
+    return true unless @read_regexes
+
+    @read_regexes.find { |regex| regex.match(normalize_path(path)) }
+  end
+
   # @param tag_name [String] the name of the tag, which we already know.
   # @param markup [String] the arguments from the tag, as a single string.
   # @param parse_context [Liquid::ParseContext] hash that stores Liquid options.
@@ -25,12 +55,7 @@ class FlexibleInclude < Liquid::Tag
     @logger = PluginMetaLogger.instance.new_logger(self, PluginMetaLogger.instance.config)
     @helper = JekyllTagHelper.new(tag_name, markup, @logger)
 
-    @execution_denied = ENV['DISABLE_FLEXIBLE_INCLUDE']
-
-    # If FLEXIBLE_INCLUDE_PATHS='~/lib/**/*:*/**/*'
-    # Then @read_paths will be set to ["~/lib/**/*", "*/**/*"]
-    @read_paths = ENV['FLEXIBLE_INCLUDE_PATHS']
-    @read_paths = @read_paths.split(":").map { |x| JekyllTagHelper.expand_env x } if @read_paths
+    self.class.security_check
   end
 
   # @param liquid_context [Liquid::Context]
@@ -43,6 +68,7 @@ class FlexibleInclude < Liquid::Tag
     @label_specified = @label
     @copy_button = @helper.parameter_specified? "copyButton"
     @pre = @copy_button || @dark || @download || @label_specified || @helper.parameter_specified?("pre") # Download or label implies pre
+
     filename = @helper.parameter_specified? "file"
     filename ||= @helper.params.first # Do this after all options have been checked for
     @label ||= filename
@@ -55,16 +81,19 @@ class FlexibleInclude < Liquid::Tag
     path = JekyllTagHelper.expand_env(filename)
     case path
     when /\A\// # Absolute path
-      return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless access_allowed(path)
+      return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless self.class.access_allowed(path)
+
       @logger.debug { "Absolute path=#{path}, filename=#{filename}" }
     when /\A~/ # Relative path to user's home directory
-      return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless access_allowed(path)
+      return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless self.class.access_allowed(path)
+
       @logger.debug { "User home start filename=#{filename}, path=#{path}" }
       filename.slice! "~/"
       path = File.join(ENV['HOME'], filename)
       @logger.debug { "User home end filename=#{filename}, path=#{path}" }
     when /\A!/ # Run command and return response
       return denied("Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.") if @execution_denied
+
       filename = JekyllTagHelper.remove_quotes(@helper.argv.first) if @helper.argv.first
       filename.slice! "!"
       contents = run(filename)
@@ -81,11 +110,6 @@ class FlexibleInclude < Liquid::Tag
   end
 
   private
-
-  def access_allowed(path)
-    return true unless @read_paths
-    Dir.glob(@read_paths).find { |x| x == path }
-  end
 
   def denied(msg)
     @logger.error("#{@helper.page.path} - #{msg}")

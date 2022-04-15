@@ -60,13 +60,16 @@ For example, the following restricts access to only the files within:
  2. The directory tree rooted at `/var/files`.
  3. The directory tree rooted at the expanded value of the `$work` environment variable.
 ```shell
-export FLEXIBLE_INCLUDE_PATHS='~/my_dir/**/{*,.*}:/var/files/**/{*,.*}:$work/**/{*,.*}'
+export FLEXIBLE_INCLUDE_PATHS='~/.*:$sites/.*:$work/.*'
 ```
 Note that the above matches dot (hidden) files as well as regular files.
 To just match visible files:
 ```shell
 export FLEXIBLE_INCLUDE_PATHS='~/my_dir/**/*:/var/files/**/*:$work/**/*'
 ```
+
+#### Note
+The specified directories are traversed when the plugin starts, and the filenames are stored in memory. Directories with lots of files might take a noticable amount to time to enumerate the files.
 
 
 ### Restricting Arbitrary Processes
