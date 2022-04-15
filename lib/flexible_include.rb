@@ -27,7 +27,8 @@ class FlexibleInclude < Liquid::Tag
     @execution_denied = ENV['DISABLE_FLEXIBLE_INCLUDE']
 
     unless @read_regexes
-      read_paths = normalize_path(ENV['FLEXIBLE_INCLUDE_PATHS'])
+      flexible_include_paths = ENV['FLEXIBLE_INCLUDE_PATHS']
+      read_paths = normalize_path(flexible_include_paths) if flexible_include_paths
       if read_paths
         @read_regexes = read_paths.split(":").map do |path|
           abs_path = path.start_with?('/') ? path : (Pathname.new(Dir.pwd) + path).to_s

@@ -1,5 +1,8 @@
+## 2.0.10 / 2022-04-15
+  * Fixed nil pointer
+
 ## 2.0.9 / 2022-04-15
-  * Displays elapsed time to scan files; only scans when the gem is first used.
+  * Changed how path matching was implemented.
 
 ## 2.0.8 / 2022-04-14
   * Added the ability to restrict arbitrary command execution, and specify the allowable directories to read from.
