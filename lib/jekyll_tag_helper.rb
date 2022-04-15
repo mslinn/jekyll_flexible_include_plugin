@@ -7,7 +7,10 @@ class JekyllTagHelper
   attr_reader :argv, :liquid_context, :logger, :params, :tag_name
 
   def self.escape_html(string)
-    string.gsub("{", "&#123;").gsub("}", "&#125;").gsub("<", "&lt;")
+    string.gsub("&", "&amp;")
+          .gsub("{", "&#123;")
+          .gsub("}", "&#125;")
+          .gsub("<", "&lt;")
   end
 
   # Expand a environment variable reference

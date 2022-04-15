@@ -1,3 +1,6 @@
+## 2.0.11 / 2022-04-15
+  * Added & => &amp; to the escaped characters
+
 ## 2.0.10 / 2022-04-15
   * Fixed nil pointer
 
