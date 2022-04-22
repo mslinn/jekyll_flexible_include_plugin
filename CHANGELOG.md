@@ -1,3 +1,6 @@
+## 2.0.12 / 2022-04-22
+  * Exits with an error message if an environment variable included in the value of `FLEXIBLE_INCLUDE_PATHS` is undefined.
+
 ## 2.0.11 / 2022-04-15
   * Added & => &amp; to the escaped characters
 

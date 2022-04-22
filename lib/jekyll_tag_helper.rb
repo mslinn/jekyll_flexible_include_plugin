@@ -14,8 +14,12 @@ class JekyllTagHelper
   end
 
   # Expand a environment variable reference
-  def self.expand_env(str)
-    str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) { ENV[Regexp.last_match(1)] }
+  def self.expand_env(str, die_if_undefined=false)
+    str.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) do
+      envar = Regexp.last_match(1)
+      raise FlexibleError, "flexible_include error: #{envar} is undefined".red, [] if !ENV.key?(envar) && die_if_undefined # Suppress stack trace
+      ENV[envar]
+    end
   end
 
   # strip leading and trailing quotes if present

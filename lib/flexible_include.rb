@@ -11,13 +11,16 @@ module JekyllFlexibleIncludeName
   PLUGIN_NAME = "flexible_include"
 end
 
+class FlexibleError < StandardError
+end
+
 class FlexibleInclude < Liquid::Tag
   FlexibleIncludeError = Class.new(Liquid::Error)
 
   @read_regexes = nil
 
   def self.normalize_path(path)
-    JekyllTagHelper.expand_env(path)
+    JekyllTagHelper.expand_env(path, die_if_undefined: true)
                    .gsub("~", Dir.home)
   end
 
