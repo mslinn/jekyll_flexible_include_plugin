@@ -47,6 +47,20 @@ class FlexibleInclude < Liquid::Tag
     @read_regexes.find { |regex| regex.match(normalize_path(path)) }
   end
 
+  def self.number_content(content)
+    lines = content.split("\n")
+    digits = lines.length.to_s.length
+    i = 0
+    numbered_content = lines.map do |line|
+      i += 1
+      number = i.to_s.rjust(digits, " ")
+      "<span class='unselectable numbered_line'> #{number}: </span>#{line}"
+    end
+    result = numbered_content.join("\n")
+    result += "\n" unless result.end_with?("\n")
+    result
+  end
+
   # @param tag_name [String] the name of the tag, which we already know.
   # @param markup [String] the arguments from the tag, as a single string.
   # @param parse_context [Liquid::ParseContext] hash that stores Liquid options.
@@ -70,9 +84,10 @@ class FlexibleInclude < Liquid::Tag
     @dark = " dark" if @helper.parameter_specified?("dark")
     @highlight_pattern = @helper.parameter_specified? "highlight"
     @label = @helper.parameter_specified? "label"
+    @number_lines = @helper.parameter_specified? "number"
     @label_specified = @label
     @copy_button = @helper.parameter_specified? "copyButton"
-    @pre = @copy_button || @dark || @download || @label_specified || @helper.parameter_specified?("pre") # Download or label implies pre
+    @pre = @copy_button || @dark || @download || @label_specified || @number_lines || @helper.parameter_specified?("pre") # Download or label implies pre
 
     filename = @helper.parameter_specified? "file"
     filename ||= @helper.params.first # Do this after all options have been checked for
@@ -139,6 +154,7 @@ class FlexibleInclude < Liquid::Tag
     contents ||= read_file(path)
     contents2 = @do_not_escape ? contents : JekyllTagHelper.escape_html(contents)
     contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
+    contents2 = FlexibleInclude.number_content(contents2) if @number_lines
     @pre ? wrap_in_pre(path, contents2) : contents2
   end
 

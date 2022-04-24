@@ -1,5 +1,6 @@
 ## 2.0.13 / 2022-04-24
-  * Added `highlight` regex option
+  * Added `highlight` regex option, for highlighting
+  * Added `number` option, for numbered lines
 
 ## 2.0.12 / 2022-04-22
   * Exits with an error message if an environment variable included in the value of `FLEXIBLE_INCLUDE_PATHS` is undefined.
