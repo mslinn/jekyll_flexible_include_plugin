@@ -37,6 +37,7 @@ Note that the [square brackets] merely indicate optional parameters and are not 
 
 ### Options
   * `do_not_escape` includes the content without HTML escaping it.
+  * `highlight='regex pattern here'` wraps content matching the regex pattern within a `<span class='bg_yellow'></span>` tag.
   * `pre` causes the included file to be wrapped inside a &lt;pre>&lt;/pre> tag, no label is generated. The &lt;pre>&lt;/pre> tag has an `data-lt-active="false"` attribute, so [LanguageTool](https://forum.languagetool.org/t/avoid-spell-check-on-certain-html-inputs-manually/3944) does not check the spelling or grammar of the contents.
 
 The following options imply `pre`:

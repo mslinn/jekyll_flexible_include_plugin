@@ -68,6 +68,7 @@ class FlexibleInclude < Liquid::Tag
     @do_not_escape = @helper.parameter_specified? "do_not_escape"
     @download = @helper.parameter_specified? "download"
     @dark = " dark" if @helper.parameter_specified?("dark")
+    @highlight_pattern = @helper.parameter_specified? "highlight"
     @label = @helper.parameter_specified? "label"
     @label_specified = @label
     @copy_button = @helper.parameter_specified? "copyButton"
@@ -120,6 +121,10 @@ class FlexibleInclude < Liquid::Tag
     "<p style='color: white; background-color: red; padding: 2pt 1em 2pt 1em;'>#{msg}</p>"
   end
 
+  def highlight(content, pattern)
+    content.gsub(Regexp::new(pattern), "<span class='bg_yellow'>\\0</span>")
+  end
+
   def read_file(file)
     File.read(file)
   end
@@ -133,6 +138,7 @@ class FlexibleInclude < Liquid::Tag
   def render_completion(path, contents)
     contents ||= read_file(path)
     contents2 = @do_not_escape ? contents : JekyllTagHelper.escape_html(contents)
+    contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
     @pre ? wrap_in_pre(path, contents2) : contents2
   end
 
