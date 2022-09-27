@@ -1,3 +1,6 @@
+## 2.0.14 / 2022-09-27
+  * Added `key-value-parser` as a dependency
+
 ## 2.0.13 / 2022-04-24
   * Added `highlight` regex option, for highlighting
   * Added `number` option, for numbered lines
