@@ -1,22 +1,25 @@
 ## 2.0.15 / 2023-02-18
-  * Replaced dependency `key-value-parser` with `jekyll_plugin_support`
-  * Added `demo` website
+  * Replaced dependency `key-value-parser` with `jekyll_plugin_support`.
+  * Added `demo` website.
+  * Improved the documentation.
+  * Updated Rubocop configuration.
 
 ## 2.0.14 / 2022-09-27
-  * Added `key-value-parser` as a dependency
+  * Added `key-value-parser` as a dependency.
 
 ## 2.0.13 / 2022-04-24
-  * Added `highlight` regex option, for highlighting
-  * Added `number` option, for numbered lines
+  * Added `highlight` regex option, for highlighting.
+  * Added `number` option, for numbered lines.
 
 ## 2.0.12 / 2022-04-22
-  * Exits with an error message if an environment variable included in the value of `FLEXIBLE_INCLUDE_PATHS` is undefined.
+  * Exits with an error message if an environment variable included in the value
+    of `FLEXIBLE_INCLUDE_PATHS` is undefined.
 
 ## 2.0.11 / 2022-04-15
-  * Added & => &amp; to the escaped characters
+  * Added & => &amp; to the escaped characters.
 
 ## 2.0.10 / 2022-04-15
-  * Fixed nil pointer
+  * Fixed nil pointer.
 
 ## 2.0.9 / 2022-04-15
   * Changed how path matching was implemented.
@@ -44,10 +47,11 @@
   * Updated to `jekyll_plugin_logger` v2.1.0
 
 ## 2.0.0 / 2022-03-11
-  * Made into a Ruby gem and published on RubyGems.org as [jekyll_flexible_include](https://rubygems.org/gems/jekyll_flexible_include).
-  * `bin/attach` script added for debugging
-  * Rubocop standards added
-  * Proper versioning and CHANGELOG.md added
+  * Made into a Ruby gem and published on RubyGems.org as
+    [jekyll_flexible_include](https://rubygems.org/gems/jekyll_flexible_include).
+  * `bin/attach` script added for debugging.
+  * Rubocop standards added.
+  * Proper versioning and CHANGELOG.md added.
 
 ## 1.1.1 / 2021-05-01
   * Handles spaces in filenames properly.
@@ -56,14 +60,14 @@
   * Added `do_not_escape` optional parameter.
 
 ## 1.0.0 / 2020-11-28
-  * Mike Slinn took over the project
-  * Now supports relative includes
+  * Mike Slinn took over the project.
+  * Now supports relative includes.
 
 ## 2020-11-28
-  * Renamed include_absolute to flexible_include
+  * Mike Slinn renamed `include_absolute` to `flexible_include`.
 
 ## 2020-08-23
-  * Now supports absolute paths
+  * Now supports absolute paths.
 
 ## 2022-03-11
-  * Project began
+  * Project began.

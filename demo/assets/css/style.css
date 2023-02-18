@@ -109,6 +109,8 @@ pre {
   font-stretch: semi-condensed;
 }
 
+/* START OF CSS TO COPY */
+
 pre.dark {
   color: #eee;
   background-color: #222;
@@ -212,6 +214,7 @@ ol li .codeLabel {
   white-space: pre-wrap;
 }
 
+/* END OF CSS TO COPY */
 
 @media only screen and (min-width: 768px) and (max-width: 959px) {
   .inner {
