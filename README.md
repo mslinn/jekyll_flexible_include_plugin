@@ -79,6 +79,7 @@ The following options imply `pre`:
   * `label="blah blah"` specifies a label for the contents; this value overrides the default label.
     The value can be enclosed in single or double quotes.
 
+
 ### Restricting Directory Access
 By default, `flexible_include` can read from all directories according to the permissions of the user account that launched the `jekyll` process.
 For security-conscience environments, the accessible paths can be restricted.
@@ -161,6 +162,7 @@ and a red error message will be logged on the console that says something like:
    ```shell
    $ bundle install
    ```
+
 
 ## Examples
 

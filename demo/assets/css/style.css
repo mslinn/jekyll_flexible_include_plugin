@@ -109,6 +109,10 @@ pre {
   font-stretch: semi-condensed;
 }
 
+.extra_space {
+  margin-top: 0.75in;
+}
+
 /* START OF CSS TO COPY */
 
 pre.dark {

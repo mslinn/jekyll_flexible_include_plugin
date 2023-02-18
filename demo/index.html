@@ -4,45 +4,133 @@ layout: default
 title: Welcome
 ---
 <h2 id="outside">Outside Include with <span class='code'>highlight</span></h2>
+<p>
+  The <code>file</code> keyword option is not used here.
+</p>
+<pre>{% raw %}{% flexible_include pre highlight='RakeTask' '../Rakefile' %}{% endraw %}</pre>
+<p>
+ Renders as:
+</p>
 {% flexible_include pre highlight='RakeTask' '../Rakefile' %}
 
-<h2 id="outside">Outside Include with <span class='code'>file</span></h2>
+
+<h2 id="outside">Outside Include with <span class='code'>file</span> Keyword Option</h2>
+<pre>{% raw %}{% flexible_include pre file='../Rakefile' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
 {% flexible_include pre file='../Rakefile' %}
 
-<h2 id="outside">Inside Include with <span class='code'>copyButton</span></h2>
+
+<h2 id="outside">Inside Include with <span class='code'>copyButton</span> Keyword Option</h2>
+<pre>{% raw %}{% flexible_include copyButton pre '_bin/debug' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
 {% flexible_include copyButton pre '_bin/debug' %}
 
-<h2 id="outside">Inside Include with <span class='code'>copyButton</span> and  <span class='code'>number</span></h2>
-{% flexible_include copyButton number pre file='_bin/debug' %}
+
+<h2 id="outside">Inside Include with <span class='code'>copyButton</span> and <span class='code'>number</span>  Keyword Options</h2>
+<pre>{% raw %}{% flexible_include copyButton number file='_bin/debug' %}{% endraw %}</pre>
+<p>
+  Recall that the <code>number</code> keyword option implies the <code>pre</code> keyword option.
+  Renders as:
+</p>
+{% flexible_include copyButton number file='_bin/debug' %}
+
 
 <h2 id="outside">Inside Include with <span class='code'>label</span></h2>
+<pre>{% raw %}{% flexible_include file='_bin/debug' label='This is a label' %}{% endraw %}</pre>
+<p>
+  Recall that the <code>label</code> keyword option implies the <code>pre</code> keyword option.
+  Renders as:
+</p>
 {% flexible_include file='_bin/debug' label='This is a label' %}
 
+
 <h2 id="outside">Inside Include with <span class='code'>download</span></h2>
+<pre>{% raw %}{% flexible_include download '_bin/debug' %}{% endraw %}</pre>
+<p>
+  Recall that the <code>download</code> keyword option implies the <code>pre</code> keyword option.
+  Renders as:
+</p>
 {% flexible_include download '_bin/debug' %}
 
+
 <h2 id="outside">Inside Include with <span class='code'>dark</span> and <span class='code'>download</span></h2>
+<pre>{% raw %}{% flexible_include dark download '_bin/debug' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
 {% flexible_include dark download '_bin/debug' %}
 
+
 <h2 id="outside">Absolute Include</h2>
+<pre>{% raw %}{% flexible_include pre '/etc/passwd' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
 {% flexible_include pre '/etc/passwd' %}
 
-<h2 id="outside">Home Relative Include</h2>
+
+<h2 id="outside">Relative Home Include</h2>
+<pre>{% raw %}{% flexible_include pre '~/.ssh/config' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
 {% flexible_include pre '~/.ssh/config' %}
 
-<h2 id="outside">Command Line Output Include</h2>
-{% flexible_include pre '!jekyll' %}
 
-<h2 id="outside">Environment Variable Include</h2>
+<h2 id="outside">Include Command Line Output</h2>
+<pre>{% raw %}{% flexible_include pre '!jekyll help' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include pre '!jekyll help' %}
+
+
+<p class="extra_space">
+  With <code>label</code> option:
+</p>
+<pre>{% raw %}{% flexible_include pre label='Jekyll help output' '!jekyll help' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include pre label='Jekyll help output' '!jekyll help' %}
+
+
+<h2 id="outside">Environment Variable Path Substitution</h2>
+<pre>{% raw %}{% flexible_include pre '$HOME/.bash_aliases' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
 {% flexible_include pre '$HOME/.bash_aliases' %}
 
 
-<h2 id="outside">Unescape</h2>
+<h2 id="outside"><span class="code">Unescape</span> Keyword Option</h2>
 <p>
-  With <code>pre</code>:
+  With <code>pre</code> keyword option:
 </p>
-{% flexible_include do_not_escape pre 'escape_me.html' %}
+<pre>{% raw %}{% flexible_include do_not_escape pre 'escape_me.json' %}{% endraw %}</pre>
 <p>
-  Without <code>pre</code>:
+  Renders as:
 </p>
-{% flexible_include do_not_escape 'escape_me.html' %}
+{% flexible_include do_not_escape pre 'escape_me.json' %}
+
+<p class="extra_space">
+  With <code>pre</code> and <code>dark</code> keyword options:
+</p>
+<pre>{% raw %}{% flexible_include dark do_not_escape pre 'escape_me.json' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include dark do_not_escape pre 'escape_me.json' %}
+
+<p class="extra_space">
+  Without <code>pre</code> keyword option:
+</p>
+<pre>{% raw %}{% flexible_include do_not_escape 'escape_me.json' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include do_not_escape 'escape_me.json' %}
