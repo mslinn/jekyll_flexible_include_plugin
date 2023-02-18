@@ -1,16 +1,27 @@
-require: rubocop-jekyll
-inherit_gem:
-  rubocop-jekyll: .rubocop.yml
+require:
+  - rubocop-rspec
+  # - rubocop-jekyll
+
+# inherit_gem:
+#   rubocop-jekyll: .rubocop.yml
 
 AllCops:
   Exclude:
-      - vendor/**/*
-      - Gemfile*
+    - demo/_site/**/*
+    - exe/**/*
+    - vendor/**/*
+    - Gemfile*
   NewCops: enable
   TargetRubyVersion: 2.6
 
-# Gemspec/RequireMFA:
-  # Enabled: false
+Gemspec/DeprecatedAttributeAssignment:
+  Enabled: false
+
+Gemspec/RequireMFA:
+  Enabled: false
+
+Layout/HashAlignment:
+  EnforcedHashRocketStyle: table
 
 Layout/LineLength:
   Max: 150
@@ -18,10 +29,44 @@ Layout/LineLength:
 Layout/MultilineMethodCallIndentation:
   Enabled: false
 
+Metrics/AbcSize:
+  Max: 45
+
 Metrics/BlockLength:
-  Enabled: false
+  Exclude:
+    - jekyll_flexible_include_plugin.gemspec
+    - spec/**/*
+
+Metrics/ClassLength:
+  Exclude:
+    - spec/**/*
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/MethodLength:
+  Max: 30
+
+Metrics/PerceivedComplexity:
+  Max: 15
+
+Naming/FileName:
+  Exclude:
+    - Rakefile
+
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 15
 
 Style/CommandLiteral:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/PercentLiteralDelimiters:
@@ -30,8 +75,15 @@ Style/PercentLiteralDelimiters:
 Style/RegexpLiteral:
   Enabled: false
 
+Style/StringConcatenation:
+  Exclude:
+    - spec/**/*
+
 Style/StringLiterals:
   Enabled: false
 
 Style/StringLiteralsInInterpolation:
   Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma

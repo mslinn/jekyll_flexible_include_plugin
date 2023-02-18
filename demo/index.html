@@ -1,0 +1,48 @@
+---
+description: Jekyll Flexible Include demo
+layout: default
+title: Welcome
+---
+<h2 id="outside">Outside Include with <span class='code'>highlight</span></h2>
+{% flexible_include pre highlight='RakeTask' '../Rakefile' %}
+
+<h2 id="outside">Outside Include with <span class='code'>file</span></h2>
+{% flexible_include pre file='../Rakefile' %}
+
+<h2 id="outside">Inside Include with <span class='code'>copyButton</span></h2>
+{% flexible_include copyButton pre '_bin/debug' %}
+
+<h2 id="outside">Inside Include with <span class='code'>copyButton</span> and  <span class='code'>number</span></h2>
+{% flexible_include copyButton number pre file='_bin/debug' %}
+
+<h2 id="outside">Inside Include with <span class='code'>label</span></h2>
+{% flexible_include file='_bin/debug' label='This is a label' %}
+
+<h2 id="outside">Inside Include with <span class='code'>download</span></h2>
+{% flexible_include download '_bin/debug' %}
+
+<h2 id="outside">Inside Include with <span class='code'>dark</span> and <span class='code'>download</span></h2>
+{% flexible_include dark download '_bin/debug' %}
+
+<h2 id="outside">Absolute Include</h2>
+{% flexible_include pre '/etc/passwd' %}
+
+<h2 id="outside">Home Relative Include</h2>
+{% flexible_include pre '~/.ssh/config' %}
+
+<h2 id="outside">Command Line Output Include</h2>
+{% flexible_include pre '!jekyll' %}
+
+<h2 id="outside">Environment Variable Include</h2>
+{% flexible_include pre '$HOME/.bash_aliases' %}
+
+
+<h2 id="outside">Unescape</h2>
+<p>
+  With <code>pre</code>:
+</p>
+{% flexible_include do_not_escape pre 'escape_me.html' %}
+<p>
+  Without <code>pre</code>:
+</p>
+{% flexible_include do_not_escape 'escape_me.html' %}

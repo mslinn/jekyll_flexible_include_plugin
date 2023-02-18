@@ -1,128 +1,102 @@
-# frozen_string_literal: true
-
-require "benchmark"
-require "jekyll"
-require "jekyll_plugin_logger"
-require "securerandom"
-require_relative "flexible_include/version"
-require_relative "jekyll_tag_helper"
+require 'benchmark'
+require 'jekyll_plugin_support'
+require 'securerandom'
+require_relative 'flexible_include/version'
 
 module JekyllFlexibleIncludeName
-  PLUGIN_NAME = "flexible_include"
+  PLUGIN_NAME = 'flexible_include'.freeze
 end
 
-class FlexibleError < StandardError
-end
-
-class FlexibleInclude < Liquid::Tag
-  FlexibleIncludeError = Class.new(Liquid::Error)
-
-  @read_regexes = nil
-
-  def self.normalize_path(path)
-    JekyllTagHelper.expand_env(path, die_if_undefined: true)
-                   .gsub("~", Dir.home)
-  end
-
-  # If FLEXIBLE_INCLUDE_PATHS='~/lib/.*:.*:$WORK/.*'
-  # Then @read_regexes will be set to regexes of ["/home/my_user_id/lib/.*", "/pwd/.*", "/work/envar/path/.*"]
-  def self.security_check
-    @execution_denied = ENV['DISABLE_FLEXIBLE_INCLUDE']
-
-    unless @read_regexes
-      flexible_include_paths = ENV['FLEXIBLE_INCLUDE_PATHS']
-      read_paths = normalize_path(flexible_include_paths) if flexible_include_paths
-      if read_paths
-        @read_regexes = read_paths.split(":").map do |path|
-          abs_path = path.start_with?('/') ? path : (Pathname.new(Dir.pwd) + path).to_s
-          Regexp.new(abs_path)
-        end
-      end
-    end
-  end
-
-  def self.access_allowed(path)
+module FlexibleClassMethods
+  def access_allowed(path)
     return true unless @read_regexes
 
     @read_regexes.find { |regex| regex.match(normalize_path(path)) }
   end
 
-  def self.number_content(content)
+  def self.escape_html(string)
+    string.gsub("&", "&amp;")
+          .gsub("{", "&#123;")
+          .gsub("}", "&#125;")
+          .gsub("<", "&lt;")
+  end
+
+  def normalize_path(path)
+    JekyllPluginHelper.expand_env(path, die_if_undefined: true)
+                      .gsub('~', Dir.home)
+  end
+
+  def number_content(content)
     lines = content.split("\n")
     digits = lines.length.to_s.length
     i = 0
     numbered_content = lines.map do |line|
       i += 1
-      number = i.to_s.rjust(digits, " ")
+      number = i.to_s.rjust(digits, ' ')
       "<span class='unselectable numbered_line'> #{number}: </span>#{line}"
     end
-    result = numbered_content.join("\n")
-    result += "\n" unless result.end_with?("\n")
+    result = numbered_content.join "\n"
+    result += "\n" unless result.end_with? "\n"
     result
   end
 
-  # @param tag_name [String] the name of the tag, which we already know.
-  # @param markup [String] the arguments from the tag, as a single string.
-  # @param parse_context [Liquid::ParseContext] hash that stores Liquid options.
-  #        By default it has two keys: :locale and :line_numbers, the first is a Liquid::I18n object, and the second,
-  #        a boolean parameter that determines if error messages should display the line number the error occurred.
-  #        This argument is used mostly to display localized error messages on Liquid built-in Tags and Filters.
-  #        See https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers#create-your-own-tags
-  def initialize(tag_name, markup, _parse_context)
-    super
-    @logger = PluginMetaLogger.instance.new_logger(self, PluginMetaLogger.instance.config)
-    @helper = JekyllTagHelper.new(tag_name, markup, @logger)
+  # If FLEXIBLE_INCLUDE_PATHS='~/lib/.*:.*:$WORK/.*'
+  # Then @read_regexes will be set to regexes of ['/home/my_user_id/lib/.*', '/pwd/.*', '/work/envar/path/.*']
+  def security_check
+    @execution_denied = ENV.fetch('DISABLE_FLEXIBLE_INCLUDE', nil)
 
-    self.class.security_check
+    return if @read_regexes
+
+    flexible_include_paths = ENV.fetch('FLEXIBLE_INCLUDE_PATHS', nil)
+    read_paths = normalize_path(flexible_include_paths) if flexible_include_paths
+    return unless read_paths
+
+    @read_regexes = read_paths.split(':').map do |path|
+      abs_path = path.start_with?('/') ? path : (Pathname.new(Dir.pwd) + path).to_s
+      Regexp.new(abs_path)
+    end
+  end
+end
+
+class FlexibleError < StandardError; end
+
+class FlexibleInclude < JekyllSupport::JekyllTag
+  include JekyllFlexibleIncludePluginVersion
+
+  class << self
+    include FlexibleClassMethods
   end
 
-  # @param liquid_context [Liquid::Context]
-  def render(liquid_context) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/CyclomaticComplexity
-    @helper.liquid_context = liquid_context
-    @do_not_escape = @helper.parameter_specified? "do_not_escape"
-    @download = @helper.parameter_specified? "download"
-    @dark = " dark" if @helper.parameter_specified?("dark")
-    @highlight_pattern = @helper.parameter_specified? "highlight"
-    @label = @helper.parameter_specified? "label"
-    @number_lines = @helper.parameter_specified? "number"
-    @label_specified = @label
-    @copy_button = @helper.parameter_specified? "copyButton"
-    @pre = @copy_button || @dark || @download || @label_specified || @number_lines || @helper.parameter_specified?("pre") # Download or label implies pre
+  FlexibleIncludeError = Class.new(Liquid::Error)
 
-    filename = @helper.parameter_specified? "file"
-    filename ||= @helper.params.first # Do this after all options have been checked for
-    @label ||= filename
+  def render_impl
+    self.class.security_check
+    parse_args
+    path = JekyllPluginHelper.expand_env(@filename)
 
-    # If a label was specified, use it, otherwise concatenate any dangling parameters and use that as the label
-    @label ||= @helper.params[1..].join(" ")
-
-    @logger.debug("filename=#{filename}")
-
-    path = JekyllTagHelper.expand_env(filename)
     case path
     when /\A\// # Absolute path
       return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless self.class.access_allowed(path)
 
-      @logger.debug { "Absolute path=#{path}, filename=#{filename}" }
+      @logger.debug { "Absolute path=#{path}, @filename=#{@filename}" }
     when /\A~/ # Relative path to user's home directory
       return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless self.class.access_allowed(path)
 
-      @logger.debug { "User home start filename=#{filename}, path=#{path}" }
-      filename.slice! "~/"
-      path = File.join(ENV['HOME'], filename)
-      @logger.debug { "User home end filename=#{filename}, path=#{path}" }
+      @logger.debug { "User home start @filename=#{@filename}, path=#{path}" }
+      @filename = @filename.delete_prefix '~/'
+      path = File.join(Dir.home, @filename)
+      @logger.debug { "User home end @filename=#{@filename}, path=#{path}" }
     when /\A!/ # Run command and return response
-      return denied("Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.") if @execution_denied
+      return denied('Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.') if @execution_denied
 
-      filename = JekyllTagHelper.remove_quotes(@helper.argv.first) if @helper.argv.first
-      filename.slice! "!"
-      contents = run(filename)
+      @filename = JekyllPluginHelper.remove_quotes(@helper.argv.first) if @helper.argv.first
+      @filename = @filename.delete_prefix '!'
+      contents = run(@filename)
     else # Relative path
-      site = liquid_context.registers[:site]
-      source = File.expand_path(site.config['source']) # website root directory
-      path = File.join(source, filename) # Fully qualified path of include file from relative path
+      source = File.expand_path(@site.config['source']) # website root directory
+      path = File.join(source, @filename) # Fully qualified path of include file from relative path
       @relative = true
-      @logger.debug { "Relative end filename=#{filename}, path=#{path}" }
+      @logger.debug { "Relative end @filename=#{@filename}, path=#{path}" }
     end
     render_completion(path, contents)
     # rescue StandardError => e
@@ -130,6 +104,28 @@ class FlexibleInclude < Liquid::Tag
   end
 
   private
+
+  def parse_args
+    @do_not_escape = @helper.parameter_specified? 'do_not_escape'
+    @download = @helper.parameter_specified? 'download'
+    @dark = ' dark' if @helper.parameter_specified?('dark')
+    @highlight_pattern = @helper.parameter_specified? 'highlight'
+    @label = @helper.parameter_specified? 'label'
+    @number_lines = @helper.parameter_specified? 'number'
+    @label_specified = @label
+    @copy_button = @helper.parameter_specified? 'copyButton'
+    # Download, dark, label or number implies pre
+    @pre = @helper.parameter_specified?('pre') || @copy_button || @dark || @download || @label_specified || @number_lines
+
+    @filename = @helper.parameter_specified? 'file'
+    @filename ||= @helper.params.first # Do this after all options have been checked for
+    @label ||= @filename
+
+    # If a label was specified, use it, otherwise concatenate any dangling parameters and use that as the label
+    @label ||= @helper.params[1..].join(' ')
+
+    @logger.debug("@filename=#{@filename}")
+  end
 
   def denied(msg)
     @logger.error("#{@helper.page.path} - #{msg}")
@@ -152,19 +148,19 @@ class FlexibleInclude < Liquid::Tag
 
   def render_completion(path, contents)
     contents ||= read_file(path)
-    contents2 = @do_not_escape ? contents : JekyllTagHelper.escape_html(contents)
+    contents2 = @do_not_escape ? contents : FlexibleClassMethods.escape_html(contents)
     contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
     contents2 = FlexibleInclude.number_content(contents2) if @number_lines
     @pre ? wrap_in_pre(path, contents2) : contents2
   end
 
   def run(cmd)
-    @logger.debug { "Executing filename=#{cmd}" }
+    @logger.debug { "Executing @filename=#{cmd}" }
     %x[#{cmd}].chomp
   end
 
-  PREFIX = "<button class='copyBtn' data-clipboard-target="
-  SUFFIX = "title='Copy to clipboard'><img src='/assets/images/clippy.svg' alt='Copy to clipboard' style='width: 13px'></button>"
+  PREFIX = "<button class='copyBtn' data-clipboard-target=".freeze
+  SUFFIX = "title='Copy to clipboard'><img src='/assets/images/clippy.svg' alt='Copy to clipboard' style='width: 13px'></button>".freeze
 
   def wrap_in_pre(path, content)
     basename = File.basename(path)
@@ -178,14 +174,13 @@ class FlexibleInclude < Liquid::Tag
                       @label_specified ? @label : basename
                     end
     pre_id = "id#{SecureRandom.hex 6}"
-    copy_button = @copy_button ? "#{PREFIX}'##{pre_id}'#{SUFFIX}" : ""
-    dark_label = " darkLabel" if @dark
+    copy_button = @copy_button ? "#{PREFIX}'##{pre_id}'#{SUFFIX}" : ''
+    dark_label = ' darkLabel' if @dark
     <<~END_PRE
       <div class="codeLabel#{dark_label}">#{label_or_href}</div>
       <pre data-lt-active="false" class="maxOneScreenHigh copyContainer#{@dark}" id="#{pre_id}">#{copy_button}#{content}</pre>
     END_PRE
   end
-end
 
-PluginMetaLogger.instance.info { "Loaded #{JekyllFlexibleIncludeName::PLUGIN_NAME} v#{JekyllFlexibleIncludePluginVersion::VERSION} plugin." }
-Liquid::Template.register_tag('flexible_include', FlexibleInclude)
+  JekyllPluginHelper.register(self, 'flexible_include')
+end

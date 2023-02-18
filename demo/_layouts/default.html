@@ -1,0 +1,73 @@
+---
+layout: compress
+---
+{% assign isDraft = page | is_draft %}
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {% capture description %}{{ page.description | default: page.title | default: page.subtitle }}{% endcapture %}
+  {% capture page.title %}{{ page.title | default: page.subtitle }}{% endcapture %}
+  {% assign nowMillis = site.time | date: '%s' %}
+  <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: nowMillis }}" type="text/css">
+
+  {% assign csses = page.css | default: layout.css %}
+  {% for css in csses %}
+    <link rel="stylesheet" href="{{css | append: '?v=' | append: nowMillis }}" type="text/css">
+  {% endfor %}
+
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <title>{{ page.title-override | default: page.title | default: page.subtitle }}</title>
+  {% if page.keywords %}<meta name="keywords" content="{{page.keywords}}">{% endif %}
+</head>
+<body id="body">
+  <header>
+    <div class="inner">
+      <a href="/index.html">
+        <div class="h1">{{ site.title }}</div>
+      </a>
+      {% capture Title %}{{ page.title | default: layout.title }}{% endcapture %}
+      {% capture Subtitle %}{{ page.subtitle | default: layout.subtitle }}{% endcapture %}
+      <h1 id="headerH1">{{ Title | default: Subtitle }}</h1>
+  </div>
+  </header>
+  <div id="content-wrapper">
+    <div class="inner clearfix">
+      <nav id="sidebar">
+        <ul>
+          <li><a href="/index.html">Welcome!</a></li>
+        </ul>
+      </nav>
+      <section id="main-content">
+        {% if isDraft %}
+          <div class="watermarked">
+            {{ content }}
+          </div>
+        {% else %}
+          {{ content }}
+        {% endif %}
+
+        <p class="copyright" id="copyright" xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <a rel="license" style="float: left; margin-right: 1em; padding-top: 9px; padding-bottom: 2em;"
+              href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="http://i.creativecommons.org/p/zero/1.0/88x31.png" style="border-style: none;" alt="CC0" />
+          </a>
+          To the extent possible under law,
+          <a rel="dct:publisher"
+              href="https://www.mslinn.com/blog/2022/03/28/jekyll-plugin-template-collection.html">
+            <span property="dct:title">Michael Slinn</span></a>
+          has waived all copyright and related or neighboring rights to
+          <span property="dct:title">Jekyll Flexible Include Demo</span>.
+          This work is published from <span property="vcard:Country" datatype="dct:ISO3166" content="CA"
+              about="https://www.mslinn.com/blog/2022/03/28/jekyll-plugin-template-collection.html"> Canada</span>.
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

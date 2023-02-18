@@ -14,7 +14,7 @@ This plugin supports 4 types of includes:
 ### Include Types
 
 1. Absolute filenames (recognized by filename paths that start with `/`).
-2. Filenames relative to the top-level directory of the Jekyll web site (relative paths **do not** start with `.` or `/`).
+2. Filenames relative to the top-level directory of the Jekyll website (relative paths **do not** start with `.` or `/`).
 3. Filenames relative to the user home directory (recognized by filename paths starting with `~/`).
 4. Executable filenames on the `PATH` (recognized by filename paths that begin with `!`).
 
@@ -87,7 +87,7 @@ If a potential command execution is intercepted, a big red message will appear o
 Add the following to `Gemfile`, inside the `jekyll_plugins` group:
 ```
 group :jekyll_plugins do
-  gem 'jekyll_flexible_include', '~> 2.0.0'
+  gem 'jekyll_flexible_include', '~> 2.0.15'
 end
 ```
 
@@ -97,18 +97,14 @@ plugins:
   - flexible_include
 ```
 
-And then execute:
+Install as usual:
 
     $ bundle install
-
-Or install it yourself as:
-
-    $ gem install jekyll_flexible_include
 
 
 ## Examples
 
-1. Include files, escaping any HTML markup so it appears as written; all four types of includes are shown.
+1. Include files, escaping any HTML markup, so it appears as written; all four types of includes are shown.
    ```
    {% flexible_include '../../folder/outside/jekyll/site/foo.html' %}
    {% flexible_include 'folder/within/jekyll/site/bar.js' %}
@@ -180,6 +176,20 @@ jekyll_flexible_include (2.0.4)
     Jekyll plugin supports various ways to include content into the
     generated site.
 ```
+
+
+## Test
+A test website is provided in the `demo` directory.
+ 1. Set breakpoints.
+
+ 2. Initiate a debug session from the command line:
+    ```shell
+    $ bin/attach demo
+    ```
+
+  3. Once the `Fast Debugger` signon appears, launch the Visual Studio Code launch configuration called `Attach rdebug-ide`.
+
+  4. View the generated website at [`http://localhost:4444`](http://localhost:4444)
 
 
 ### Build and Push to RubyGems

@@ -8,5 +8,6 @@ BUNDLE_WITH="development" bundle install
 
 # See https://www.honeybadger.io/blog/rbenv-rubygems-bundler-path/
 # See https://linuxtut.com/visual-studio-code-i-get-a-syntax-error-when-debugging-when-using-rbenv-6ee58/
-bundle binstubs rspec-core --path exe
-bundle binstubs rubocop --path exe
+bundle binstubs jekyll --force --path exe
+bundle binstubs rspec-core --force --path exe
+bundle binstubs rubocop --force --path exe

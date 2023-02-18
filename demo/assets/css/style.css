@@ -1,0 +1,270 @@
+* {
+  box-sizing: border-box;
+}
+
+a, a code, a.code, a .code, a tt {
+  color: #2879d0;
+}
+
+a {
+  text-decoration: none;
+  background-color: transparent;
+}
+
+body {
+  color: #333;
+  font-family: Merriweather, serif;
+  line-height: 1.5;
+  margin: 0;
+}
+
+code, pre, tt, .codeLabel {
+  font-family: Monaco,"Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-stretch: semi-condensed;
+}
+
+h1, .h1 {
+  display: block;
+  font-size: 2em;
+  margin: 0.67em 0;
+  margin-block-start: 0.67em;
+  margin-block-end: 0.67em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+
+header {
+  background: #095e2e;
+  display: flow-root;
+  font-family: "Helvetica Neue", Helvetica, Arial, serif;
+  height: 160px;
+  position: relative;
+}
+
+header div.h1 {
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 0.2em;
+  margin-top: 0;
+}
+
+header h1 {
+  color: #9dffe5;
+  letter-spacing: 0;
+  line-height: 1.3;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+header > .inner {
+  padding-top: 40px;
+}
+
+nav#sidebar {
+  float: right;
+  font-family: "Helvetica Neue", Helvetica, Arial, serif;
+  line-height: 1.3;
+  min-height: 504px;
+  padding-left: 20px;
+  width: 200px;
+}
+
+pre {
+  background: #78B4DB21;
+  border: solid 1px #cecece;
+  overflow: auto;
+  padding: 4px;
+  text-indent: initial;
+  text-shadow: none;
+  font-size: 9pt;
+  margin-bottom: 10px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#main-content, .inner {
+  padding-bottom: 2em;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 0;
+}
+
+#main-content {
+  float: left;
+  width: 690px;
+}
+
+.bg_yellow, .bg_light_yellow {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.code, code, pre, tt, kbd,
+#main-content h1.code, #main-content h2.code, #main-content h3.code, #main-content h4.code, #main-content h5.code, #main-content h6.code {
+  color: #222;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-stretch: semi-condensed;
+}
+
+pre.dark {
+  color: #eee;
+  background-color: #222;
+}
+
+pre.dark .unselectable,
+pre.dark .unselectable > code {
+  color: rgb(155, 150, 150);
+}
+
+.bg_yellow {
+  background-color: yellow;
+  padding: 2px;
+}
+
+.codeLabel {
+  color: white;
+  background-color: #666;
+  margin-bottom: 0;
+  padding-bottom: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-stretch: semi-condensed;
+}
+
+.darkLabel {
+  color: ivory;
+}
+
+li div.codeLabel {
+  padding-left: 2em;
+}
+
+.codeLabel.unselectable, div.codeLabel.unselectable > code {
+  color: yellow;
+}
+
+.codeLabel + pre {
+  margin-top: 0;
+}
+
+.codeLabel a {
+  color: #c0e6fb;
+}
+
+.codeLabel a:hover {
+  color: #FFE59F;
+}
+
+.copyBtn {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  background-color: #eee;
+  background-image: linear-gradient(#fcfcfc, #eee);
+  border: 1px solid #d5d5d5;
+  border-radius: 3px;
+  color: #333;
+  cursor: pointer;
+  float: right;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+  padding: 2px 2px 0 4px;;
+  position: -webkit-sticky;
+  position: sticky;
+  right: 4px;
+  top: 0;
+  user-select: none;
+  z-index: 1;
+}
+
+.copyContainer {
+  position: relative;
+}
+
+ol li .codeLabel {
+  padding-left: 1.75em;
+}
+
+.maxOneScreenHigh {
+  max-height: 500px;
+}
+
+.numbered_line,
+.unselectable.numbered_line,
+.numbered_line.unselectable {
+  color: #5fb25f;
+}
+
+.unselectable {
+  color: #7922f9;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}
+
+.wrap_pre {
+  white-space: pre-wrap;
+}
+
+
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+  .inner {
+    width: 740px;
+  }
+
+  #main-content {
+    width: 490px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  #tocSide {
+    position: relative;
+    right: 0;
+    width: 220px;
+    display: block;
+  }
+
+  #tocMain {
+    display: none;
+  }
+}
+
+
+@media only screen and (max-width: 767px) {
+  .inner {
+    width: 93%;
+  }
+
+  #main-content,
+  nav#sidebar {
+    float: none;
+    width: 100% ! important;
+  }
+
+  nav#sidebar {
+    background-image: none;
+    border-top: solid 1px #ddd;
+    margin-top: 20px;
+    min-height: 0;
+    padding: 20px 0;
+  }
+
+  nav#sidebar a.button {
+    display: none;
+  }
+
+  #tocSide {
+    display: none;
+  }
+
+  #tocMain {
+    display: block;
+  }
+}

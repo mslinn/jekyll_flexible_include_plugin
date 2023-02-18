@@ -1,3 +1,7 @@
+## 2.0.15 / 2023-02-18
+  * Replaced dependency `key-value-parser` with `jekyll_plugin_support`
+  * Added `demo` website
+
 ## 2.0.14 / 2022-09-27
   * Added `key-value-parser` as a dependency
 

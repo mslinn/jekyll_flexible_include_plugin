@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# shellcheck disable=SC2086
+
+# dispatcher-port and dispatcher-port are arbitrarily chosen to prevent conflicts with other instances.
+
+run="serve \
+    --livereload_port 25721 \
+    --force_polling \
+    --host 0.0.0.0 \
+    --port 4444 \
+    --future \
+    --incremental \
+    --livereload \
+    --drafts \
+    --unpublished"
+
+GIT_ROOT="$( git rev-parse --show-toplevel )"
+cd "${GIT_ROOT}/demo" || exit
+
+bundle install
+bundle update
+
+bundle exec jekyll clean # Ensure all hooks get called
+
+if [ "$1" == -r ]; then
+  bundle exec ../exe/jekyll $run
+else
+  bundle exec rdebug-ide \
+    --host 0.0.0.0 \
+    --port 1234 \
+    --dispatcher-port 26162 \
+    -- ../exe/jekyll $run
+fi

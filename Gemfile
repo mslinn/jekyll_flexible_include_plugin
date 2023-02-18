@@ -1,14 +1,16 @@
-# frozen_string_literal: true
+source 'https://rubygems.org'
 
-source "https://rubygems.org"
-
-# Specify your gem's dependencies in jekyll_flexible_include_plugin.gemspec
+# Dependencies are specified in jekyll_flexible_include_plugin.gemspec
 gemspec
 
-gem "bundler", require: false
-gem "ruby-debug-ide", require: false
-# gem 'debase', require: false
-# gem 'debase-ruby_core_source', '>= 0.10.15', require: false
-gem "rake", require: false
-gem "rspec", require: false
-gem "rubocop", "= 1.18.0", require: false # rubocop-jekyll requires this older version
+gem 'debase', '0.2.5.beta2', require: false
+# gem 'debase-ruby_core_source', require: false
+gem 'rake', require: false
+gem 'rspec', require: false
+gem 'rubocop', require: false
+gem 'rubocop-rspec', require: false
+gem 'ruby-debug-ide', require: false
+
+group :development do
+  gem 'rspec-match_ignoring_whitespace'
+end
