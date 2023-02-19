@@ -25,6 +25,8 @@ $(show_paths)
   -h  Show this error message
 
   -r  Run freely, without a debugger
+
+  -x  Disable the ability to execute arbitrary commands
 "
   exit 1
 }
@@ -32,7 +34,7 @@ $(show_paths)
 
 unset FLEXIBLE_INCLUDE_PATHS
 unset RUN_FREE
-while getopts "ehr" OPT; do
+while getopts "ehrx" OPT; do
   case "$OPT" in
     e) export FLEXIBLE_INCLUDE_PATHS="$FI_PATHS"
        echo "Flexible include is restricted to accessing files that match these regexes:"
@@ -43,6 +45,10 @@ while getopts "ehr" OPT; do
 
     r) export RUN_FREE=true
        echo "The RUN_FREE option was specified (without a debugger)."
+       ;;
+
+    x) export DISABLE_FLEXIBLE_INCLUDE=true
+       echo "The DISABLE_FLEXIBLE_INCLUDE option was specified, so arbitrary commands will not be executed."
        ;;
 
     *) help ;;

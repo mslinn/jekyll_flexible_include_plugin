@@ -58,45 +58,47 @@ except for `die_on_other_error`, which defaults to `true`.
 
 
 ### Syntax
-The following are equivalent:
+The following are all equivalent, however, the first two are recommended:
 ```html
+{% flexible_include file="path" [ OPTIONS ] %}
+{% flexible_include file='path' [ OPTIONS ] %}
 {% flexible_include path [ OPTIONS ] %}
 {% flexible_include 'path' [ OPTIONS ] %}
 {% flexible_include "path" [ OPTIONS ] %}
 ```
 
-By default, the included file will escape characters <code>&lt;</code>,
-<code>{</code> and <code>}</code> unless the <code>do_not_escape</code> keyword option is specified.
 Note that the [square brackets] merely indicate optional parameters
 and are not intended to be written literally.
 
 
 ### Options
-  * `do_not_escape` includes the content without HTML escaping it.
+  * `do_not_escape` keyword option caused the content to be included without HTML escaping it.
+    By default, the included file will escape characters <code>&lt;</code>,
+    <code>{</code> and <code>}</code> unless the <code>do_not_escape</code> keyword option is specified.
 
   * `highlight='regex pattern here'` wraps content matching the regex pattern within a
     `<span class='bg_yellow'></span>` tag.
     Note that the pattern can simply consist of the exact text that you want to highlight.
 
-  * `pre` causes the included file to be wrapped inside a &lt;pre>&lt;/pre> tag,
-    no label is generated.
+  * `pre` is a keyword option that causes the included file to be wrapped inside a
+    &lt;pre>&lt;/pre> tag; no label is generated.
     The &lt;pre>&lt;/pre> tag has an `data-lt-active="false"` attribute, so
     [LanguageTool](https://forum.languagetool.org/t/avoid-spell-check-on-certain-html-inputs-manually/3944)
     will not attempt to check the spelling or grammar of the contents.
 
 The following options imply `pre`:
-  * `dark` applies the `dark` class to the generated &lt;pre>&lt;/pre> tag.
+  * `dark` keyword option applies the `dark` class to the generated &lt;pre>&lt;/pre> tag.
     You can define the `dark` and `darkLabel` classes as desired.
     [This CSS is a good starting point.](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html#pre_css)
 
-  * `download` uses the name of the file as a label,
+  * `download` keyword option uses the name of the file as a label,
     and displays it above the &lt;pre>&lt;/pre> tag.
     Clicking the label causes the file to be downloaded.
 
-  * `copy_button` draws an icon at the top right of the &lt;pre>&lt;/pre>
+  * `copyButton` keyword option draws an icon at the top right of the &lt;pre>&lt;/pre>
     tag that causes the included contents to be copied to the clipboard.
 
-  * `label` specifies that an automatically generated label be placed above the contents.
+  * `label` keyword option specifies that an automatically generated label be placed above the contents.
     There is no need to specify this option if `download` or `copy_button` options are provided.
 
   * `label="blah blah"` specifies a label for the contents; this value overrides the default label.
@@ -195,13 +197,13 @@ and a red error message will be logged on the console that says something like:
    {% flexible_include 'folder/within/jekyll/site/bar.js' %}
    {% flexible_include '/etc/passwd' %}
    {% flexible_include '~/.ssh/config' %}
-   {% flexible_include '!jekyll' %}
+   {% flexible_include '!jekyll help' %}
    {% flexible_include '$HOME/.bash_aliases' %}
    ```
 
 2. Include a JSON file (without escaping characters).
    ```
-   {% flexible_include '~/folder/under/home/directory/foo.html' do_not_escape %}
+   {% flexible_include do_not_escape file='~/folder/under/home/directory/foo.html' %}
    ```
 
 ## Additional Information
@@ -233,7 +235,7 @@ Following is a workaround.
 ## Known Issues
 If the plugin does not work:
 
-1. Ensure `_config.yml` doesn't have `safe: true`.
+1. Ensure `_config.yml` doesn't have `safe: true` set.
    That prevents all plugins from working.
 
 2. If you have version older than v2.x.x,
@@ -269,19 +271,36 @@ jekyll_flexible_include (2.0.4)
 ```
 
 
-## Demo
+## Demo Website
 A test/demo website is provided in the `demo` directory.
 You can run it under a debugger, or let it run free.
 
-### Free Range Demo Website
-To let it run freely, without a debugger, use the `-r` option:
-  ```shell
-  $ demo/bin/debug -r
-  ```
+The `demo/_bin/debug` script can set various parameters for the demo.
+View the help information with the `-h` option:
+```shell
+$ demo/_bin/debug -h
 
-View the generated website at [`http://localhost:4444`](http://localhost:4444)
+debug - Run the demo Jekyll website.
 
-### Demo Website Debugging
+By default the demo Jekyll website runs without restriction under ruby-debug-ide and debase.
+View it at http://localhost:4444
+
+Options:
+  -e  Restrict the allowable directories to read from to the following regexes:
+        jekyll_flexible_include_plugin/.*
+        /dev/.*
+        /proc/.*
+        /run/.*
+
+  -h  Show this error message
+
+  -r  Run freely, without a debugger
+
+  -x  Disable the ability to execute arbitrary commands
+```
+
+
+### Debugging the Demo
 To run under a debugger, for example Visual Studio Code:
  1. Set breakpoints.
 
@@ -292,7 +311,7 @@ To run under a debugger, for example Visual Studio Code:
 
   3. Once the `Fast Debugger` signon appears, launch the Visual Studio Code launch configuration called `Attach rdebug-ide`.
 
-  4. View the generated website at [`http://localhost:4444`](http://localhost:4444)
+  4. View the generated website at [`http://localhost:4444`](http://localhost:4444).
 
 
 ### Build and Push to RubyGems
