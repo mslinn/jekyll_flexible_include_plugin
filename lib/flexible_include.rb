@@ -105,15 +105,26 @@ class FlexibleInclude < JekyllSupport::JekyllTag
 
   private
 
+  def denied(msg)
+    @logger.error("#{@helper.page.path} - #{msg}")
+    "<p style='color: white; background-color: red; padding: 2pt 1em 2pt 1em;'>#{msg}</p>"
+  end
+
+  def highlight(content, pattern)
+    content.gsub(Regexp::new(pattern), "<span class='bg_yellow'>\\0</span>")
+  end
+
   def parse_args
+    @copy_button = @helper.parameter_specified? 'copyButton'
+    @dark = ' dark' if @helper.parameter_specified? 'dark'
     @do_not_escape = @helper.parameter_specified? 'do_not_escape'
     @download = @helper.parameter_specified? 'download'
-    @dark = ' dark' if @helper.parameter_specified?('dark')
     @highlight_pattern = @helper.parameter_specified? 'highlight'
     @label = @helper.parameter_specified? 'label'
-    @number_lines = @helper.parameter_specified? 'number'
     @label_specified = @label
-    @copy_button = @helper.parameter_specified? 'copyButton'
+    @number_lines = @helper.parameter_specified? 'number'
+    @strip = @helper.parameter_specified? 'strip'
+
     # Download, dark, label or number implies pre
     @pre = @helper.parameter_specified?('pre') || @copy_button || @dark || @download || @label_specified || @number_lines
 
@@ -125,15 +136,6 @@ class FlexibleInclude < JekyllSupport::JekyllTag
     @label ||= @helper.params[1..].join(' ')
 
     @logger.debug("@filename=#{@filename}")
-  end
-
-  def denied(msg)
-    @logger.error("#{@helper.page.path} - #{msg}")
-    "<p style='color: white; background-color: red; padding: 2pt 1em 2pt 1em;'>#{msg}</p>"
-  end
-
-  def highlight(content, pattern)
-    content.gsub(Regexp::new(pattern), "<span class='bg_yellow'>\\0</span>")
   end
 
   def read_file(file)
@@ -148,6 +150,7 @@ class FlexibleInclude < JekyllSupport::JekyllTag
 
   def render_completion(path, contents)
     contents ||= read_file(path)
+    contents.strip! if @strip
     contents2 = @do_not_escape ? contents : FlexibleClassMethods.escape_html(contents)
     contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
     contents2 = FlexibleInclude.number_content(contents2) if @number_lines

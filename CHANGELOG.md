@@ -3,6 +3,7 @@
   * Added `demo` website.
   * Improved the documentation.
   * Updated Rubocop configuration.
+  * Added `strip` option.
 
 ## 2.0.14 / 2022-09-27
   * Added `key-value-parser` as a dependency.

@@ -82,6 +82,28 @@ title: Welcome
 {% flexible_include pre '~/.java/.userPrefs/prefs.xml' %}
 
 
+
+
+<h2 id="outside">Strip Leading and Trailing Whitespace</h2>
+<p>
+  Sometimes a file or process contains leading or trailing whitespace.
+</p>
+<pre>{% raw %}{% flexible_include copyButton download .mem_settings.yaml %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include copyButton download .mem_settings.yaml %}
+
+<p>
+  The <code>strip</code> keyword option removes leading and trailing whitespace.
+</p>
+<pre>{% raw %}{% flexible_include copyButton download <span class="bg_yellow">strip</span> .mem_settings.yaml %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include copyButton download strip .mem_settings.yaml %}
+
+
 <h2 id="outside">Include Command Line Output</h2>
 <pre>{% raw %}{% flexible_include pre '!jekyll help' %}{% endraw %}</pre>
 <p>
