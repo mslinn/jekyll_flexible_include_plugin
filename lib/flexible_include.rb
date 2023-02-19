@@ -58,29 +58,21 @@ module FlexibleClassMethods
   end
 end
 
-class FlexibleError < StandardError; end
+FlexibleIncludeError = Class.new(Liquid::Error)
 
-class FlexibleInclude < JekyllSupport::JekyllTag
+class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/ClassLength
   include JekyllFlexibleIncludePluginVersion
 
-  class << self
-    include FlexibleClassMethods
-  end
-
-  FlexibleIncludeError = Class.new(Liquid::Error)
-
   def render_impl
-    self.class.security_check
-    parse_args
+    setup
     path = JekyllPluginHelper.expand_env(@filename)
-
     case path
     when /\A\// # Absolute path
-      return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless self.class.access_allowed(path)
+      return denied("Access to <code>#{path}</code> denied by <code>FLEXIBLE_INCLUDE_PATHS</code> value.") unless self.class.access_allowed(path)
 
       @logger.debug { "Absolute path=#{path}, @filename=#{@filename}" }
     when /\A~/ # Relative path to user's home directory
-      return denied("Access to #{path} denied by FLEXIBLE_INCLUDE_PATHS value.") unless self.class.access_allowed(path)
+      return denied("Access to <code>#{path}</code> denied by <code>FLEXIBLE_INCLUDE_PATHS</code> value.") unless self.class.access_allowed(path)
 
       @logger.debug { "User home start @filename=#{@filename}, path=#{path}" }
       @filename = @filename.delete_prefix '~/'
@@ -99,19 +91,26 @@ class FlexibleInclude < JekyllSupport::JekyllTag
       @logger.debug { "Relative end @filename=#{@filename}, path=#{path}" }
     end
     render_completion(path, contents)
-    # rescue StandardError => e
-    #   raise FlexibleIncludeError, e.message.red, [] # Suppress stack trace
+  rescue StandardError => e
+    raise FlexibleIncludeError, remove_html_tags(e.message).red, [] if @die_on_other_error
   end
 
   private
 
+  class << self
+    include FlexibleClassMethods
+  end
+
   def denied(msg)
-    @logger.error("#{@helper.page.path} - #{msg}")
-    "<p style='color: white; background-color: red; padding: 2pt 1em 2pt 1em;'>#{msg}</p>"
+    msg_no_html = remove_html_tags(msg)
+    @logger.error("#{@page['path']} - #{msg_no_html}")
+    raise FlexibleIncludeError, "#{@page['path']} - #{msg_no_html.red}", [] if @die_on_path_denied
+
+    "<p class='flexible_error'>#{msg}</p>"
   end
 
   def highlight(content, pattern)
-    content.gsub(Regexp::new(pattern), "<span class='bg_yellow'>\\0</span>")
+    content.gsub(Regexp.new(pattern), "<span class='bg_yellow'>\\0</span>")
   end
 
   def parse_args
@@ -138,18 +137,19 @@ class FlexibleInclude < JekyllSupport::JekyllTag
     @logger.debug("@filename=#{@filename}")
   end
 
-  def read_file(file)
-    File.read(file)
-  end
-
+  # Not used, delete
   def realpath_prefixed_with?(path, dir)
     File.exist?(path) && File.realpath(path).start_with?(dir)
-  rescue StandardError
-    false
+  rescue StandardError => _e
+    raise FlexibleIncludeError, remove_html_tags(e.message).red, [] if @die_on_file_error
+  end
+
+  def remove_html_tags(string)
+    string.gsub(/<[^>]*>/, '')
   end
 
   def render_completion(path, contents)
-    contents ||= read_file(path)
+    contents ||= File.read(path)
     contents.strip! if @strip
     contents2 = @do_not_escape ? contents : FlexibleClassMethods.escape_html(contents)
     contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
@@ -160,6 +160,24 @@ class FlexibleInclude < JekyllSupport::JekyllTag
   def run(cmd)
     @logger.debug { "Executing @filename=#{cmd}" }
     %x[#{cmd}].chomp
+  rescue StandardError => e
+    raise FlexibleIncludeError, remove_html_tags(e.message).red, [] if @die_on_run_error
+  end
+
+  def setup
+    @die_on_other_error = true
+
+    self.class.security_check
+
+    config = @config[JekyllFlexibleIncludeName::PLUGIN_NAME]
+    if config
+      @die_on_file_error  = config['die_on_file_error']
+      @die_on_other_error = config['die_on_other_error']
+      @die_on_path_denied = config['die_on_path_denied']
+      @die_on_run_error   = config['die_on_run_error']
+    end
+
+    parse_args
   end
 
   PREFIX = "<button class='copyBtn' data-clipboard-target=".freeze

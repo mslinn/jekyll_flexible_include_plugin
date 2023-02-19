@@ -1,6 +1,55 @@
 #!/bin/bash
 
-# shellcheck disable=SC2086
+# shellcheck disable=SC2086,SC2155,SC2059
+
+export FI_PATHS="$(pwd)/.*:/dev/.*:/proc/.*:/run/.*"
+
+function show_paths {
+  IFS=':' read -r -a ARRAY <<< "$FI_PATHS"
+  for X in "${ARRAY[@]}"; do
+    printf "        $X\n"
+  done
+}
+
+function help {
+  echo "
+$(basename $0) - Run the demo Jekyll website.
+
+By default the demo Jekyll website runs without restriction under ruby-debug-ide and debase,
+and listens on 0.0.0.0:1234.
+
+Options:
+  -e  Restrict the allowable directories to read from to the following regexes:
+$(show_paths)
+
+  -h  Show this error message
+
+  -r  Run freely, without a debugger
+"
+  exit 1
+}
+
+
+unset FLEXIBLE_INCLUDE_PATHS
+unset RUN_FREE
+while getopts "ehr" OPT; do
+  case "$OPT" in
+    e) export FLEXIBLE_INCLUDE_PATHS="$FI_PATHS"
+       echo "Flexible include is restricted to accessing files that match these regexes:"
+       show_paths
+       ;;
+
+    h) help ;;
+
+    r) export RUN_FREE=true
+       echo "The RUN_FREE option was specified (without a debugger)."
+       ;;
+
+    *) help ;;
+  esac
+done
+shift $((OPTIND-1))
+
 
 # dispatcher-port and dispatcher-port are arbitrarily chosen to prevent conflicts with other instances.
 
@@ -23,7 +72,7 @@ bundle update
 
 bundle exec jekyll clean # Ensure all hooks get called
 
-if [ "$1" == -r ]; then
+if [ "$RUN_FREE" ]; then
   bundle exec ../exe/jekyll $run
 else
   bundle exec rdebug-ide \

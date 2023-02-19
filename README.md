@@ -34,6 +34,29 @@ In addition, filenames that require environment expansion because they contain a
 defined when <code>jekyll build</code> executes.
 
 
+### Configuration
+Configuration parameters can be added to a section in `_config.yml` called `flexible_include`, like this:
+
+```yaml
+flexible_include:
+  die_on_file_error: true
+  die_on_path_denied: true
+  die_on_run_error: true
+  die_on_other_error: true
+```
+
+The default values for all of these parameters is `false`,
+except for `die_on_other_error`, which defaults to `true`.
+
+ - If `die_on_file_error` is enabled, then an attempt to include a file that fails will cause Jekyll to die with an error message.
+
+ - If `die_on_path_denied` is enabled (see [Restricting Directory Access](#restricting-directory-access)), then an attempt to include a file that should be blocked will cause Jekyll to die with an error message.
+
+ - If `die_on_run_error` is enabled, then an attempt to run a process that fails will cause Jekyll to die with an error message.
+
+ - If `die_on_other_error` is enabled, then any other exception will cause Jekyll to die with an error message.
+
+
 ### Syntax
 The following are equivalent:
 ```html

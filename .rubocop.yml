@@ -42,10 +42,10 @@ Metrics/ClassLength:
     - spec/**/*
 
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Max: 20
 
 Metrics/MethodLength:
-  Max: 30
+  Max: 40
 
 Metrics/PerceivedComplexity:
   Max: 15
@@ -61,6 +61,9 @@ RSpec/MultipleExpectations:
   Max: 15
 
 Style/CommandLiteral:
+  Enabled: false
+
+Style/CommentedKeyword:
   Enabled: false
 
 Style/Documentation:

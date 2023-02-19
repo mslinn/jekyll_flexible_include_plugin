@@ -4,6 +4,14 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+  {
+    "cwd": "${workspaceFolder}",
+    "args": [ ],
+    "name": "Bash-Debug demo/_bin/debug",
+    "program": "${workspaceFolder}/demo/_bin/debug",
+    "request": "launch",
+    "type": "bashdb",
+  },
     {
       "cwd": "${workspaceRoot}",
       "name": "Attach rdebug-ide",
@@ -11,9 +19,7 @@
       "remoteHost": "localhost",
       "remotePort": "1234",
       "remoteWorkspaceRoot": "/",
-      "restart": true,
       "showDebuggerOutput": true,
-      "stopOnEntry": true,
       "type": "Ruby",
     },
     {

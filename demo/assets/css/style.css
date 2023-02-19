@@ -193,6 +193,17 @@ li div.codeLabel {
   position: relative;
 }
 
+.flexible_error {
+  color: white;
+  background-color: red;
+  padding: 2pt 1em 2pt 1em;
+}
+
+.flexible_error code {
+  color: lightgray;
+  font-size: 9pt;
+}
+
 ol li .codeLabel {
   padding-left: 1.75em;
 }

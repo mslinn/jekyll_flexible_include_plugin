@@ -1,3 +1,11 @@
+## 2.0.16 / 2023-02-19
+  * Replaced hard-coded CSS in `denied` method with `flexible_error` class in
+    `demo/assets/css/style.css`.
+  * Added configuration section `flexible_include` with supported parameters
+    `die_on_file_error`, `die_on_path_denied`, `die_on_run_error`,
+    `die_on_path_denied` and `die_on_other_error`.
+  * Fixed `undefined method 'path'` that occurred when `FLEXIBLE_INCLUDE_PATHS` was specified.
+
 ## 2.0.15 / 2023-02-18
   * Replaced dependency `key-value-parser` with `jekyll_plugin_support`.
   * Added `demo` website.
