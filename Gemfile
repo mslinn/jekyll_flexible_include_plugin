@@ -9,6 +9,7 @@ gem 'rake', require: false
 gem 'rspec', require: false
 gem 'rubocop', require: false
 gem 'rubocop-rspec', require: false
+gem 'rubocop-performance', require: false
 gem 'ruby-debug-ide', require: false
 
 group :development do

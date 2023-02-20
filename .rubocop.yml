@@ -1,5 +1,6 @@
 require:
   - rubocop-rspec
+  - rubocop-performance
   # - rubocop-jekyll
 
 # inherit_gem:
