@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'debase', '0.2.5.beta2', require: false
-# gem 'debase-ruby_core_source', require: false
 gem 'rake', require: false
 gem 'rspec', require: false
 gem 'rubocop', require: false
