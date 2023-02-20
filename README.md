@@ -155,7 +155,7 @@ and a red error message will be logged on the console that says something like:
 
 ## Installation
 1. Add the following to `Gemfile`, inside the `jekyll_plugins` group:
-   ```
+   ```ruby
    group :jekyll_plugins do
      gem 'jekyll_flexible_include', '~> 2.0.15'
    end

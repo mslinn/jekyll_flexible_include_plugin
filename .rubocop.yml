@@ -1,7 +1,9 @@
 require:
-  - rubocop-rspec
-  - rubocop-performance
   # - rubocop-jekyll
+  - rubocop-md
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
 
 # inherit_gem:
 #   rubocop-jekyll: .rubocop.yml
@@ -21,6 +23,10 @@ Gemspec/DeprecatedAttributeAssignment:
 Gemspec/RequireMFA:
   Enabled: false
 
+Layout/InitialIndentation:
+  Exclude:
+    - README.md
+
 Layout/HashAlignment:
   EnforcedHashRocketStyle: table
 
@@ -29,6 +35,10 @@ Layout/LineLength:
 
 Layout/MultilineMethodCallIndentation:
   Enabled: false
+
+Lint/RedundantCopDisableDirective:
+  Exclude:
+    - jekyll_flexible_include_plugin.gemspec
 
 Metrics/AbcSize:
   Max: 45
