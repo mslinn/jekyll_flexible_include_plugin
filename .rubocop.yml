@@ -28,7 +28,9 @@ Layout/InitialIndentation:
     - README.md
 
 Layout/HashAlignment:
-  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+  Exclude:
+    - jekyll_flexible_include_plugin.gemspec
 
 Layout/LineLength:
   Max: 150
