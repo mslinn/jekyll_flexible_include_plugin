@@ -1,3 +1,6 @@
+## 2.0.17 / 2023-03-22
+  * Added `repo` and `git_ref` parameters, so files can be retrieved from git repositories at a given commit or tag.
+
 ## 2.0.16 / 2023-02-19
   * Replaced hard-coded CSS in `denied` method with `flexible_error` class in
     `demo/assets/css/style.css`.

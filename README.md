@@ -34,6 +34,13 @@ In addition, filenames that require environment expansion because they contain a
 defined when <code>jekyll build</code> executes.
 
 
+A file from a git repository can also be included.
+Files can be retrieved from at a given commit or tag.
+Two new options are provided for this purpose:
+  - `repo` - directory where git repo resides; environment variables are expanded; defaults to current directory.
+  - `git_ref` - Git ref of commit or tag to be examined for the file; defaults to `HEAD`.
+
+
 ### Configuration
 Configuration parameters can be added to a section in `_config.yml` called `flexible_include`, like this:
 

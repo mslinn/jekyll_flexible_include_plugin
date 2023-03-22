@@ -36,4 +36,5 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.version = JekyllFlexibleIncludePluginVersion::VERSION
 
   spec.add_dependency 'jekyll_plugin_support', '~> 0.5.1'
+  spec.add_dependency 'rugged'
 end
