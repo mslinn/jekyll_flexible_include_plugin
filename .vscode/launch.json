@@ -5,6 +5,12 @@
   "version": "0.2.0",
   "configurations": [
   {
+    "name": "Debug lib/git_util.rb",
+    "type": "Ruby",
+    "request": "launch",
+    "program": "${workspaceRoot}/lib/git_util.rb"
+  },
+  {
     "cwd": "${workspaceFolder}",
     "args": [ ],
     "name": "Bash-Debug demo/_bin/debug",
