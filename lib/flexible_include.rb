@@ -63,7 +63,7 @@ FlexibleIncludeError = Class.new(Liquid::Error)
 class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/ClassLength
   include JekyllFlexibleIncludePluginVersion
 
-  def render_impl
+  def render_impl # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     setup
     path = JekyllPluginHelper.expand_env(@filename)
     case path
@@ -91,8 +91,27 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
       @logger.debug { "Relative end @filename=#{@filename}, path=#{path}" }
     end
     render_completion(path, contents)
+  rescue Errno::EACCES => e
+    msg = format_error_message e.message
+    @logger.error msg
+    raise FlexibleIncludeError, msg, [] if @die_on_file_error
+
+    "<span class='flexible_error'>FlexibleIncludeError: #{msg}</span>"
+  rescue Errno::ENOENT => e
+    msg = format_error_message e.message
+    @logger.error msg
+    raise FlexibleIncludeError, msg, [] if @die_on_path_denied
+
+    "<span class='flexible_error'>FlexibleIncludeError: #{msg}</span>"
+  rescue FlexibleIncludeError => e
+    @logger.error e.message
+    raise e
   rescue StandardError => e
-    raise FlexibleIncludeError, remove_html_tags(e.message).red, [] if @die_on_other_error
+    msg = format_error_message e.message
+    @logger.error msg
+    raise FlexibleIncludeError, msg, [] if @die_on_other_error
+
+    "<span class='flexible_error'>FlexibleIncludeError: #{msg}</span>"
   end
 
   private
@@ -107,6 +126,10 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
     raise FlexibleIncludeError, "#{@page['path']} - #{msg_no_html.red}", [] if @die_on_path_denied
 
     "<p class='flexible_error'>#{msg}</p>"
+  end
+
+  def format_error_message(message)
+    "#{message} on line #{@line_number} (after front matter) of #{@page['path']}}"
   end
 
   def highlight(content, pattern)
@@ -158,23 +181,37 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
   end
 
   def run(cmd)
-    @logger.debug { "Executing @filename=#{cmd}" }
+    if cmd.empty?
+      msg = format_error_message 'FlexibleIncludeError: Empty command string'
+      @do_not_escape = true
+      return "<span class='flexible_error'>#{msg}</span>" unless @die_on_other_error
+
+      raise FlexibleIncludeError, msg, []
+    end
+
+    @logger.debug { "Executing #{cmd}" }
     %x[#{cmd}].chomp
+  rescue FlexibleIncludeError => e
+    raise e
   rescue StandardError => e
-    raise FlexibleIncludeError, remove_html_tags(e.message).red, [] if @die_on_run_error
+    msg = format_error_message "#{e.class}: #{e.message.strip}"
+    @logger.error msg
+    @do_not_escape = true
+    return "<span class='flexible_error'>#{msg}</span>" unless @die_on_run_error
+
+    e.set_backtrace []
+    raise e
   end
 
   def setup
-    @die_on_other_error = true
-
     self.class.security_check
 
     config = @config[JekyllFlexibleIncludeName::PLUGIN_NAME]
     if config
-      @die_on_file_error  = config['die_on_file_error']
-      @die_on_other_error = config['die_on_other_error']
-      @die_on_path_denied = config['die_on_path_denied']
-      @die_on_run_error   = config['die_on_run_error']
+      @die_on_file_error  = config['die_on_file_error'] == true
+      @die_on_other_error = config['die_on_other_error'] == true
+      @die_on_path_denied = config['die_on_path_denied'] == true
+      @die_on_run_error   = config['die_on_run_error'] == true
     end
 
     parse_args

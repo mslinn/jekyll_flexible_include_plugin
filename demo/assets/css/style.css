@@ -21,6 +21,7 @@ body {
 code, pre, tt, .codeLabel {
   font-family: Monaco,"Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-stretch: semi-condensed;
+  font-size: smaller;
 }
 
 h1, .h1 {
@@ -113,7 +114,8 @@ pre {
   margin-top: 0.75in;
 }
 
-/* START OF CSS TO COPY */
+
+/* Start of flexible_include CSS */
 
 pre.dark {
   color: #eee;
@@ -194,14 +196,16 @@ li div.codeLabel {
 }
 
 .flexible_error {
+  font-family: Monaco,"Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-size: smaller;
   color: white;
-  background-color: red;
-  padding: 2pt 1em 2pt 1em;
+  background-color: #b21515;
+  padding: 2pt 4pt 2pt 4pt;
 }
 
 .flexible_error code {
   color: lightgray;
-  font-size: 9pt;
+  font-size: smaller;
 }
 
 ol li .codeLabel {
@@ -229,7 +233,8 @@ ol li .codeLabel {
   white-space: pre-wrap;
 }
 
-/* END OF CSS TO COPY */
+/* End of flexible_include CSS */
+
 
 @media only screen and (min-width: 768px) and (max-width: 959px) {
   .inner {

@@ -3,6 +3,32 @@ description: Jekyll Flexible Include demo
 layout: default
 title: Welcome
 ---
+<h2 id="die">Die Another Day</h2>
+<p>
+  Set and unset <code>die_on_*_error</code> in <code>_config.yml</code>.
+</p>
+
+<h3 class="code">die_on_file_error</h2>
+<p>
+  {% flexible_include file="/asdf/bogus/path.txt" %}
+</p>
+
+<h3 class="code">die_on_path_denied</h2>
+<p>
+  {% flexible_include file="/etc/sudoers" %}
+</p>
+
+<h3 class="code">die_on_run_error</h2>
+<p>
+  {% flexible_include file="!blah" %}
+</p>
+
+<h3 class="code">die_on_other_error</h2>
+<p>
+  {% flexible_include file="!" %}
+</p>
+
+
 <h2 id="outside">Outside Include with <span class='code'>highlight</span></h2>
 <p>
   The <code>file</code> keyword option is not used here.
