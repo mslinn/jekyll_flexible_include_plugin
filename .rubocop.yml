@@ -5,9 +5,6 @@ require:
   - rubocop-rake
   - rubocop-rspec
 
-# inherit_gem:
-#   rubocop-jekyll: .rubocop.yml
-
 AllCops:
   Exclude:
     - demo/_site/**/*
@@ -29,8 +26,7 @@ Layout/InitialIndentation:
 
 Layout/HashAlignment:
   EnforcedColonStyle: table
-  Exclude:
-    - jekyll_flexible_include_plugin.gemspec
+  EnforcedHashRocketStyle: table
 
 Layout/LineLength:
   Max: 150
