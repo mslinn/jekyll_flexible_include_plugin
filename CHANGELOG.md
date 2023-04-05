@@ -1,3 +1,6 @@
+## 2.0.19 / 2023-04-05
+  * Added attribution support
+
 ## 2.0.18 / 2023-03-24
   * The following are now parsed property:
     `die_on_file_error`, `die_on_path_denied`, `die_on_run_error`, `die_on_path_denied`, and `die_on_other_error`.

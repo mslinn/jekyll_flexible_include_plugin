@@ -177,7 +177,11 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
     contents2 = @do_not_escape ? contents : FlexibleClassMethods.escape_html(contents)
     contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
     contents2 = FlexibleInclude.number_content(contents2) if @number_lines
-    @pre ? wrap_in_pre(path, contents2) : contents2
+    result = @pre ? wrap_in_pre(path, contents2) : contents2
+    <<~END_OUTPUT
+      #{result}
+      #{@helper.attribute if @helper.attribution}
+    END_OUTPUT
   end
 
   def run(cmd)
@@ -204,6 +208,7 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
   end
 
   def setup
+    @helper.gem_file __FILE__ # Enables attribution
     self.class.security_check
 
     config = @config[JekyllFlexibleIncludeName::PLUGIN_NAME]
@@ -236,7 +241,7 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
     dark_label = ' darkLabel' if @dark
     <<~END_PRE
       <div class="codeLabel#{dark_label}">#{label_or_href}</div>
-      <pre data-lt-active="false" class="maxOneScreenHigh copyContainer#{@dark}" id="#{pre_id}">#{copy_button}#{content}</pre>
+      <pre data-lt-active="false" class="pre_tag maxOneScreenHigh copyContainer#{@dark}" id="#{pre_id}">#{copy_button}#{content}</pre>
     END_PRE
   end
 

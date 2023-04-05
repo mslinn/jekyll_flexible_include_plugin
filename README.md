@@ -79,6 +79,7 @@ and are not intended to be written literally.
 
 
 ### Options
+  * `attribution` see [`jekyll_plugin_support`](https://github.com/mslinn/jekyll_plugin_support#subclass-attribution)
   * `do_not_escape` keyword option caused the content to be included without HTML escaping it.
     By default, the included file will escape characters <code>&lt;</code>,
     <code>{</code> and <code>}</code> unless the <code>do_not_escape</code> keyword option is specified.
