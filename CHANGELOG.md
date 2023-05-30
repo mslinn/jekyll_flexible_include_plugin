@@ -1,3 +1,6 @@
+## 2.0.20 / 2023-05-30
+  * Updated dependencies
+
 ## 2.0.19 / 2023-04-05
   * Added attribution support
 
