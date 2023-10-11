@@ -1,38 +1,55 @@
+# Change Log
+
 ## 2.0.20 / 2023-05-30
-  * Updated dependencies
+
+* Updated dependencies
+
 
 ## 2.0.19 / 2023-04-05
-  * Added attribution support
+
+* Added attribution support
+
 
 ## 2.0.18 / 2023-03-24
-  * The following are now parsed property:
-    `die_on_file_error`, `die_on_path_denied`, `die_on_run_error`, `die_on_path_denied`, and `die_on_other_error`.
+
+* The following are now parsed property:
+  `die_on_file_error`, `die_on_path_denied`, `die_on_run_error`, `die_on_path_denied`, and `die_on_other_error`.
+
 
 ## 2.0.17 / 2023-03-22
-  * Added `repo` and `git_ref` parameters, so files can be retrieved from git repositories at a given commit or tag.
+
+* Added `repo` and `git_ref` parameters, so files can be retrieved from git repositories at a given commit or tag.
+
 
 ## 2.0.16 / 2023-02-19
-  * Replaced hard-coded CSS in `denied` method with `flexible_error` class in
-    `demo/assets/css/style.css`.
-  * Added `-e` and `-x` options to `demo/_bin/debug`.
-  * Added configuration section `flexible_include` with supported parameters
-    `die_on_file_error`, `die_on_path_denied`, `die_on_run_error`,
-    `die_on_path_denied` and `die_on_other_error`.
-  * Fixed `undefined method 'path'` that occurred when `FLEXIBLE_INCLUDE_PATHS` was specified.
+
+* Replaced hard-coded CSS in `denied` method with `flexible_error` class in
+  `demo/assets/css/style.css`.
+* Added `-e` and `-x` options to `demo/_bin/debug`.
+* Added configuration section `flexible_include` with supported parameters
+  `die_on_file_error`, `die_on_path_denied`, `die_on_run_error`,
+  `die_on_path_denied` and `die_on_other_error`.
+* Fixed `undefined method 'path'` that occurred when `FLEXIBLE_INCLUDE_PATHS` was specified.
+
 
 ## 2.0.15 / 2023-02-18
-  * Replaced dependency `key-value-parser` with `jekyll_plugin_support`.
-  * Added `demo` website.
-  * Improved the documentation.
-  * Updated Rubocop configuration.
-  * Added `strip` option.
+
+* Replaced dependency `key-value-parser` with `jekyll_plugin_support`.
+* Added `demo` website.
+* Improved the documentation.
+* Updated Rubocop configuration.
+* Added `strip` option.
+
 
 ## 2.0.14 / 2022-09-27
-  * Added `key-value-parser` as a dependency.
+
+* Added `key-value-parser` as a dependency.
+
 
 ## 2.0.13 / 2022-04-24
-  * Added `highlight` regex option, for highlighting.
-  * Added `number` option, for numbered lines.
+
+* Added `highlight` regex option, for highlighting.
+* Added `number` option, for numbered lines.
 
 ## 2.0.12 / 2022-04-22
   * Exits with an error message if an environment variable included in the value

@@ -11,4 +11,4 @@ gem uninstall "$NAME" -aIx --user-install --force
 # git commit -m - && \
 # git push origin "$(git rev-parse --abbrev-ref HEAD)"
 
-bundle exec rake install:local
+bundle exec rake install

@@ -34,7 +34,9 @@ class GitFileReader
 end
 
 if $PROGRAM_NAME == __FILE__
+  puts '>>>> README.md start <<<<<'
   puts GitFileReader.new('.').blob_at('HEAD~2', 'README.md').content
+  puts '>>>> README.md end <<<<<'
   # puts GitFileReader.new('.').commit_for_ref('HEAD^').contents('README.md')
   # puts GitFileReader.new('.').commit_for_ref('HEAD').contents('README.md')
   # puts GitFileReader.new('.').commit_for_ref('refs/heads/master').contents('README.md')
