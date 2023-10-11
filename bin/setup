@@ -7,7 +7,13 @@ fi
 rm -f Gemfile.lock
 
 if [[ -z "$( which bundle )" ]]; then gem install bundler; fi
-BUNDLE_WITH="development" bundle
+export BUNDLE_WITH="development"
+bundle
+if [ -d demo/ ]; then
+  cd demo || exit
+  bundle
+  cd ..
+fi
 
 # See https://www.honeybadger.io/blog/rbenv-rubygems-bundler-path/
 # See https://linuxtut.com/visual-studio-code-i-get-a-syntax-error-when-debugging-when-using-rbenv-6ee58/
