@@ -2,13 +2,6 @@
 
 NAME="$( basename -s .git "$( git remote get-url origin )" )"
 
-# Sets VERSION:
-# eval "$( grep VERSION "lib/$NAME/version.rb" | sed 's/ *//g' )"
-
 gem uninstall "$NAME" -aIx --user-install --force
-
-# git add -A && \
-# git commit -m - && \
-# git push origin "$(git rev-parse --abbrev-ref HEAD)"
 
 bundle exec rake install

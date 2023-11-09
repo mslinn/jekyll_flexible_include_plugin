@@ -1,3 +1,4 @@
+require 'jekyll_plugin_support'
 require_relative '../lib/flexible_include'
 
 RSpec.describe(FlexibleInclude) do
@@ -10,7 +11,7 @@ RSpec.describe(FlexibleInclude) do
 
     expect(described_class.access_allowed('~/.mem_settings.yaml')).to be_truthy
 
-    home_file = JekyllTagHelper.expand_env('$HOME/.mem_settings.yaml')
+    home_file = JekyllPluginHelper.expand_env('$HOME/.mem_settings.yaml')
     expect(described_class.access_allowed(home_file)).to be_truthy
 
     expect(described_class.access_allowed('/asdf')).to be_falsey

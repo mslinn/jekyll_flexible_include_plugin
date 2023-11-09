@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 
+# Change to parent directory of this script
+SOURCE=${BASH_SOURCE[0]}
+while [ -L "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
+  SOURCE=$(readlink "$SOURCE")
+  [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
+cd "$DIR/.." || exit
+
 if [[ $(which apt) ]]; then
   if [[ ! -f /usr/lib/x86_64-linux-gnu/libyaml.so ]]; then sudo apt install libyaml-dev; fi
 fi
 
 rm -f Gemfile.lock
-
 if [[ -z "$( which bundle )" ]]; then gem install bundler; fi
-export BUNDLE_WITH="development"
+export BUNDLE_WITH=development
 bundle
 if [ -d demo/ ]; then
   cd demo || exit
@@ -17,6 +26,6 @@ fi
 
 # See https://www.honeybadger.io/blog/rbenv-rubygems-bundler-path/
 # See https://linuxtut.com/visual-studio-code-i-get-a-syntax-error-when-debugging-when-using-rbenv-6ee58/
-for X in jekyll rake rspec-core rubocop ruby-debug-ide; do
+for X in debug jekyll rake rspec-core rubocop; do
   bundle binstubs "$X" --force --path exe
 done

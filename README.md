@@ -57,7 +57,8 @@ except for `die_on_other_error`, which defaults to `true`.
 
 - If `die_on_file_error` is enabled, then an attempt to include a file that fails will cause Jekyll to die with an error message.
 
-- If `die_on_path_denied` is enabled (see [Restricting Directory Access](#restricting-directory-access)), then an attempt to include a file that should be blocked will cause Jekyll to die with an error message.
+- If `die_on_path_denied` is enabled (see [Restricting Directory Access](#restricting-directory-access)),
+  then an attempt to include a file that should be blocked will cause Jekyll to die with an error message.
 
 - If `die_on_run_error` is enabled, then an attempt to run a process that fails will cause Jekyll to die with an error message.
 
@@ -119,10 +120,12 @@ The following options imply `pre`:
 
 ## Restricting Directory Access
 
-By default, `flexible_include` can read from all directories according to the permissions of the user account that launched the `jekyll` process.
+By default, `flexible_include` can read from all directories according to the permissions of the
+user account that launched the `jekyll` process.
 For security-conscience environments, the accessible paths can be restricted.
 
-Defining an environment variable called `FLEXIBLE_INCLUDE_PATHS` prior to launching Jekyll will restrict the paths that `flexible_include` will be able to read from.
+Defining an environment variable called `FLEXIBLE_INCLUDE_PATHS` prior to launching Jekyll will
+restrict the paths that `flexible_include` will be able to read from.
 This environment variable consists of a colon-delimited set of
 [file and directory glob patterns](https://docs.ruby-lang.org/en/2.7.0/Dir.html#method-c-glob).
 For example, the following restricts access to only the files within:
@@ -145,7 +148,7 @@ export FLEXIBLE_INCLUDE_PATHS='~/my_dir/**/*:/var/files/**/*:$work/**/*'
 ```
 
 
-#### Note
+### Note
 
 The specified directories are traversed when the plugin starts,
 and the filenames are stored in memory.
@@ -153,7 +156,7 @@ Directories with lots of files might take a noticable amount of
 time to enumerate the files.
 
 
-### Restricting Arbitrary Processes
+## Restricting Arbitrary Processes
 
 By default, `flexible_include` can execute any command.
 You can disable that by setting the environment variable `DISABLE_FLEXIBLE_INCLUDE`
@@ -207,7 +210,7 @@ and a red error message will be logged on the console that says something like:
 5. Install the `jekyll_flexible_include` Ruby gem as usual:
 
    ```shell
-   $ bundle install
+   $ bundle
    ```
 
 
@@ -215,7 +218,7 @@ and a red error message will be logged on the console that says something like:
 
 1. Include files, escaping any HTML markup, so it appears as written; all four types of includes are shown.
 
-   ```
+   ```html
    {% flexible_include '../../folder/outside/jekyll/site/foo.html' %}
    {% flexible_include 'folder/within/jekyll/site/bar.js' %}
    {% flexible_include '/etc/passwd' %}
@@ -226,7 +229,7 @@ and a red error message will be logged on the console that says something like:
 
 2. Include a JSON file (without escaping characters).
 
-   ```
+   ```html
    {% flexible_include do_not_escape file='~/folder/under/home/directory/foo.html' %}
    ```
 
@@ -256,7 +259,8 @@ Following is a workaround.
 
 6. Tell GitHub that you want the `generated_site` repository to hold your GitHub pages.
 
-7. A moment later, your website will now be visible as GitHub Pages, with the included content, just as you saw it locally.
+7. A moment later, your website will now be visible as GitHub Pages, with the included content,
+  just as you saw it locally.
 
 
 ## Known Issues
@@ -346,7 +350,7 @@ To run under a debugger, for example Visual Studio Code:
    $ demo/bin/debug
    ```
 
-3. Once the `Fast Debugger` signon appears, launch the Visual Studio Code launch configuration called `Attach rdebug-ide`.
+3. Once the `Fast Debugger` signon appears, launch the Visual Studio Code launch configuration called `Attach rdbg`.
 4. View the generated website at [`http://localhost:4444`](http://localhost:4444).
 
 

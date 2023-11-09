@@ -7,7 +7,6 @@ gem 'nokogumbo', '=2.0.3'
 gem 'ptools'
 
 group :jekyll_plugins do
-  # gem 'flexible_include', path: '../'
   gem 'html-proofer'
   gem 'jekyll-environment-variables'
   gem 'jekyll_flexible_include', path: '../'
@@ -24,5 +23,4 @@ group :test, :development do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rake', require: false
   gem 'rubocop-rspec', require: false
-  gem 'ruby-debug-ide', require: false
 end

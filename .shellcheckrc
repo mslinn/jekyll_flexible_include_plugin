@@ -1,4 +1,5 @@
 disable=SC1091
-disable=SC2181
 disable=SC2059
+disable=SC2086
 disable=SC2155
+disable=SC2181

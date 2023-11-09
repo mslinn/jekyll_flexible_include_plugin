@@ -12,12 +12,14 @@ AllCops:
     - vendor/**/*
     - Gemfile*
   NewCops: enable
-  TargetRubyVersion: 2.6
 
 Gemspec/DeprecatedAttributeAssignment:
   Enabled: false
 
 Gemspec/RequireMFA:
+  Enabled: false
+
+Gemspec/RequiredRubyVersion:
   Enabled: false
 
 Layout/InitialIndentation:
