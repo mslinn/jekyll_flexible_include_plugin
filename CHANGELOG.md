@@ -4,6 +4,7 @@
 
 * Restructured code
 * `die_on_file_error` and `die_on_path_denied` work again.
+* Specifying the file name without using a name/value parameter works again.
 
 
 ## 2.0.20 / 2023-05-30
