@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.0.0 / 2023-11-15
+
+* The `file` parameter is now required.
+
+
 ## 2.0.20 / 2023-05-30
 
 * Updated dependencies

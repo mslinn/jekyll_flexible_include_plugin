@@ -3,6 +3,12 @@ require 'jekyll_plugin_support'
 require 'securerandom'
 require_relative 'flexible_include/version'
 
+class String
+  def squish
+    strip.gsub(/\s+/, ' ')
+  end
+end
+
 module JekyllFlexibleIncludeName
   PLUGIN_NAME = 'flexible_include'.freeze
 end
@@ -65,7 +71,7 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
 
   def render_impl # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     setup
-    path = JekyllPluginHelper.expand_env(@filename)
+    path = JekyllPluginHelper.expand_env @filename # This is somehow an array ["../Rakefile", true]
     case path
     when /\A\// # Absolute path
       return denied("Access to <code>#{path}</code> denied by <code>FLEXIBLE_INCLUDE_PATHS</code> value.") unless self.class.access_allowed(path)
@@ -129,7 +135,7 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
   end
 
   def format_error_message(message)
-    "#{message} on line #{@line_number} (after front matter) of #{@page['path']}}"
+    "#{message} on line #{line_number} (after front matter) of #{@page['path']}}"
   end
 
   def highlight(content, pattern)
@@ -151,7 +157,12 @@ class FlexibleInclude < JekyllSupport::JekyllTag # rubocop: disable Metrics/Clas
     @pre = @helper.parameter_specified?('pre') || @copy_button || @dark || @download || @label_specified || @number_lines
 
     @filename = @helper.parameter_specified? 'file'
-    @filename ||= @helper.params.first # Do this after all options have been checked for
+    if @filename.nil?
+      msg = format_error_message("As of FlexibleInclude v3.0.0, the 'file' parameter must be specified")
+      puts msg
+      raise FlexibleIncludeError, msg, []
+    end
+
     @label ||= @filename
 
     # If a label was specified, use it, otherwise concatenate any dangling parameters and use that as the label

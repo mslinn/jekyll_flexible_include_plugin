@@ -18,9 +18,9 @@
 /.bundle/
 /.yardoc
 /_yardoc/
+/binstub/
 /coverage/
 /doc/
-/exe/
 /pkg/
 /spec/reports/
 /tmp/
