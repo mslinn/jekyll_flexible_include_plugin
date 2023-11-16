@@ -25,11 +25,9 @@ module FlexibleInclude
 
     def render_impl
       setup
-      path = JekyllPluginHelper.expand_env @filename
-      contents = handle_path_types path
-      raise FlexibleIncludeError, "C: contents of '#{path}' is a #{contents.class}, not a String" unless contents.instance_of? String
-
-      render_completion(path, contents)
+      @path = JekyllPluginHelper.expand_env @filename
+      handle_path_types
+      render_completion
     rescue Errno::EACCES => e
       msg = format_error_message e.message
       e.message = msg
@@ -63,34 +61,31 @@ module FlexibleInclude
 
     include FlexiblePrivateMethods
 
-    # @return content if path does not reference a file
-    def handle_path_types(path)
-      case path
+    # @return content if @path does not reference a file
+    def handle_path_types
+      case @path
       when /\A\// # Absolute path
-        return denied("Access to <code>#{path}</code> denied by <code>FLEXIBLE_INCLUDE_PATHS</code> value.") unless self.class.access_allowed(path)
+        return denied("Access to <code>#{@path}</code> denied by <code>FLEXIBLE_INCLUDE_PATHS</code> value.") unless self.class.access_allowed(@path)
 
-        @logger.debug { "Absolute path=#{path}, @filename=#{@filename}" }
-        ''
+        @logger.debug { "Absolute @path=#{@path}, @filename=#{@filename}" }
       when /\A~/ # Relative path to user's home directory
-        return denied("Access to <code>#{path}</code> denied by <code>FLEXIBLE_INCLUDE_PATHS</code> value.") unless self.class.access_allowed(path)
+        return denied("Access to <code>#{@path}</code> denied by <code>FLEXIBLE_INCLUDE_PATHS</code> value.") unless self.class.access_allowed(@path)
 
-        @logger.debug { "User home start @filename=#{@filename}, path=#{path}" }
+        @logger.debug { "User home start @filename=#{@filename}, @path=#{@path}" }
         @filename = @filename.delete_prefix '~/'
-        path = File.join(Dir.home, @filename)
-        @logger.debug { "User home end @filename=#{@filename}, path=#{path}" }
-        ''
+        @filename = File.join(Dir.home, @filename)
+        @path = @filename
+        @logger.debug { "User home end @filename=#{@filename}, @path=#{@path}" }
       when /\A!/ # Run command and return response
         return denied('Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.') if @execution_denied
 
         @filename = JekyllPluginHelper.remove_quotes(@helper.argv.first) if @helper.argv.first
         @filename = @filename.delete_prefix '!'
-        run(@filename)
+        @contents = run(@filename)
       else # Relative path
-        source = File.expand_path(@site.config['source']) # website root directory
-        path = File.join(source, @filename) # Fully qualified path of include file from relative path
+        @path = @filename
         @relative = true
-        @logger.debug { "Relative end @filename=#{@filename}, path=#{path}" }
-        ''
+        @logger.debug { "Relative end @filename=#{@filename}, @path=#{@path}" }
       end
     end
 

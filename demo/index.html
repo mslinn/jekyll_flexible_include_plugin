@@ -4,7 +4,7 @@ layout: default
 title: Welcome
 ---
 <h2 id="att">Attribution</h2>
-{% flexible_include attribution pre file='../Rakefile' %}
+{% flexible_include attribution pre file='../Gemfile' %}
 
 
 <!-- #region die -->
@@ -40,74 +40,74 @@ title: Welcome
 <p>
   The <code>file</code> keyword option is not used here.
 </p>
-<pre>&lt;pre>{% raw %}{% flexible_include pre highlight='RakeTask' file='../Rakefile' %}{% endraw %}&lt;/pre></pre>
+<pre>&lt;pre>{% raw %}{% flexible_include pre highlight='jekyll' file='../Gemfile' %}{% endraw %}&lt;/pre></pre>
 <p>
  Renders as:
 </p>
-{% flexible_include pre highlight='RakeTask' file='../Rakefile' %}
+{% flexible_include pre highlight='jekyll' file='../Gemfile' %}
 <!-- endregion -->
 
 
 <!-- #region outside include -->
 <h2 id="outside">Outside Include With <span class='code'>file</span> Keyword Option</h2>
-<pre>{% raw %}{% flexible_include pre file='../Rakefile' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include pre file='../Gemfile' %}{% endraw %}</pre>
 <p>
   Renders as:
 </p>
-{% flexible_include pre file='../Rakefile' %}
+{% flexible_include pre file='../Gemfile' %}
 <!-- endregion -->
 
 
 <!-- #region Inside Include -->
 <h2 id="outside">Inside Include Without Options</h2>
-<pre>&lt;pre>{% raw %}{% flexible_include file='_bin/debug' %}{% endraw %}&lt;/pre></pre>
+<pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' %}{% endraw %}&lt;/pre></pre>
 <p>
   Renders as:
 </p>
-<pre class="pre_tag maxOneScreenHigh copyContainer">{% flexible_include file='_bin/debug' %}</pre>
+<pre class="pre_tag maxOneScreenHigh copyContainer">{% flexible_include file='Gemfile' %}</pre>
 
 
 <h2 id="outside">Inside Include With <span class='code'>copyButton</span> Keyword Option</h2>
-<pre>{% raw %}{% flexible_include copyButton pre file='_bin/debug' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include copyButton pre file='Gemfile' %}{% endraw %}</pre>
 <p>
   Renders as:
 </p>
-{% flexible_include copyButton pre file='_bin/debug' %}
+{% flexible_include copyButton pre file='Gemfile' %}
 
 
 <h2 id="outside">Inside Include With <span class='code'>copyButton</span> and <span class='code'>number</span>  Keyword Options</h2>
-<pre>{% raw %}{% flexible_include copyButton number file='_bin/debug' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include copyButton number file='Gemfile' %}{% endraw %}</pre>
 <p>
   Recall that the <code>number</code> keyword option implies the <code>pre</code> keyword option.
   Renders as:
 </p>
-{% flexible_include copyButton number file='_bin/debug' %}
+{% flexible_include copyButton number file='Gemfile' %}
 
 
 <h2 id="outside">Inside Include With <span class='code'>label</span></h2>
-<pre>{% raw %}{% flexible_include file='_bin/debug' label='This is a label' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include file='Gemfile' label='This is a label' %}{% endraw %}</pre>
 <p>
   Recall that the <code>label</code> keyword option implies the <code>pre</code> keyword option.
   Renders as:
 </p>
-{% flexible_include file='_bin/debug' label='This is a label' %}
+{% flexible_include file='Gemfile' label='This is a label' %}
 
 
 <h2 id="outside">Inside Include With <span class='code'>download</span></h2>
-<pre>{% raw %}{% flexible_include download file='_bin/debug' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include download file='Gemfile' %}{% endraw %}</pre>
 <p>
   Recall that the <code>download</code> keyword option implies the <code>pre</code> keyword option.
   Renders as:
 </p>
-{% flexible_include download file='_bin/debug' %}
+{% flexible_include download file='Gemfile' %}
 
 
 <h2 id="outside">Inside Include With <span class='code'>dark</span> and <span class='code'>download</span></h2>
-<pre>{% raw %}{% flexible_include dark download file='_bin/debug' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include dark download file='Gemfile' %}{% endraw %}</pre>
 <p>
   Renders as:
 </p>
-{% flexible_include dark download file='_bin/debug' %}
+{% flexible_include dark download file='Gemfile' %}
 <!-- endregion -->
 
 
@@ -123,12 +123,12 @@ title: Welcome
 
 <!-- #region Relative Home Include -->
 <h2 id="outside">Relative Home Include</h2>
-<pre>{% raw %}{% flexible_include pre file='~/.java/.userPrefs/prefs.xml' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include pre file='~/.bashrc' %}{% endraw %}</pre>
 <p>
   Recall that by default, the displayed results are HMTL-escaped.
   Renders as:
 </p>
-{% flexible_include pre file='~/.java/.userPrefs/prefs.xml' %}
+{% flexible_include pre file='~/.bashrc' %}
 <!-- endregion -->
 
 
@@ -176,17 +176,17 @@ title: Welcome
 
 <!-- #region Environment Variable Path Substitution -->
 <h2 id="outside">Environment Variable Path Substitution</h2>
-<pre>{% raw %}{% flexible_include pre file='$HOME/.java/.userPrefs/prefs.xml' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include pre '$HOME/.bashrc' %}{% endraw %}</pre>
 <p>
   Recall that by default, the displayed results are HMTL-escaped.
   Renders as:
 </p>
-{% flexible_include pre file='$HOME/.java/.userPrefs/prefs.xml' %}
+{% flexible_include pre file='$HOME/.bashrc' %}
 <!-- endregion -->
 
 
 <!-- #region unescape -->
-<h2 id="outside"><span class="code">Unescape</span> Keyword Option</h2>
+<h2 id="outside"><span class="code">do_not_escape</span> Keyword Option</h2>
 <p>
   With <code>pre</code> keyword option:
 </p>
@@ -199,18 +199,18 @@ title: Welcome
 <p class="extra_space">
   With <code>pre</code> and <code>dark</code> keyword options:
 </p>
-<pre>{% raw %}{% flexible_include dark do_not_escape pre file='escape_me.json' %}{% endraw %}</pre>
+<pre>{% raw %}{% flexible_include dark do_not_escape pre escape_me.json %}{% endraw %}</pre>
 <p>
   Renders as:
 </p>
-{% flexible_include dark do_not_escape pre file='escape_me.json' %}
+{% flexible_include dark do_not_escape pre escape_me.json %}
 
 <p class="extra_space">
   Without <code>pre</code> keyword option:
 </p>
-<pre>{% raw %}{% flexible_include do_not_escape file='escape_me.json' %}{% endraw %}</pre>
+<pre>&lt;pre>{% raw %}{% flexible_include do_not_escape 'escape_me.json' %}{% endraw %}&lt;/pre></pre>
 <p>
   Renders as:
 </p>
-{% flexible_include do_not_escape file='escape_me.json' %}
+<pre>{% flexible_include do_not_escape 'escape_me.json' %}</pre>
 <!-- endregion -->

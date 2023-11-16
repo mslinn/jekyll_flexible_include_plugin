@@ -1,8 +1,9 @@
 # Change Log
 
-## 3.0.0 / 2023-11-15
+## 2.0.21 / 2023-11-16
 
-* The `file` parameter is now required.
+* Restructured code
+* `die_on_file_error` and `die_on_path_denied` work again.
 
 
 ## 2.0.20 / 2023-05-30
