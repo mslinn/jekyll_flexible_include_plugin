@@ -42,7 +42,7 @@ Lint/RedundantCopDisableDirective:
     - jekyll_flexible_include_plugin.gemspec
 
 Metrics/AbcSize:
-  Max: 45
+  Max: 50
 
 Metrics/BlockLength:
   Exclude:
@@ -56,8 +56,11 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Max: 20
 
+Metrics/ModuleLength:
+  Max: 150
+
 Metrics/MethodLength:
-  Max: 40
+  Max: 50
 
 Metrics/PerceivedComplexity:
   Max: 15

@@ -1,5 +1,6 @@
 require 'rugged'
 
+# TODO: Not used yet. Either implement git-related functionality or delete this file and its tests
 class GitFileReader
   def initialize(repo_dir = '.')
     @repo = Rugged::Repository.new repo_dir
@@ -31,13 +32,4 @@ class GitFileReader
     object = @repo.read sha # Rugged::ObdObject; this is a blob
     object.data # String
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  puts '>>>> README.md start <<<<<'
-  puts GitFileReader.new('.').blob_at('HEAD~2', 'README.md').content
-  puts '>>>> README.md end <<<<<'
-  # puts GitFileReader.new('.').commit_for_ref('HEAD^').contents('README.md')
-  # puts GitFileReader.new('.').commit_for_ref('HEAD').contents('README.md')
-  # puts GitFileReader.new('.').commit_for_ref('refs/heads/master').contents('README.md')
 end

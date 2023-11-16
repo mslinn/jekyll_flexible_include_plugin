@@ -43,7 +43,8 @@ plugin_loggers:
   SiteHooks: warn
 permalink: "/blog/:year/:month/:day/:title:output_ext"
 plugins: # Use file name of the plugin entry point, not the gem name
-  - flexible_include
+  - jekyll_flexible_include
+  # - flexible_include
   - jekyll
   - html-proofer
 sass:
