@@ -56,15 +56,35 @@ module FlexibleInclude
 
     def render_completion
       unless @path.start_with? '!'
-        raise FlexibleIncludeError, "#{@path} does not exist", [] unless File.exist? @path
-        raise FlexibleIncludeError, "#{@path} is not readable", [] unless Pathname.new(@path).readable?
+        unless File.exist? @path
+          msg =  "#{@path} does not exist"
+          return "<span class='flexible_error'>#{msg}</span>" unless @die_on_file_error
+
+          raise FlexibleIncludeError, msg, []
+        end
+        unless Pathname.new(@path).readable?
+          msg = "#{@path} is not readable"
+          return "<span class='flexible_error'>#{msg}</span>" unless @die_on_file_error
+
+          raise FlexibleIncludeError, msg, []
+        end
 
         @contents = File.read @path
-        raise FlexibleIncludeError, "contents is a #{@contents.class}, not a String" unless @contents.instance_of? String
+        unless @contents.instance_of? String
+          msg = "contents has type a #{@contents.class}, not a String"
+          return "<span class='flexible_error'>#{msg}</span>" unless @die_on_file_error
+
+          raise FlexibleIncludeError, msg, []
+        end
       end
       @contents.strip! if @strip
       contents2 = @do_not_escape ? @contents : FlexibleClassMethods.escape_html(@contents)
-      raise FlexibleIncludeError, "contents2 is a #{contents2.class}, not a String" unless contents2.instance_of? String
+      unless contents2.instance_of? String
+        msg = "contents2 is a #{contents2.class}, not a String"
+        return "<span class='flexible_error'>#{msg}</span>" unless @die_on_file_error
+
+        raise FlexibleIncludeError, msg, []
+      end
 
       contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
       contents2 = FlexibleInclude.number_content(contents2) if @number_lines
