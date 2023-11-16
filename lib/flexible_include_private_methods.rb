@@ -1,18 +1,22 @@
+require 'pathname'
+
 module FlexibleInclude
   module FlexiblePrivateMethods
     def denied(msg)
       msg_no_html = remove_html_tags(msg)
       @logger.error("#{@page['path']} - #{msg_no_html}")
-      raise FlexibleIncludeError, "#{@page['path']} - #{msg_no_html.red}", [] if @die_on_path_denied
+      raise FlexibleIncludeError, "#{@page['path']} - #{msg_no_html}".red, [] if @die_on_path_denied
 
       "<p class='flexible_error'>#{msg}</p>"
     end
 
     def format_error_message(message)
-      "#{message} on line #{line_number} (after front matter) of #{@page['path']}}"
+      "#{message}  on line #{line_number} (after front matter) of #{@page['path']}"
     end
 
     def highlight(content, pattern)
+      raise FlexibleIncludeError, "content is a #{content.class}, not a String" unless content.instance_of? String
+
       content.gsub(Regexp.new(pattern), "<span class='bg_yellow'>\\0</span>")
     end
 
@@ -31,16 +35,14 @@ module FlexibleInclude
       @pre = @helper.parameter_specified?('pre') || @copy_button || @dark || @download || @label_specified || @number_lines
 
       @filename = @helper.parameter_specified? 'file'
-      if @filename.nil?
-        msg = format_error_message("As of FlexibleInclude v3.0.0, the 'file' parameter must be specified")
-        puts msg
-        raise FlexibleIncludeError, msg, []
-      end
 
       @label ||= @filename
 
       # If a label was specified, use it, otherwise concatenate any dangling parameters and use that as the label
       @label ||= @helper.params[1..].join(' ')
+
+      @filename ||= @helper.params.first # Do this after all other options have been checked for
+      raise StandardError, "@filename (#{@filename}) is not a string", [] unless @filename.instance_of? String
 
       @logger.debug("@filename=#{@filename}")
     end
@@ -50,9 +52,22 @@ module FlexibleInclude
     end
 
     def render_completion(path, contents)
-      contents ||= File.read(path)
+      raise FlexibleIncludeError, "A: contents is a #{contents.class}, not a String" unless contents.instance_of? String
+
+      unless path.start_with? '!'
+        raise FlexibleIncludeError, "#{path} does not exist", [] unless File.exist? path
+        raise FlexibleIncludeError, "#{path} is not readable", [] unless Pathname.new(path).readable?
+
+        file_contents = File.read path
+        raise FlexibleIncludeError, "file_contents is a #{file_contents.class}, not a String" unless file_contents.instance_of? String
+
+        contents ||= file_contents
+        raise FlexibleIncludeError, "B: contents is a #{contents.class}, not a String" unless contents.instance_of? String
+      end
       contents.strip! if @strip
       contents2 = @do_not_escape ? contents : FlexibleClassMethods.escape_html(contents)
+      raise FlexibleIncludeError, "contents2 is a #{contents2.class}, not a String" unless contents2.instance_of? String
+
       contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
       contents2 = FlexibleInclude.number_content(contents2) if @number_lines
       result = @pre ? wrap_in_pre(path, contents2) : contents2
@@ -81,7 +96,7 @@ module FlexibleInclude
       @do_not_escape = true
       return "<span class='flexible_error'>#{msg}</span>" unless @die_on_run_error
 
-      e.set_backtrace []
+      e.set_backtrace e.backtrace[0..9]
       raise e
     end
 

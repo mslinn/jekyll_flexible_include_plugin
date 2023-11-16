@@ -78,6 +78,8 @@ bundle update
 
 bundle exec jekyll clean # Ensure all hooks get called
 
+clear
+
 if [ "$RUN_FREE" ]; then
   bundle exec ../exe/jekyll $run
 else

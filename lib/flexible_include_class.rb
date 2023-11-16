@@ -6,7 +6,7 @@ module FlexibleInclude
       @read_regexes.find { |regex| regex.match(normalize_path(path)) }
     end
 
-    def escape_html(string)
+    def self.escape_html(string)
       string.gsub("&", "&amp;")
             .gsub("{", "&#123;")
             .gsub("}", "&#125;")
