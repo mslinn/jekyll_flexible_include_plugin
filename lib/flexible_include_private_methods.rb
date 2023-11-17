@@ -10,14 +10,18 @@ module FlexibleInclude
       "<p class='flexible_error'>#{msg}</p>"
     end
 
-    def format_error_message(message)
-      "#{message}  on line #{line_number} (after front matter) of #{@page['path']}"
-    end
-
     def highlight(content, pattern)
       raise FlexibleIncludeError, "content is a #{content.class}, not a String" unless content.instance_of? String
 
       content.gsub(Regexp.new(pattern), "<span class='bg_yellow'>\\0</span>")
+    end
+
+    def maybe_raise_error(msg, throw: true)
+      fmsg = format_error_message msg
+      @logger.error fmsg
+      return "<span class='flexible_error'>#{fmsg}</span>" unless throw
+
+      raise FlexibleIncludeError, msg, []
     end
 
     def parse_args
@@ -39,9 +43,6 @@ module FlexibleInclude
       unless @filename # Do this after all other options have been checked for
         @filename = @helper.params.first.first
         @helper.delete_parameter @helper.params.first
-        puts "@filename.class=#{@filename.class}"
-        puts "@helper.params.first=#{@helper.params.first}"
-        puts "@helper.params.first.first=#{@helper.params.first.first}"
       end
       raise StandardError, "@filename (#{@filename}) is not a string", [] unless @filename.instance_of? String
 
@@ -56,35 +57,15 @@ module FlexibleInclude
 
     def render_completion
       unless @path.start_with? '!'
-        unless File.exist? @path
-          msg =  "#{@path} does not exist"
-          return "<span class='flexible_error'>#{msg}</span>" unless @die_on_file_error
-
-          raise FlexibleIncludeError, msg, []
-        end
-        unless Pathname.new(@path).readable?
-          msg = "#{@path} is not readable"
-          return "<span class='flexible_error'>#{msg}</span>" unless @die_on_file_error
-
-          raise FlexibleIncludeError, msg, []
-        end
+        maybe_raise_error("#{@path} does not exist",  @die_on_file_error) unless File.exist? @path
+        maybe_raise_error("#{@path} is not readable", @die_on_file_error) unless Pathname.new(@path).readable?
 
         @contents = File.read @path
-        unless @contents.instance_of? String
-          msg = "contents has type a #{@contents.class}, not a String"
-          return "<span class='flexible_error'>#{msg}</span>" unless @die_on_file_error
-
-          raise FlexibleIncludeError, msg, []
-        end
+        maybe_raise_error("contents has type a #{@contents.class}, not a String", @die_on_file_error) unless @contents.instance_of? String
       end
       @contents.strip! if @strip
       contents2 = @do_not_escape ? @contents : FlexibleClassMethods.escape_html(@contents)
-      unless contents2.instance_of? String
-        msg = "contents2 is a #{contents2.class}, not a String"
-        return "<span class='flexible_error'>#{msg}</span>" unless @die_on_file_error
-
-        raise FlexibleIncludeError, msg, []
-      end
+      maybe_raise_error("contents2 is a #{contents2.class}, not a String", @die_on_file_error) unless contents2.instance_of? String
 
       contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
       contents2 = FlexibleInclude.number_content(contents2) if @number_lines
@@ -97,11 +78,8 @@ module FlexibleInclude
 
     def run(cmd)
       if cmd.empty?
-        msg = format_error_message 'FlexibleIncludeError: Empty command string'
         @do_not_escape = true
-        return "<span class='flexible_error'>#{msg}</span>" unless @die_on_other_error
-
-        raise FlexibleIncludeError, msg, []
+        return maybe_raise_error('FlexibleIncludeError: Empty command string', @die_on_other_error)
       end
 
       @logger.debug { "Executing #{cmd}" }
@@ -109,13 +87,8 @@ module FlexibleInclude
     rescue FlexibleIncludeError => e
       raise e
     rescue StandardError => e
-      msg = format_error_message "#{e.class}: #{e.message.strip}"
-      @logger.error msg
       @do_not_escape = true
-      return "<span class='flexible_error'>#{msg}</span>" unless @die_on_run_error
-
-      e.set_backtrace e.backtrace[0..9]
-      raise e
+      JekyllSupport.maybe_reraise_error(e, @die_on_run_error)
     end
 
     def setup
