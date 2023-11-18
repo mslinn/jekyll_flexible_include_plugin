@@ -30,23 +30,31 @@ module FlexibleInclude
       handle_path_types
       render_completion
     rescue Errno::EACCES => e
-      e.backtrace = e.backtrace[0..3].map { |x| x.gsub(Dir.pwd + '/', './') }
+      e.shorten_backtrace
       msg = format_error_message e.message
-      e.message = msg
       @logger.error msg
-      raise e if @die_on_file_error
 
-      "<span class='standard_error'>StandardError: #{msg}</span>"
+      if @die_on_file_error
+        e2 = Errno::EACCES.new msg
+        e2.set_backtrace e.backtrace
+        raise e2
+      end
+
+      "<div class='custom_error'>#{e.class} raised in #{self.class};\n#{msg}</div>"
     rescue Errno::ENOENT => e
-      e.backtrace = e.backtrace[0..3].map { |x| x.gsub(Dir.pwd + '/', './') }
+      e.shorten_backtrace
       msg = format_error_message e.message
-      e.message = msg
       @logger.error msg
-      raise e if @die_on_path_denied
 
-      "<span class='standard_error'>StandardError: #{msg}</span>"
+      if @die_on_path_denied
+        e2 = Errno::ENOENT.new msg
+        e2.set_backtrace e.backtrace
+        raise e2
+      end
+
+      "<div class='custom_error'>#{e.class} raised in #{self.class};\n#{msg}</div>"
     rescue FlexibleIncludeError => e
-      e.backtrace = e.backtrace[0..3].map { |x| x.gsub(Dir.pwd + '/', './') }
+      e.shorten_backtrace
       @logger.error e.message
       raise e
     end

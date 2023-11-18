@@ -99,7 +99,7 @@ pre {
 
 #main-content {
   float: left;
-  width: 690px;
+  width: 80%;
 }
 
 .bg_yellow, .bg_light_yellow {
@@ -199,7 +199,7 @@ li div.codeLabel {
   position: relative;
 }
 
-.flexible_error, .standard_error {
+.custom_error, .flexible_error, .jekyll_plugin_support_error, .standard_error {
   font-family: Monaco,"Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-size: smaller;
   color: white;
@@ -207,7 +207,7 @@ li div.codeLabel {
   padding: 2pt 4pt 2pt 4pt;
 }
 
-.flexible_error code, .standard_error code {
+.custom_error code, .flexible_error code, .jekyll_plugin_support_error code, .standard_error code {
   color: lightgray;
   font-size: 10pt;
 }

@@ -55,7 +55,8 @@ flexible_include:
 The default values for all of these parameters is `false`,
 except for `die_on_other_error`, which defaults to `true`.
 
-- If `die_on_file_error` is enabled, then an attempt to include a file that fails will cause Jekyll to die with an error message.
+- If `die_on_file_error` is enabled, then an attempt to include a file that fails
+  will cause Jekyll to die with an error message.
 
 - If `die_on_path_denied` is enabled (see [Restricting Directory Access](#restricting-directory-access)),
   then an attempt to include a file that should be blocked will cause Jekyll to die with an error message.
@@ -84,9 +85,12 @@ and are not intended to be written literally.
 ## Options
 
 - `attribution` see [`jekyll_plugin_support`](https://github.com/mslinn/jekyll_plugin_support#subclass-attribution)
+
 - `do_not_escape` keyword option caused the content to be included without HTML escaping it.
   By default, the included file will escape characters `&lt;`,
   `{` and `}` unless the `do_not_escape` keyword option is specified.
+
+- `from='regex'` specifies that the beginning of the output should discarded until the matching string or regex is encountered.
 
 - `highlight='regex pattern here'` wraps content matching the regex pattern within a
   `<span class='bg_yellow'></span>` tag.
@@ -97,6 +101,12 @@ and are not intended to be written literally.
   The &lt;pre>&lt;/pre> tag has an `data-lt-active="false"` attribute, so
   [LanguageTool](https://forum.languagetool.org/t/avoid-spell-check-on-certain-html-inputs-manually/3944)
   will not attempt to check the spelling or grammar of the contents.
+
+- `to='regex'` specifies that the output should discarded after the matching string or regex is encountered
+  (includes the matched line).
+
+- `until='regex'` specifies that the output should discarded after the matching string or regex is encountered
+  (excludes the matched line).
 
 The following options imply `pre`:
 
@@ -207,7 +217,7 @@ and a red error message will be logged on the console that says something like:
    blah blah blah
    ```
 
-5. Install the `jekyll_flexible_include` Ruby gem as usual:
+5. Install the `jekyll_flexible_include` Ruby gem and mark it as a dependency of your project:
 
    ```shell
    $ bundle

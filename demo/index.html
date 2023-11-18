@@ -35,6 +35,100 @@ title: Welcome
 <!-- endregion -->
 
 
+<!-- #region from_to_until -->
+<h2 id="from">From</h2>
+<pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' from='jekyll_plugins' %}{% endraw %}&lt;/pre></pre>
+<p>
+  Renders as:
+</p>
+<pre class="pre_tag maxOneScreenHigh copyContainer">{% flexible_include file='Gemfile' from='jekyll_plugins' %}</pre>
+
+<p>
+Trimming off trailing whitespace:
+</p>
+<pre>{% raw %}{% flexible_include pre strip file='Gemfile' from='jekyll_plugins' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include pre strip file='Gemfile' from='jekyll_plugins' %}
+<!-- endregion -->
+
+
+<h2 id="to">To</h2>
+<pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' to='end' %}{% endraw %}&lt;/pre></pre>
+<p>
+  Renders as:
+</p>
+<pre class="pre_tag maxOneScreenHigh copyContainer">{% flexible_include file='Gemfile' to='end' %}</pre>
+
+<p>
+Trimming off trailing whitespace:
+</p>
+<pre>{% raw %}{% flexible_include pre strip file='Gemfile' to='end' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include pre strip file='Gemfile' to='end' %}
+<!-- endregion -->
+
+
+<h2 id="until">Until</h2>
+<pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' until=':test' %}{% endraw %}&lt;/pre></pre>
+<p>
+  Renders as:
+</p>
+<pre class="pre_tag maxOneScreenHigh copyContainer">{% flexible_include file='Gemfile' until=':test' %}</pre>
+<!-- endregion -->
+
+<p>
+    Trimming off trailing whitespace:
+</p>
+<pre>{% raw %}{% flexible_include pre strip file='Gemfile' until=':test' %}{% endraw %}</pre>
+<p>
+    Renders as:
+</p>
+{% flexible_include pre strip file='Gemfile' until=':test' %}
+<!-- endregion -->
+
+
+<h2 id="from_until">From ... To</h2>
+<pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' from='jekyll_plugins' to='end' %}{% endraw %}&lt;/pre></pre>
+<p>
+  Renders as:
+</p>
+<pre class="pre_tag maxOneScreenHigh copyContainer">{% flexible_include file='Gemfile' from='jekyll_plugins' to='end' %}</pre>
+<!-- endregion -->
+
+<p>
+    Trimming off trailing whitespace:
+</p>
+<pre>{% raw %}{% flexible_include pre strip file='Gemfile' from='jekyll_plugins' to='end' %}{% endraw %}</pre>
+<p>
+    Renders as:
+</p>
+{% flexible_include pre strip file='Gemfile' from='jekyll_plugins' to='end' %}
+<!-- endregion -->
+
+
+<h2 id="from_until">From ... Until</h2>
+<pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' from='jekyll_plugins' until=':test' %}{% endraw %}&lt;/pre></pre>
+<p>
+  Renders as:
+</p>
+<pre class="pre_tag maxOneScreenHigh copyContainer">{% flexible_include file='Gemfile' from='jekyll_plugins' until=':test' %}</pre>
+
+<p>
+    Trimming off trailing whitespace:
+</p>
+<pre>{% raw %}{% flexible_include pre strip file='Gemfile' from='jekyll_plugins' until=':test' %}{% endraw %}</pre>
+<p>
+    Renders as:
+</p>
+{% flexible_include pre strip file='Gemfile' from='jekyll_plugins' until=':test' %}
+<!-- endregion -->
+<!-- endregion -->
+
+
 <!-- #region highlight -->
 <h2 id="outside">Outside Include With <span class='code'>highlight</span></h2>
 <p>
@@ -213,4 +307,13 @@ title: Welcome
   Renders as:
 </p>
 <pre>{% flexible_include do_not_escape 'escape_me.json' %}</pre>
+
+<p>
+  Trimming off trailing whitespace:
+</p>
+<pre>&lt;pre>{% raw %}{% flexible_include do_not_escape trim 'escape_me.json' %}{% endraw %}&lt;/pre></pre>
+<p>
+  Renders as:
+</p>
+<pre>{% flexible_include do_not_escape strip 'escape_me.json' %}</pre>
 <!-- endregion -->

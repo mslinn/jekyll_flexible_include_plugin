@@ -1,4 +1,5 @@
 require 'pathname'
+require 'jekyll_from_to_until'
 
 module FlexibleInclude
   module FlexiblePrivateMethods
@@ -16,10 +17,10 @@ module FlexibleInclude
       content.gsub(Regexp.new(pattern), "<span class='bg_yellow'>\\0</span>")
     end
 
-    def maybe_raise_error(msg, throw: true)
+    def maybe_raise_error(msg, throw_error: true)
       fmsg = format_error_message msg
       @logger.error fmsg
-      return "<span class='flexible_error'>#{fmsg}</span>" unless throw
+      return "<span class='flexible_error'>#{fmsg}</span>" unless throw_error
 
       raise FlexibleIncludeError, msg, []
     end
@@ -29,11 +30,14 @@ module FlexibleInclude
       @dark = ' dark' if @helper.parameter_specified? 'dark'
       @do_not_escape = @helper.parameter_specified? 'do_not_escape'
       @download = @helper.parameter_specified? 'download'
+      @from = @helper.parameter_specified? 'from'
       @highlight_pattern = @helper.parameter_specified? 'highlight'
       @label = @helper.parameter_specified? 'label'
       @label_specified = @label
       @number_lines = @helper.parameter_specified? 'number'
       @strip = @helper.parameter_specified? 'strip'
+      @to = @helper.parameter_specified? 'to'
+      @until = @helper.parameter_specified? 'until'
 
       # Download, dark, label or number implies pre
       @pre = @helper.parameter_specified?('pre') || @copy_button || @dark || @download || @label_specified || @number_lines
@@ -57,15 +61,21 @@ module FlexibleInclude
 
     def render_completion
       unless @path.start_with? '!'
-        maybe_raise_error("#{@path} does not exist",  @die_on_file_error) unless File.exist? @path
-        maybe_raise_error("#{@path} is not readable", @die_on_file_error) unless Pathname.new(@path).readable?
+        maybe_raise_error("#{@path} does not exist",  throw_error: @die_on_file_error) unless File.exist? @path
+        maybe_raise_error("#{@path} is not readable", throw_error: @die_on_file_error) unless Pathname.new(@path).readable?
 
         @contents = File.read @path
-        maybe_raise_error("contents has type a #{@contents.class}, not a String", @die_on_file_error) unless @contents.instance_of? String
+        unless @contents.instance_of? String
+          maybe_raise_error("contents has type a #{@contents.class}, not a String",
+                            throw_error: @die_on_file_error)
+        end
       end
-      @contents.strip! if @strip
+      @contents = FromToUntil.from(@contents, @from) if @from
+      @contents = FromToUntil.to(@contents, @to) if @to
+      @contents = FromToUntil.until(@contents, @until) if @until
       contents2 = @do_not_escape ? @contents : FlexibleClassMethods.escape_html(@contents)
-      maybe_raise_error("contents2 is a #{contents2.class}, not a String", @die_on_file_error) unless contents2.instance_of? String
+      contents2.strip! if @strip
+      maybe_raise_error("contents2 is a #{contents2.class}, not a String", throw_error: @die_on_file_error) unless contents2.instance_of? String
 
       contents2 = highlight(contents2, @highlight_pattern) if @highlight_pattern
       contents2 = FlexibleInclude.number_content(contents2) if @number_lines
@@ -79,7 +89,7 @@ module FlexibleInclude
     def run(cmd)
       if cmd.empty?
         @do_not_escape = true
-        return maybe_raise_error('FlexibleIncludeError: Empty command string', @die_on_other_error)
+        return maybe_raise_error('FlexibleIncludeError: Empty command string', throw_error: @die_on_other_error)
       end
 
       @logger.debug { "Executing #{cmd}" }
@@ -88,7 +98,7 @@ module FlexibleInclude
       raise e
     rescue StandardError => e
       @do_not_escape = true
-      JekyllSupport.maybe_reraise_error(e, @die_on_run_error)
+      maybe_reraise_error(e, throw_error: @die_on_run_error)
     end
 
     def setup
