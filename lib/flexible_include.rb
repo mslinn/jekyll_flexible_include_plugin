@@ -24,7 +24,6 @@ module FlexibleInclude
     end
 
     def render_impl
-      puts ">>> #{@tag_name} #{@argument_string}".yellow
       setup
       @path = JekyllPluginHelper.expand_env @filename
       handle_path_types
