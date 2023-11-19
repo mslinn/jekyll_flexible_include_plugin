@@ -205,17 +205,7 @@ and a red error message will be logged on the console that says something like:
 3. Copy `demo/assets/images/clippy.svg` to a directory that resolves to
    `assets/images/` in your Jekyll website.
 
-4. Copy the CSS from `demo/assets/css/styles.css` between the comments to your Jekyll project's CSS file:
-
-   ```css
-   blah blah blah
-
-   /* START OF CSS TO COPY */
-   Copy this stuff
-   /* END OF CSS TO COPY */
-
-   blah blah blah
-   ```
+4. Copy the CSS from `demo/assets/css/jekyll_flexible_include.css` to your Jekyll project's CSS file.
 
 5. Install the `jekyll_flexible_include` Ruby gem and mark it as a dependency of your project:
 

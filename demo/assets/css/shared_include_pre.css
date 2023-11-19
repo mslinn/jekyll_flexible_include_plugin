@@ -1,0 +1,112 @@
+/* CSS classes shared between jekyll_pre and jekyll_flexible_include_plugins */
+
+.bg_yellow {
+  background-color: yellow;
+  padding-bottom: 2px;
+  padding-top: 2px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.codeLabel {
+  color: white;
+  background-color: #666;
+  display: flow-root;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-stretch: semi-condensed;
+  margin-bottom: 0;
+  padding-bottom: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
+}
+
+.codeLabel + pre {
+  margin-top: 0;
+}
+
+.codeLabel a {
+  color: #c0e6fb;
+}
+
+.codeLabel a:hover {
+  color: #FFE59F;
+}
+
+.codeLabel ol li,
+ol li .codeLabel {
+  padding-left: 1.75em;
+}
+
+.codeLabel.unselectable,
+div.codeLabel.unselectable > code {
+  color: yellow;
+}
+
+li div.codeLabel {
+  padding-left: 2em;
+}
+
+.copyBtn {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  background-color: #eee;
+  background-image: linear-gradient(#fcfcfc, #eee);
+  border: 1px solid #d5d5d5;
+  border-radius: 3px;
+  color: #333;
+  cursor: pointer;
+  float: right;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+  padding: 2px 2px 0 4px;;
+  position: -webkit-sticky;
+  position: sticky;
+  right: 4px;
+  top: 0;
+  user-select: none;
+  z-index: 1;
+}
+
+.copyContainer {
+  position: relative;
+}
+
+pre.dark, pre .dark {
+  color: #eee;
+  background-color: #222;
+}
+
+code.dark {
+  color: #eee;
+  background-color: #222;
+  padding: 2px;
+}
+
+pre.dark .unselectable,
+pre.dark .unselectable > code {
+  color: rgb(155, 150, 150);
+}
+
+.darkLabel {
+  color: ivory;
+}
+
+.maxOneScreenHigh {
+  max-height: 500px;
+}
+
+.numbered_line,
+.unselectable.numbered_line,
+.numbered_line.unselectable {
+  color: #5fb25f;
+}
+
+.unselectable {
+  color: #7922f9;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+}

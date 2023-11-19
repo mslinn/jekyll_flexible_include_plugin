@@ -12,12 +12,9 @@ layout: compress
   {% capture page.title %}{{ page.title | default: page.subtitle }}{% endcapture %}
   {% assign nowMillis = site.time | date: '%s' %}
   <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: nowMillis }}" type="text/css">
-
-  {% assign csses = page.css | default: layout.css %}
-  {% for css in csses %}
-    <link rel="stylesheet" href="{{css | append: '?v=' | append: nowMillis }}" type="text/css">
-  {% endfor %}
-
+  <link rel="stylesheet" href="{{ '/assets/css/jekyll_flexible_include.css?v=' | append: nowMillis }}" type="text/css">
+  <link rel="stylesheet" href="{{ '/assets/css/jekyll_plugin_support.css?v=' | append: nowMillis }}" type="text/css">
+  <link rel="stylesheet" href="{{ '/assets/css/shared_include_pre.css?v=' | append: nowMillis }}" type="text/css">
   <link rel="icon" type="image/png" href="/assets/images/favicon.png">
   <!--[if lt IE 9]>
   <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
