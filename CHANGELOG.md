@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.22 / 2024-02-27
+
+* Improved error reporting
+
+
 ## 2.0.21 / 2023-11-16
 
 * Restructured code

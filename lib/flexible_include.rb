@@ -25,7 +25,7 @@ module FlexibleInclude
 
     def render_impl
       setup
-      @path = JekyllPluginHelper.expand_env @filename
+      @path = JekyllPluginHelper.expand_env @filename, @logger
       handle_path_types
       render_completion
     rescue Errno::EACCES => e
