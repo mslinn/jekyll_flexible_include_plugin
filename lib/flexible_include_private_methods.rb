@@ -1,4 +1,5 @@
 require 'pathname'
+require 'English'
 require 'jekyll_from_to_until'
 
 module FlexibleInclude
@@ -98,6 +99,7 @@ module FlexibleInclude
       raise e
     rescue StandardError => e
       @do_not_escape = true
+      e = e.exception "'#{e.message}' while executing '#{cmd}'"
       maybe_reraise_error(e, throw_error: @die_on_run_error)
     end
 
