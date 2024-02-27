@@ -37,6 +37,6 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
 
   spec.add_dependency 'jekyll_from_to_until'
   spec.add_dependency 'jekyll_plugin_support', '>= 0.8.4'
-  spec.add_dependency 'jekyll-sass-converter', '= 2.9.9'
+  spec.add_dependency 'jekyll-sass-converter', '= 2.2.0'
   spec.add_dependency 'rugged'
 end
