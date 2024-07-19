@@ -1,11 +1,18 @@
 /* CSS classes shared between jekyll_pre and jekyll_flexible_include_plugins */
 
-.bg_yellow {
+.bg_yellow, .bg_pink, .bg_yellow_nopad, .bg_pink_nopad {
   background-color: yellow;
   padding-bottom: 2px;
   padding-top: 2px;
+}
+
+.bg_yellow, .bg_pink {
   padding-left: 0.5em;
   padding-right: 0.5em;
+}
+
+.bg_pink {
+  background-color: pink;
 }
 
 .codeLabel {
