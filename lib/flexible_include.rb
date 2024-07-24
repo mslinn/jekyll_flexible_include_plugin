@@ -25,7 +25,7 @@ module FlexibleInclude
 
     def render_impl
       setup
-      @path = JekyllPluginHelper.expand_env @filename, @logger
+      @path = ::JekyllSupport::JekyllPluginHelper.expand_env @filename, @logger
       handle_path_types
       render_completion
     rescue Errno::EACCES => e
@@ -89,7 +89,7 @@ module FlexibleInclude
                         "of #{@page['name']} denied by DISABLE_FLEXIBLE_INCLUDE value.")
         end
 
-        @filename = JekyllPluginHelper.remove_quotes(@helper.argv.first) if @helper.argv.first
+        @filename = ::JekyllSupport::JekyllPluginHelper.remove_quotes(@helper.argv.first) if @helper.argv.first
         @filename = @filename.delete_prefix '!'
         @contents = run(@filename)
       else # Relative path
@@ -99,6 +99,6 @@ module FlexibleInclude
       end
     end
 
-    JekyllPluginHelper.register(self, 'flexible_include')
+    ::JekyllSupport::JekyllPluginHelper.register(self, 'flexible_include')
   end
 end

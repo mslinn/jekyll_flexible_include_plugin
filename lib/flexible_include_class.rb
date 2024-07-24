@@ -14,8 +14,8 @@ module FlexibleInclude
     end
 
     def normalize_path(path)
-      JekyllPluginHelper.expand_env(path, die_if_undefined: true)
-                        .gsub('~', Dir.home)
+      ::JekyllSupport::JekyllPluginHelper.expand_env(path, die_if_undefined: true)
+                                         .gsub('~', Dir.home)
     end
 
     def number_content(content)
