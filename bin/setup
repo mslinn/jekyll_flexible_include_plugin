@@ -18,10 +18,13 @@ rm -f Gemfile.lock
 if [[ -z "$( which bundle )" ]]; then gem install bundler; fi
 export BUNDLE_WITH=development
 bundle
-if [ -d demo/ ]; then
-  cd demo || exit
-  bundle
-  cd ..
+
+if [ "$1" != nodemo ]; then
+  if [ -d demo/ ]; then
+    cd demo || exit
+    bundle
+    cd ..
+  fi
 fi
 
 # See https://www.honeybadger.io/blog/rbenv-rubygems-bundler-path/
