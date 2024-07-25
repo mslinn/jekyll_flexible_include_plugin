@@ -2,7 +2,7 @@
 
 ## 2.0.23 / 2024-07-22
 
-* Made compatible with `jekyll_plugin_support` v0.8.7
+* Made compatible with `jekyll_plugin_support` v1.0.0
 
 
 ## 2.0.22 / 2024-02-27
