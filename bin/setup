@@ -22,6 +22,7 @@ bundle
 if [ "$1" != nodemo ]; then
   if [ -d demo/ ]; then
     cd demo || exit
+    rm -f Gemfile.lock
     bundle
     cd ..
   fi
