@@ -1,5 +1,7 @@
 require 'pathname'
 require 'English'
+require 'facets/string/camelcase'
+require 'facets/string/snakecase'
 require 'jekyll_from_to_until'
 
 module FlexibleInclude
@@ -19,9 +21,8 @@ module FlexibleInclude
     end
 
     def maybe_raise_error(msg, throw_error: true)
-      fmsg = format_error_message msg
-      @logger.error fmsg
-      return "<span class='flexible_error'>#{fmsg}</span>" unless throw_error
+      @logger.error msg
+      return "<span class='flexible_error'>#{msg}</span>" unless throw_error
 
       raise FlexibleIncludeError, msg, []
     end
@@ -62,12 +63,23 @@ module FlexibleInclude
 
     def render_completion
       unless @path.start_with? '!'
-        maybe_raise_error("#{@path} does not exist",  throw_error: @die_on_file_error) unless File.exist? @path
-        maybe_raise_error("#{@path} is not readable", throw_error: @die_on_file_error) unless Pathname.new(@path).readable?
+        unless File.exist?(@path) && Dir.exist?(File.dirname(@path))
+          return maybe_raise_error(
+            "#{@path} does not exist, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
+            throw_error: @die_on_file_error
+          )
+        end
+
+        unless Pathname.new(@path).readable?
+          return maybe_raise_error(
+            "#{@path} is not readable, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
+            throw_error: @die_on_file_error
+          )
+        end
 
         @contents = File.read @path
         unless @contents.instance_of? String
-          maybe_raise_error("contents has type a #{@contents.class}, not a String",
+          maybe_raise_error("contents has type #{@contents.class}, not a String",
                             throw_error: @die_on_file_error)
         end
       end
@@ -96,8 +108,11 @@ module FlexibleInclude
       @logger.debug { "Executing #{cmd}" }
       %x[#{cmd}].chomp
     rescue FlexibleIncludeError => e
-      raise e
-    rescue StandardError => e
+      @logger.error e.logger_message
+      exit! 1 if @die_on_any_flexible_include_error
+
+      e.html_message
+    rescue StandardError => e # Assumes the wasa the result of running a command; this might not be a valid assumption. Awaiting a bug report.
       @do_not_escape = true
       e = e.exception "'#{e.message}' while executing '#{cmd}'"
       maybe_reraise_error(e, throw_error: @die_on_run_error)
@@ -113,6 +128,7 @@ module FlexibleInclude
         @die_on_other_error = config['die_on_other_error'] == true
         @die_on_path_denied = config['die_on_path_denied'] == true
         @die_on_run_error   = config['die_on_run_error'] == true
+        @die_on_any_flexible_include_error = @die_on_file_error || @die_on_other_error || @die_on_path_denied || @die_on_run_error
       end
 
       parse_args

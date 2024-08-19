@@ -81,11 +81,11 @@ bundle exec jekyll clean # Ensure all hooks get called
 clear
 
 if [ "$RUN_FREE" ]; then
-  bundle exec ../exe/jekyll $run
+  bundle exec ../binstub/jekyll $run
 else
   bundle exec rdebug-ide \
     --host 0.0.0.0 \
     --port 1234 \
     --dispatcher-port 26162 \
-    -- ../exe/jekyll $run
+    -- ../binstub/jekyll $run
 fi

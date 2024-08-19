@@ -12,6 +12,8 @@ class String
 end
 
 module FlexibleInclude
+  include FlexiblePrivateMethods
+
   FlexibleIncludeError = JekyllSupport.define_error
 
   PLUGIN_NAME = 'flexible_include'.freeze
@@ -23,39 +25,36 @@ module FlexibleInclude
       include FlexibleClassMethods
     end
 
+    def html_message(error)
+      <<~END_MSG
+        <div class='#{error.class.name.snakecase}'>
+          #{self.class} raised in #{calling_file} while processing line #{line_number} (after front matter) of #{path}
+          #{message}
+        </div>
+      END_MSG
+    end
+
     def render_impl
       setup
       @path = ::JekyllSupport::JekyllPluginHelper.expand_env @filename, @logger
       handle_path_types
       render_completion
     rescue Errno::EACCES => e
-      e.shorten_backtrace
-      msg = format_error_message e.message
-      @logger.error msg
+      @logger.error e.full_message
+      exit! 1 if @die_on_file_error
 
-      if @die_on_file_error
-        e2 = Errno::EACCES.new msg
-        e2.set_backtrace e.backtrace
-        raise e2
-      end
-
-      "<div class='custom_error'>#{e.class} raised in #{self.class};\n#{msg}</div>"
+      html_message
     rescue Errno::ENOENT => e
-      e.shorten_backtrace
-      msg = format_error_message e.message
-      @logger.error msg
+      @logger.error e.full_message
+      exit! 2 if @die_on_path_denied
 
-      if @die_on_path_denied
-        e2 = Errno::ENOENT.new msg
-        e2.set_backtrace e.backtrace
-        raise e2
-      end
-
-      "<div class='custom_error'>#{e.class} raised in #{self.class};\n#{msg}</div>"
+      html_message
     rescue FlexibleIncludeError => e
-      e.shorten_backtrace
-      @logger.error e.message
-      raise e
+      @logger.error e.logger_message
+      exit! 3
+    rescue StandardError => e
+      @logger.error e.full_message
+      exit! 4
     end
 
     private
