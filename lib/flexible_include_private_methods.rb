@@ -62,27 +62,26 @@ module FlexibleInclude
     end
 
     def render_completion
-      unless @path.start_with? '!'
-        unless File.exist?(@path) && Dir.exist?(File.dirname(@path))
-          return maybe_raise_error(
-            "#{@path} does not exist, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
-            throw_error: @die_on_file_error
-          )
-        end
-
-        unless Pathname.new(@path).readable?
-          return maybe_raise_error(
-            "#{@path} is not readable, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
-            throw_error: @die_on_file_error
-          )
-        end
-
-        @contents = File.read @path
-        unless @contents.instance_of? String
-          maybe_raise_error("contents has type #{@contents.class}, not a String",
-                            throw_error: @die_on_file_error)
-        end
+      unless File.exist?(@path) && Dir.exist?(File.dirname(@path))
+        return maybe_raise_error(
+          "#{@path} does not exist, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
+          throw_error: @die_on_file_error
+        )
       end
+
+      unless Pathname.new(@path).readable?
+        return maybe_raise_error(
+          "#{@path} is not readable, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
+          throw_error: @die_on_file_error
+        )
+      end
+
+      @contents = File.read @path
+      unless @contents.instance_of? String
+        maybe_raise_error("contents has type #{@contents.class}, not a String",
+                          throw_error: @die_on_file_error)
+      end
+
       @contents = FromToUntil.from(@contents, @from) if @from
       @contents = FromToUntil.to(@contents, @to) if @to
       @contents = FromToUntil.until(@contents, @until) if @until

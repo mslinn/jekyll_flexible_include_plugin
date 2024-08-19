@@ -27,7 +27,7 @@ flexible_include:
   die_on_path_denied: false
   die_on_run_error: false
   die_on_other_error: false
-ignore_theme_config: true
+ignore_theme_config: false
 liquid:
   error_mode: strict
   # strict_filters: true
