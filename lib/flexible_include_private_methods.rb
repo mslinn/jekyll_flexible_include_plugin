@@ -76,12 +76,12 @@ module FlexibleInclude
             throw_error: @die_on_file_error
           )
         end
-      end
 
-      @contents = File.read @path
-      unless @contents.instance_of? String
-        maybe_raise_error("contents has type #{@contents.class}, not a String",
-                          throw_error: @die_on_file_error)
+        @contents = File.read @path
+        unless @contents.instance_of? String
+          maybe_raise_error("contents has type #{@contents.class}, not a String",
+                            throw_error: @die_on_file_error)
+        end
       end
 
       @contents = FromToUntil.from(@contents, @from) if @from
