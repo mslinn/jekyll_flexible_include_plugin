@@ -62,18 +62,20 @@ module FlexibleInclude
     end
 
     def render_completion
-      unless File.exist?(@path) && Dir.exist?(File.dirname(@path))
-        return maybe_raise_error(
-          "#{@path} does not exist, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
-          throw_error: @die_on_file_error
-        )
-      end
+      unless @path.start_with?('!')
+        unless File.exist?(@path) && Dir.exist?(File.dirname(@path))
+          return maybe_raise_error(
+            "#{@path} does not exist, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
+            throw_error: @die_on_file_error
+          )
+        end
 
-      unless Pathname.new(@path).readable?
-        return maybe_raise_error(
-          "#{@path} is not readable, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
-          throw_error: @die_on_file_error
-        )
+        unless Pathname.new(@path).readable?
+          return maybe_raise_error(
+            "#{@path} is not readable, referenced on line #{@line_number} (after front matter) of #{@page['path']}",
+            throw_error: @die_on_file_error
+          )
+        end
       end
 
       @contents = File.read @path
