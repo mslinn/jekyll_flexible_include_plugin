@@ -41,23 +41,23 @@ module FlexibleInclude
       render_completion
     rescue Errno::EACCES => e
       e.shorten_backtrace
-      @logger.error "#{e.class.name}: #{e.message}"
+      @logger.error { "#{e.class.name}: #{e.message}" }
       exit! 1 if @die_on_file_error
 
       html_message
     rescue Errno::ENOENT => e
       e.shorten_backtrace
-      @logger.error "#{e.class.name}: #{e.message}"
+      @logger.error { "#{e.class.name}: #{e.message}" }
       exit! 1 if @die_on_path_denied
 
       html_message
     rescue FlexibleIncludeError => e
-      @logger.error e.logger_message
+      @logger.error { e.logger_message }
       exit! if @die_on_other_error
 
       html_message
       # rescue StandardError => e
-      #   @logger.error e.full_message
+      #   @logger.error { e.full_message }
       #   exit! 4
 
       #   html_message

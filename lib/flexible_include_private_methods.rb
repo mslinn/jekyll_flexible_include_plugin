@@ -8,7 +8,7 @@ module FlexibleInclude
   module FlexiblePrivateMethods
     def denied(msg)
       msg_no_html = remove_html_tags(msg)
-      @logger.error("#{@page['path']} - #{msg_no_html}")
+      @logger.error { "#{@page['path']} - #{msg_no_html}" }
       raise FlexibleIncludeError, "#{@page['path']} - #{msg_no_html}".red, [] if @die_on_path_denied
 
       "<p class='flexible_error'>#{msg}</p>"
@@ -21,7 +21,7 @@ module FlexibleInclude
     end
 
     def maybe_raise_error(msg, throw_error: true)
-      @logger.error msg
+      @logger.error { msg }
       return "<span class='flexible_error'>#{msg}</span>" unless throw_error
 
       raise FlexibleIncludeError, msg, []
@@ -109,7 +109,7 @@ module FlexibleInclude
       @logger.debug { "Executing #{cmd}" }
       %x[#{cmd}].chomp
     rescue FlexibleIncludeError => e
-      @logger.error e.logger_message
+      @logger.error { e.logger_message }
       exit! 1 if @die_on_any_flexible_include_error
 
       e.html_message
