@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.24 / 2024-00-20
+
+* Made compatible with `jekyll_plugin_support` v1.0.2
+
+
 ## 2.0.23 / 2024-07-22
 
 * Made compatible with `jekyll_plugin_support` v1.0.0
