@@ -185,6 +185,8 @@ and a red error message will be logged on the console that says something like:
 
 ## Installation
 
+### Gem
+
 1. Add the following to `Gemfile`, inside the `jekyll_plugins` group:
 
    ```ruby
@@ -212,6 +214,36 @@ and a red error message will be logged on the console that says something like:
    ```shell
    $ bundle
    ```
+
+### CSS and Assets
+
+Copy assets and CSS from the demo/ directory of the jekyll_pre GitHub project.
+
+- Copy `demo/assets/images/clippy.svg` to a directory of the same name in your Jekyll project.
+- Copy `demo/assets/css/jekyll_plugin_support.css` to your Jekyll project assets directory.
+- Copy `demo/assets/css/shared_include_pre.css` to your Jekyll project assets directory.
+- Copy `demo/assets/css/jekyll_flexible_include.css` to your Jekyll project assets directory.
+- Incorporate the CSS stylesheets into the appropriate layout in your Jekyll project:
+
+```html
+{% assign nowMillis = site.time | date: '%s' %}
+<link rel="stylesheet" href="{{ '/assets/css/jekyll_plugin_support.css?v=' | append: nowMillis }}" type="text/css">
+<link rel="stylesheet" href="{{ '/assets/css/shared_include_pre.css?v=' | append: nowMillis }}" type="text/css">
+<link rel="stylesheet" href="{{ '/assets/css/jekyll_flexible_include.css?v=' | append: nowMillis }}" type="text/css">
+```
+
+
+### JavaScript
+
+Copy `demo/assets/js/clipboard.min.js` from the `jekyll_flexible_include_plugin` GitHub project
+to your Jekyll project’s JavaScript directory.
+
+Modify the Jekyll layout or selected pages to load the JavaScript.
+You can load it from your project, as shown below, or from a CDN.
+
+```html
+<script defer src="/assets/js/clipboard.min.js"></script>
+```
 
 
 ## Examples
