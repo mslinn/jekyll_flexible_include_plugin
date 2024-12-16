@@ -6,6 +6,8 @@ require 'jekyll_from_to_until'
 
 module FlexibleInclude
   module FlexiblePrivateMethods
+    include ::FromToUntil
+
     def denied(msg)
       msg_no_html = remove_html_tags(msg)
       @logger.error { "#{@page['path']} - #{msg_no_html}" }

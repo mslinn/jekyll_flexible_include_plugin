@@ -3,6 +3,16 @@ description: Jekyll Flexible Include demo
 layout: default
 title: Welcome
 ---
+<h2 id="ftu">FromToUntil Problem</h2>
+{% flexible_include copyButton pre
+  file='$stabilize_video/lib/options.rb'
+  from='def parse_options'
+  highlight='options =.*$|LOGLEVEL|SHAKE|VERBOSE|ZOOM|into: options|^  options$'
+  label='Portion of options.rb'
+  to='^  end$'
+%}
+
+
 <h2 id="att">Attribution</h2>
 {% flexible_include attribution pre file='../Gemfile' %}
 

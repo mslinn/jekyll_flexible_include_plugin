@@ -7,15 +7,15 @@
     {
       "args": [
         "serve",
-        "--livereload_port", "35727",
-        "--force_polling",
-        "--host", "0.0.0.0",
-        "--port", "4009",
-        "--future",
-        "--incremental",
-        "--livereload",
-        "--drafts",
-        "--unpublished"
+          "--livereload_port", "35727",
+          "--force_polling",
+          "--host", "0.0.0.0",
+          "--port", "4009",
+          "--future",
+          "--incremental",
+          "--livereload",
+          "--drafts",
+          "--unpublished"
       ],
       "cwd": "${workspaceRoot}/demo",
       "debugPort": "0",
