@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.25 / 2024-12-11
+
+* Fixed `from` / `to` / `until` issue
+
+
 ## 2.0.24 / 2024-00-20
 
 * Made compatible with `jekyll_plugin_support` v1.0.2
