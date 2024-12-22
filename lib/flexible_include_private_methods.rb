@@ -19,7 +19,7 @@ module FlexibleInclude
     def highlight(content, pattern)
       raise FlexibleIncludeError, "content is a #{content.class}, not a String" unless content.instance_of? String
 
-      content.gsub(Regexp.new(pattern), "<span class='bg_yellow'>\\0</span>")
+      content.gsub(Regexp.new(pattern), "<span class='bg_yellow_nopad'>\\0</span>")
     end
 
     def maybe_raise_error(msg, throw_error: true)

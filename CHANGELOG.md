@@ -1,5 +1,10 @@
 # Change Log
 
+## (in progress)
+
+* Replaced the CSS class `bg_yellow` with `bg_yellow_nopad`.
+
+
 ## 2.0.25 / 2024-12-11
 
 * Fixed `from` / `to` / `until` issue

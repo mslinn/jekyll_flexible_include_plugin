@@ -93,7 +93,7 @@ and are not intended to be written literally.
 - `from='regex'` specifies that the beginning of the output should discarded until the matching string or regex is encountered.
 
 - `highlight='regex pattern here'` wraps content matching the regex pattern within a
-  `<span class='bg_yellow'></span>` tag.
+  `<span class='bg_yellow_nopad'></span>` tag.
   Note that the pattern can simply consist of the exact text that you want to highlight.
 
 - `pre` is a keyword option that causes the included file to be wrapped inside a
