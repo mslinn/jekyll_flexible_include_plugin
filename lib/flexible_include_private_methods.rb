@@ -1,5 +1,6 @@
-require 'pathname'
 require 'English'
+require 'pathname'
+require 'rugged'
 require 'facets/string/camelcase'
 require 'facets/string/snakecase'
 require 'jekyll_from_to_until'
@@ -30,6 +31,10 @@ module FlexibleInclude
     end
 
     def parse_args
+      @branch = @helper.parameter_specified? 'branch'
+      @branch_restore = @helper.parameter_specified? 'branch_restore'
+      raise StandardError, "Both branch and branch_restore were specified for flexible_include", [] if @branch && @branch_restore
+
       @copy_button = @helper.parameter_specified? 'copyButton'
       @dark = ' dark' if @helper.parameter_specified? 'dark'
       @do_not_escape = @helper.parameter_specified? 'do_not_escape'
@@ -63,6 +68,34 @@ module FlexibleInclude
       string.gsub(/<[^>]*>/, '')
     end
 
+    def checkout_branch(branch_name)
+      Dir.chdir @dir do
+        run "git checkout #{branch_name}"
+      end
+    end
+
+    def restore_branch
+      Dir.chdir @dir do
+        run "git checkout #{@old_branch}"
+      end
+    end
+
+    def handle_branch
+      return unless @branch || @branch_restore
+
+      @git_root = run "git rev-parse --show-toplevel #{File.dirname @path}"
+
+      @repo = Rugged::Repository.new @git_root
+      if @repo.branches.entries.empty?
+        puts "The git repository at #{@git_root} is empty. Please add and commit at least one file before rerunning Jekyll."
+        exit 1
+      end
+      # See https://www.mslinn.com/git/4400-rugged.html#tfb
+      @old_branch = @repo.head.name.sub(/^refs\/heads\//, '')
+      checkout_branch @branch if @branch && @branch != @old_branch
+      checkout_branch @branch_restore if @branch_restore && @branch_restore != @old_branch
+    end
+
     def render_completion
       unless @path.start_with?('!')
         unless File.exist?(@path) && Dir.exist?(File.dirname(@path))
@@ -79,11 +112,15 @@ module FlexibleInclude
           )
         end
 
+        handle_branch
+
         @contents = File.read @path
         unless @contents.instance_of? String
           maybe_raise_error("contents has type #{@contents.class}, not a String",
                             throw_error: @die_on_file_error)
         end
+
+        run "git checkout #{@old_branch}" if @old_branch && @branch != @old_branch
       end
 
       @contents = FromToUntil.from(@contents, @from) if @from

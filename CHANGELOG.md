@@ -1,6 +1,26 @@
 # Change Log
 
-## (in progress)
+## 2.1.0 / 2025-07-14
+
+* Added options:
+
+  * `branch` specify git branch to check out (if required) before fetching file.
+     A warning is generated if the branch is not defined.
+
+     Example, checks out branch `example1` before including file:
+
+     ```html
+     branch='example1'
+     ```
+
+  * `branch_restore` like `branch` but restores the branch after including the file.
+
+     Example, checks out branch `example1` before including file, then restores whatever branch was active before
+     flexible include was invoked:
+
+     ```html
+     branch_restore='example1'
+     ```
 
 * Replaced the CSS class `bg_yellow` with `bg_yellow_nopad`.
 

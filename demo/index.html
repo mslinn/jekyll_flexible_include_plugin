@@ -3,6 +3,43 @@ description: Jekyll Flexible Include demo
 layout: default
 title: Welcome
 ---
+<!-- #region branch and file -->
+<h2 id="branch_file">branch and file options</h2>
+<h3 id="valid">Valid</h3>
+<pre>{% raw %}{% flexible_include file='Gemfile' branch='master' %}{% endraw %}</pre>
+<p>
+  Renders as:
+</p>
+{% flexible_include file='Gemfile' branch='master' %}
+
+
+<pre>{% raw %}{% flexible_include file='Gemfile' branch_restore='master' %}{% endraw %}</pre>
+<p>
+    Renders as:
+</p>
+{% flexible_include file='Gemfile' branch_restore='master' %}
+<!-- endregion -->
+
+
+<h3 id="invalid_branch">Invalid Branch</h3>
+<pre>{% raw %}{% flexible_include file='Gemfile' branch='no_such_branch' %}{% endraw %}</pre>
+<p>
+    Renders as:
+</p>
+{% flexible_include file='Gemfile' branch='no_such_branch' %}
+<!-- endregion -->
+
+
+<pre>{% raw %}{% flexible_include file='Gemfile' branch_restore='no_such_branch' %}{% endraw %}</pre>
+<p>
+    Renders as:
+</p>
+{% flexible_include file='Gemfile' branch_restore='no_such_branch' %}
+<!-- endregion -->
+<!-- endregion -->
+
+
+<!-- #region FromToUntil Problem -->
 <h2 id="ftu">FromToUntil Problem</h2>
 {% flexible_include copyButton pre
   file='$stabilize_video/lib/options.rb'
@@ -11,10 +48,13 @@ title: Welcome
   label='Portion of options.rb'
   to='^  end$'
 %}
+<!-- endregion -->
 
 
+<!-- #region Attribution -->
 <h2 id="att">Attribution</h2>
 {% flexible_include attribution pre file='../Gemfile' %}
+<!-- endregion -->
 
 
 <!-- #region die -->
@@ -64,6 +104,7 @@ Trimming off trailing whitespace:
 <!-- endregion -->
 
 
+<!-- #region To -->
 <h2 id="to">To</h2>
 <pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' to='end' %}{% endraw %}&lt;/pre></pre>
 <p>
@@ -82,6 +123,7 @@ Trimming off trailing whitespace:
 <!-- endregion -->
 
 
+<!-- #region Until -->
 <h2 id="until">Until</h2>
 <pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' until=':test' %}{% endraw %}&lt;/pre></pre>
 <p>
@@ -101,6 +143,7 @@ Trimming off trailing whitespace:
 <!-- endregion -->
 
 
+<!-- #region From ... To -->
 <h2 id="from_until">From ... To</h2>
 <pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' from='jekyll_plugins' to='end' %}{% endraw %}&lt;/pre></pre>
 <p>
@@ -120,6 +163,7 @@ Trimming off trailing whitespace:
 <!-- endregion -->
 
 
+<!-- #region From ... Until -->
 <h2 id="from_until">From ... Until</h2>
 <pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' from='jekyll_plugins' until=':test' %}{% endraw %}&lt;/pre></pre>
 <p>
@@ -139,7 +183,7 @@ Trimming off trailing whitespace:
 <!-- endregion -->
 
 
-<!-- #region highlight -->
+<!-- #region Outside Include With highlight -->
 <h2 id="outside">Outside Include With <span class='code'>highlight</span></h2>
 <p>
   The <code>file</code> keyword option is not used here.
@@ -152,7 +196,7 @@ Trimming off trailing whitespace:
 <!-- endregion -->
 
 
-<!-- #region outside include -->
+<!-- #region outside include with file Keyword Option -->
 <h2 id="outside">Outside Include With <span class='code'>file</span> Keyword Option</h2>
 <pre>{% raw %}{% flexible_include pre file='../Gemfile' %}{% endraw %}</pre>
 <p>
@@ -162,32 +206,38 @@ Trimming off trailing whitespace:
 <!-- endregion -->
 
 
-<!-- #region Inside Include -->
+<!-- #region Inside Include without Options -->
 <h2 id="outside">Inside Include Without Options</h2>
 <pre>&lt;pre>{% raw %}{% flexible_include file='Gemfile' %}{% endraw %}&lt;/pre></pre>
 <p>
   Renders as:
 </p>
 <pre class="pre_tag maxOneScreenHigh copyContainer">{% flexible_include file='Gemfile' %}</pre>
+<!-- endregion -->
 
 
+<!-- #region Inside Include With copyButton Keyword Option -->
 <h2 id="outside">Inside Include With <span class='code'>copyButton</span> Keyword Option</h2>
 <pre>{% raw %}{% flexible_include copyButton pre file='Gemfile' %}{% endraw %}</pre>
 <p>
   Renders as:
 </p>
 {% flexible_include copyButton pre file='Gemfile' %}
+<!-- endregion -->
 
 
-<h2 id="outside">Inside Include With <span class='code'>copyButton</span> and <span class='code'>number</span>  Keyword Options</h2>
+<!-- #region Inside Include With copyButton and number Keyword Options -->
+<h2 id="outside">Inside Include With <span class='code'>copyButton</span> and <span class='code'>number</span> Keyword Options</h2>
 <pre>{% raw %}{% flexible_include copyButton number file='Gemfile' %}{% endraw %}</pre>
 <p>
   Recall that the <code>number</code> keyword option implies the <code>pre</code> keyword option.
   Renders as:
 </p>
 {% flexible_include copyButton number file='Gemfile' %}
+<!-- endregion -->
 
 
+<!-- #region Inside Include With label -->
 <h2 id="outside">Inside Include With <span class='code'>label</span></h2>
 <pre>{% raw %}{% flexible_include file='Gemfile' label='This is a label' %}{% endraw %}</pre>
 <p>
@@ -195,8 +245,9 @@ Trimming off trailing whitespace:
   Renders as:
 </p>
 {% flexible_include file='Gemfile' label='This is a label' %}
+<!-- endregion -->
 
-
+<!-- #region Inside Include With download -->
 <h2 id="outside">Inside Include With <span class='code'>download</span></h2>
 <pre>{% raw %}{% flexible_include download file='Gemfile' %}{% endraw %}</pre>
 <p>
@@ -204,8 +255,10 @@ Trimming off trailing whitespace:
   Renders as:
 </p>
 {% flexible_include download file='Gemfile' %}
+<!-- endregion -->
 
 
+<!-- #region Inside Include With dark -->
 <h2 id="outside">Inside Include With <span class='code'>dark</span> and <span class='code'>download</span></h2>
 <pre>{% raw %}{% flexible_include dark download file='Gemfile' %}{% endraw %}</pre>
 <p>
@@ -266,7 +319,6 @@ Trimming off trailing whitespace:
 </p>
 {% flexible_include pre file='!jekyll help' %}
 
-
 <p>
   With <code>label</code> option:
 </p>
@@ -289,7 +341,7 @@ Trimming off trailing whitespace:
 <!-- endregion -->
 
 
-<!-- #region unescape -->
+<!-- #region do_not_escape Keyword Option -->
 <h2 id="outside"><span class="code">do_not_escape</span> Keyword Option</h2>
 <p>
   With <code>pre</code> keyword option:
