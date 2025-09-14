@@ -34,9 +34,12 @@ module FlexibleInclude
       END_MSG
     end
 
+    # Look for *nix version of @path if Windows expansion did not yield a file that exists
     def render_impl
       setup
       @path = ::JekyllSupport::JekyllPluginHelper.expand_env @filename, @logger
+      linux_path = `wslpath #{@path}`.chomp
+      @path = linux_path if !File.exist?(@path) && File.exist?(linux_path)
       handle_path_types
       render_completion
     rescue Errno::EACCES => e

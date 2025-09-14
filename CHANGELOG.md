@@ -1,8 +1,11 @@
 # Change Log
 
-## (in progress)
+## 2.0.26 / 2025-09-13
 
 * Replaced the CSS class `bg_yellow` with `bg_yellow_nopad`.
+* Windows environment variables references provided to the `file` option are looked up.
+  If they are not found, they are removed (just like CMD.EXE.)
+  Requires `jekyll_plugin_support` .
 
 
 ## 2.0.25 / 2024-12-11
