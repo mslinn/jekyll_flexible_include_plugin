@@ -3,6 +3,13 @@ description: Jekyll Flexible Include demo
 layout: default
 title: Welcome
 ---
+<h2 id="wev">Windows env vars</h2>
+{% flexible_include
+  file='%AppData%\Code\User\keybindings.json'
+  label='%AppData%\Code\User\keybindings.json'
+%}
+
+
 <h2 id="ftu">FromToUntil Problem</h2>
 {% flexible_include copyButton pre
   file='$stabilize_video/lib/options.rb'
