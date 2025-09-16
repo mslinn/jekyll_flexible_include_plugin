@@ -38,7 +38,7 @@ module FlexibleInclude
     def render_impl
       setup
       @path = ::JekyllSupport::JekyllPluginHelper.expand_env @filename, @logger
-      linux_path = `wslpath '#{@path}' &2>/dev/null`.chomp
+      linux_path = `wslpath '#{@path}' 2>/dev/null`.chomp
       @path = linux_path if !File.exist?(@path) && File.exist?(linux_path)
       handle_path_types
       render_completion
