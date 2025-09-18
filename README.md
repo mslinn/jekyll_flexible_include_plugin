@@ -187,9 +187,9 @@ and a red error message will be logged on the console that says something like:
 
 ### 2025-09-10 Windows Special Consideration
 
-If Jekyll runs on a Windows computer, and you want to use #WindowsEnvironmentVariables#
+If Jekyll runs on a Windows computer, and you want to use `#WindowsEnvironmentVariables#`
 with `flexible_include`,
-please read [these instructions from the <code>jekyll_plugin_support</code> Jekyll plugin](https://github.com/mslinn/jekyll_plugin_support?tab=readme-ov-file#if-you-need-windows-environment-variable-expansion)
+please read [these instructions from <code>jekyll_plugin_support</code>](https://github.com/mslinn/jekyll_plugin_support?tab=readme-ov-file#if-you-need-windows-environment-variable-expansion)
 
 
 ### Gem
