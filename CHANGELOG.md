@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.27 / 2025-09-25
+
+* Handle evaluation of Windows-style env var on a non-Windows machine #16
+
+
 ## 2.0.26 / 2025-09-13
 
 * Replaced the CSS class `bg_yellow` with `bg_yellow_nopad`.
