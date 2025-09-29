@@ -1,0 +1,52 @@
+author: Mike Slinn
+compress_html:
+  blanklines: false
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+  ignore:
+    envs: [development]
+  profile: false
+  startings: [html, head, body]
+domain: bogus.jekylldemo.com
+email: bogus@jekylldemo.com
+exclude:  # Wildcards are not supported yet https://github.com/jekyll/jekyll-watch/pull/93
+  - .git
+  - .github
+  - .gitignore
+  - .jekyll-cache
+  - .jekyll-metadata
+  - .ruby-version
+  - .vscode
+  - BingSiteAuth.xml
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+flexible_include:
+  die_on_file_error: false
+  die_on_path_denied: false
+  die_on_run_error: false
+  die_on_other_error: false
+ignore_theme_config: false
+liquid:
+  error_mode: strict
+  # strict_filters: true
+  # strict_variables: true
+plugin_loggers:
+  PluginMetaLogger: info
+  CleanHook: warn
+  DocumentHooks: warn
+  DraftFilter: debug
+  MyBlock: warn
+  PageHooks: warn
+  PostHooks: warn
+  SiteHooks: warn
+permalink: "/blog/:year/:month/:day/:title:output_ext"
+plugins: # Use file name of the plugin entry point, not the gem name
+  - flexible_include
+  - jekyll
+  - html-proofer
+sass:
+  style: compressed
+title: Jekyll Flexible Include Demo
+url: https://bogus.jekylldemo.com

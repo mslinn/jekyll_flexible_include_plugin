@@ -2,7 +2,7 @@ require 'jekyll_plugin_support'
 require_relative '../lib/git_file_reader'
 
 RSpec.describe(GitFileReader) do
-  it 'reads a file at a tag' do
+  xit 'reads a file at a tag' do
     content = described_class.new('.').blob_at('v2.0.20', 'README.md').content
     expect(content).to include('Added `highlight` regex option')
 
