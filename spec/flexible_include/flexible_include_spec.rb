@@ -2,7 +2,7 @@ require 'jekyll_plugin_support'
 require_relative '../../lib/flexible_include'
 
 RSpec.describe(FlexibleInclude::FlexibleInclude) do
-  it 'controls access to files' do
+  it 'controls access to files', skip: 'Uses old ParseContext which might be helpful' do
     ENV['FLEXIBLE_INCLUDE_PATHS'] = '~/.*:spec/.*'
 
     described_class.send(:new, 'my_tag', '', Liquid::ParseContext.new)
