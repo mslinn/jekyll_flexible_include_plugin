@@ -185,13 +185,6 @@ and a red error message will be logged on the console that says something like:
 
 ## Installation
 
-### 2025-09-10 Windows Special Consideration
-
-If Jekyll runs on a Windows computer, and you want to use `#WindowsEnvironmentVariables#`
-with `flexible_include`,
-please read [these instructions from <code>jekyll_plugin_support</code>](https://github.com/mslinn/jekyll_plugin_support?tab=readme-ov-file#if-you-need-windows-environment-variable-expansion)
-
-
 ### Gem
 
 1. Add the following to `Gemfile`, inside the `jekyll_plugins` group:
@@ -275,8 +268,13 @@ You can load it from your project, as shown below, or from a CDN.
 
 ## Additional Information
 
-More information is available on
-[Mike Slinn&rsquo;s website](https://www.mslinn.com/blog/2020/10/03/jekyll-plugins.html).
+The complete documentation is available on
+[Mike Slinn&rsquo;s website](https://mslinn.com/jekyll_plugins/jekyll_flexible_include.html).
+
+Topics that are not mentioned in this `README.md` file include:
+
+- How environment variables are expanded on Linux, Mac and Windows.
+- Numbering lines.
 
 
 ## GitHub Pages
