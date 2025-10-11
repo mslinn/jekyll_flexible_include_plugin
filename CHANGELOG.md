@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.28 / In process
+
+* Added new dependency, [`benchmark`](https://github.com/ruby/benchmark),
+  because it will no longer be automatically included starting from Ruby 3.5.0.
+
+
 ## 2.0.27 / 2025-09-25
 
 * Handle evaluation of Windows-style env var on a non-Windows machine #16
