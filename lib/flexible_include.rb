@@ -37,7 +37,10 @@ module FlexibleInclude
     # Look for *nix version of @path if Windows expansion did not yield a file that exists
     def render_impl
       setup
-      @path = ::JekyllSupport::JekyllPluginHelper.expand_env @filename, @logger
+      # First expand bash environment variables ($VAR or ${VAR})
+      path = ::JekyllSupport::JekyllPluginHelper.env_var_expand_bash(@filename, @logger)
+      # Then expand Windows environment variables (%VAR%) for file paths
+      @path = ::JekyllSupport::JekyllPluginHelper.env_var_expand_windows(path, @logger)
       linux_path = `wslpath '#{@path}' 2>/dev/null`.chomp
       @path = linux_path if !File.exist?(@path) && File.exist?(linux_path)
       handle_path_types
