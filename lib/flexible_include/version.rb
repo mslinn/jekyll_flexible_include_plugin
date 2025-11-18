@@ -1,3 +1,3 @@
 module JekyllFlexibleIncludePluginVersion
-  VERSION = '2.0.27'.freeze
+  VERSION = '2.0.28'.freeze
 end
