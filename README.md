@@ -212,7 +212,7 @@ and a red error message will be logged on the console that says something like:
 5. Install the `jekyll_flexible_include` Ruby gem and mark it as a dependency of your project:
 
    ```shell
-   $ bundle
+   $ bundle install
    ```
 
 ### CSS and Assets

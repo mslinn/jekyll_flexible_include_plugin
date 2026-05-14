@@ -22,7 +22,7 @@ fi
 rm -f Gemfile.lock
 if [[ -z "$( which bundle )" ]]; then gem install bundler; fi
 export BUNDLE_WITH=development
-bundle
+bundle install
 
 bundle config set bin binstub
 

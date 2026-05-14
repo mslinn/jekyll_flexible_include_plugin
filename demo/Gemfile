@@ -3,13 +3,16 @@ source 'https://rubygems.org'
 gem 'confidential_info_redactor'
 gem 'ffi'
 gem 'jekyll', '~> 4.4.1'
-gem 'jekyll_draft', '>= 3.0.0'
 gem 'ptools'
+
+jekyll_plugin_support   = ENV.fetch('jekyll_plugin_support', nil)
 
 group :jekyll_plugins do
   gem 'html-proofer'
+  gem 'jekyll_draft', '>= 3.0.0'
   gem 'jekyll-environment-variables'
   gem 'jekyll_flexible_include', path: '../'
+  gem 'jekyll_plugin_support', path: jekyll_plugin_support
   gem 'jekyll-tagging'
   gem 'kramdown'
 end
