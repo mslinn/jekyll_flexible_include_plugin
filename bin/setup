@@ -22,6 +22,15 @@ fi
 rm -f Gemfile.lock
 if [[ -z "$( which bundle )" ]]; then gem install bundler; fi
 export BUNDLE_WITH=development
+
+# Building rugged got really difficult in July 2026
+unset CFLAGS
+unset CPPFLAGS
+export LDFLAGS="-Wl,--allow-multiple-definition -Wl,--no-as-needed"
+export LIBS="-lcrypto -lssl"
+export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig"
+rm -rf ~/.rbenv/versions/3.4.6/lib/ruby/gems/3.4.0/gems/rugged-*
+bundle config set build.rugged "--with-ssh --without-system-libraries"
 bundle install
 
 bundle config set bin binstub

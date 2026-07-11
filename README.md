@@ -168,19 +168,20 @@ time to enumerate the files.
 
 ## Restricting Arbitrary Processes
 
-By default, `flexible_include` can execute any command.
-You can disable that by setting the environment variable `DISABLE_FLEXIBLE_INCLUDE`
-to any non-empty value.
+By default, `flexible_include` can execute any command.  You can disable that by
+setting the environment variable `DISABLE_FLEXIBLE_INCLUDE` to any non-empty
+value.
 
 ```shell
 export DISABLE_FLEXIBLE_INCLUDE=true
 ```
 
-If a potential command execution is intercepted,
-a big red message will appear on the generated web page that says
-`Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.`,
-and a red error message will be logged on the console that says something like:
-`ERROR FlexibleInclude: _posts/2020/2020-10-03-jekyll-plugins.html - Arbitrary command execution denied by DISABLE_FLEXIBLE_INCLUDE value.`
+If a potential command execution is intercepted, a big red message will appear
+on the generated web page that says `Arbitrary command execution denied by
+DISABLE_FLEXIBLE_INCLUDE value.`, and a red error message will be logged on the
+console that says something like: `ERROR FlexibleInclude:
+_posts/2020/2020-10-03-jekyll-plugins.html - Arbitrary command execution denied
+by DISABLE_FLEXIBLE_INCLUDE value.`
 
 
 ## Installation

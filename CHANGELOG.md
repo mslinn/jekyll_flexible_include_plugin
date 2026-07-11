@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.0.29 / 2026-07-11
+
+* Modified `bin/setup` to allow Rugged 1.9x which requires `libgpg-error-dev`
+  library under Ubuntu. `--with-ssh`. See
+  https://www.mslinn.com/git/4400-rugged.html for rugged installation
+  instructions.
+
 ## 2.0.28 / 2025-11-18
 
 * Added new dependency, [`benchmark`](https://github.com/ruby/benchmark),
